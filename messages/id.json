@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Beranda",
+    "report": "Lapor",
+    "consultant": "Konsultan",
+    "admin": "Admin",
+    "operator": "Operator",
+    "satgas": "Satgas"
+  },
+  "common": {
+    "welcome": "Selamat Datang di SafePlace",
+    "panic_button": "Keluar Cepat"
+  },
+  "auth": {
+    "login": "Masuk",
+    "logout": "Keluar",
+    "anonymous_login": "Masuk Anonim"
+  }
+}

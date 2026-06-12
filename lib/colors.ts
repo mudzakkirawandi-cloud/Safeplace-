@@ -1,0 +1,26 @@
+export const colors = {
+  homepage: {
+    primary: '#1B4F72',
+    background: '#FAFBFF',
+  },
+  pelapor: {
+    primary: '#4A90B8',
+    background: '#F0F7FC',
+  },
+  konsultan: {
+    primary: '#5B8A6F',
+    background: '#F4F9F6',
+  },
+  admin: {
+    primary: '#2C3E6B',
+    background: '#F5F6FA',
+  },
+  operator: {
+    primary: '#7B5EA7',
+    background: '#F8F5FC',
+  },
+  satgas: {
+    primary: '#1A5276',
+    background: '#EBF5FB',
+  },
+};

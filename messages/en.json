@@ -1,0 +1,19 @@
+{
+  "nav": {
+    "home": "Home",
+    "report": "Report",
+    "consultant": "Consultant",
+    "admin": "Admin",
+    "operator": "Operator",
+    "satgas": "Task Force"
+  },
+  "common": {
+    "welcome": "Welcome to SafePlace",
+    "panic_button": "Quick Exit"
+  },
+  "auth": {
+    "login": "Login",
+    "logout": "Logout",
+    "anonymous_login": "Anonymous Login"
+  }
+}

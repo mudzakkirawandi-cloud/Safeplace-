@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-plus-jakarta-sans);
+}
+
+body {
+  color: #333;
+  background: #FAFBFF;
+}

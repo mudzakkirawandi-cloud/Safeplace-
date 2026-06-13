@@ -13,14 +13,14 @@ import { ArrowLeft, ArrowRight, Save, ShieldAlert, UploadCloud } from "lucide-re
 const formSchema = z.object({
   incidentType: z.string().optional(),
   incidentDate: z.string().optional(),
-  isOngoing: z.boolean().default(false),
+  isOngoing: z.boolean().optional(),
   locationDetail: z.string().optional(),
   campus: z.string().optional(),
   relationship: z.string().optional(),
   safety: z.string().optional(),
   description: z.string().optional(),
   attachments: z.any().optional(),
-  consent: z.boolean().default(false)
+  consent: z.boolean().optional()
 });
 
 type FormValues = z.infer<typeof formSchema>;

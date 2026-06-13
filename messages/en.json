@@ -84,6 +84,17 @@
       "witness_title": "I am Reporting for Someone Else",
       "witness_desc": "I am reporting an incident experienced by someone else (witness/companion).",
       "witness_consent": "Ensure you have obtained consent from the victim if possible."
+    },
+    "intent": {
+      "title": "What is the main goal of your report?",
+      "document_title": "Report & Document",
+      "document_desc": "Just want the incident recorded. No further action is required.",
+      "consult_title": "Consultation & Support",
+      "consult_desc": "Want to speak with a consultant before or while reporting.",
+      "satgas_title": "Forward to Campus Task Force",
+      "satgas_desc": "Want the report handled officially by your campus PPKS Task Force.",
+      "continue_btn": "Continue",
+      "change_later_note": "You can change this choice later from the dashboard."
     }
   }
 }

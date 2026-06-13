@@ -84,6 +84,17 @@
       "witness_title": "Saya Melapor untuk Orang Lain",
       "witness_desc": "Saya melaporkan kejadian yang dialami orang lain (saksi/pendamping).",
       "witness_consent": "Pastikan kamu telah mendapat persetujuan dari korban jika memungkinkan."
+    },
+    "intent": {
+      "title": "Apa tujuan utama laporanmu?",
+      "document_title": "Lapor & Dokumentasikan",
+      "document_desc": "Hanya ingin kejadian tercatat. Tidak diwajibkan melakukan apa pun setelahnya.",
+      "consult_title": "Konsultasi & Pendampingan",
+      "consult_desc": "Ingin berbicara dengan konsultan sebelum atau sambil melapor.",
+      "satgas_title": "Teruskan ke Satgas Kampus",
+      "satgas_desc": "Ingin laporan ditangani secara resmi oleh Satgas PPKS kampusmu.",
+      "continue_btn": "Lanjut",
+      "change_later_note": "Kamu bisa mengubah pilihan ini nanti dari dashboard."
     }
   }
 }

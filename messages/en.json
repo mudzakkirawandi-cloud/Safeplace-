@@ -67,5 +67,23 @@
       "contact": "Contact Us",
       "rights": "All Rights Reserved"
     }
+  },
+  "report": {
+    "start": {
+      "title": "Choose Reporting Path",
+      "subtitle": "Both are equally secure.",
+      "anonymous_title": "Report Anonymously",
+      "anonymous_desc": "Your identity is hidden. You will receive a unique code to track the report status.",
+      "identified_title": "Report with Account",
+      "identified_desc": "Use your account. Facilitates further communication if needed."
+    },
+    "mode": {
+      "title": "Who is Reporting?",
+      "victim_title": "I am the Victim",
+      "victim_desc": "I am reporting an incident I experienced myself.",
+      "witness_title": "I am Reporting for Someone Else",
+      "witness_desc": "I am reporting an incident experienced by someone else (witness/companion).",
+      "witness_consent": "Ensure you have obtained consent from the victim if possible."
+    }
   }
 }

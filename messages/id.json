@@ -67,5 +67,23 @@
       "contact": "Kontak Kami",
       "rights": "Hak Cipta Dilindungi"
     }
+  },
+  "report": {
+    "start": {
+      "title": "Pilih Jalur Pelaporan",
+      "subtitle": "Keduanya sama-sama aman.",
+      "anonymous_title": "Lapor Anonim",
+      "anonymous_desc": "Identitasmu disembunyikan. Kamu akan mendapat kode unik untuk melacak status laporan.",
+      "identified_title": "Lapor dengan Akun",
+      "identified_desc": "Gunakan akunmu. Memudahkan komunikasi lanjutan jika diperlukan."
+    },
+    "mode": {
+      "title": "Siapa yang Melapor?",
+      "victim_title": "Saya Korban",
+      "victim_desc": "Saya melaporkan kejadian yang saya alami sendiri.",
+      "witness_title": "Saya Melapor untuk Orang Lain",
+      "witness_desc": "Saya melaporkan kejadian yang dialami orang lain (saksi/pendamping).",
+      "witness_consent": "Pastikan kamu telah mendapat persetujuan dari korban jika memungkinkan."
+    }
   }
 }

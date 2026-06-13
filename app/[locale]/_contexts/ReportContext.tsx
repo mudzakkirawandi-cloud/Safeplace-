@@ -10,7 +10,7 @@ interface ReportState {
   path: ReportPath;
   mode: ReportMode;
   intent: ReportIntent;
-  formData: any; // Will type properly in Fase 3C
+  formData: Record<string, unknown>; // Will type properly in Fase 3C
 }
 
 interface ReportContextType {
@@ -18,7 +18,7 @@ interface ReportContextType {
   setPath: (path: ReportPath) => void;
   setMode: (mode: ReportMode) => void;
   setIntent: (intent: ReportIntent) => void;
-  setFormData: (data: any) => void;
+  setFormData: (data: Record<string, unknown>) => void;
 }
 
 const defaultState: ReportState = {
@@ -36,7 +36,7 @@ export function ReportProvider({ children }: { children: ReactNode }) {
   const setPath = (path: ReportPath) => setState((s) => ({ ...s, path }));
   const setMode = (mode: ReportMode) => setState((s) => ({ ...s, mode }));
   const setIntent = (intent: ReportIntent) => setState((s) => ({ ...s, intent }));
-  const setFormData = (data: any) => setState((s) => ({ ...s, formData: { ...s.formData, ...data } }));
+  const setFormData = (data: Record<string, unknown>) => setState((s) => ({ ...s, formData: { ...s.formData, ...data } }));
 
   return (
     <ReportContext.Provider value={{ state, setPath, setMode, setIntent, setFormData }}>

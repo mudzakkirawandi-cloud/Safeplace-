@@ -15,5 +15,57 @@
     "login": "Login",
     "logout": "Logout",
     "anonymous_login": "Anonymous Login"
+  },
+  "homepage": {
+    "navbar": {
+      "login": "Log In",
+      "start_report": "Start Report"
+    },
+    "hero": {
+      "title": "A Safe Space to Speak Up",
+      "subtitle": "We are here to listen, support, and protect. Do not hesitate to report any incidents you have experienced or witnessed.",
+      "primary_cta": "Start Reporting Now",
+      "secondary_cta": "Learn More"
+    },
+    "howItWorks": {
+      "title": "How SafePlace Works?",
+      "step1_title": "Choose a Path",
+      "step1_desc": "Report anonymously or with an account, according to your comfort.",
+      "step2_title": "Tell Your Story",
+      "step2_desc": "Fill out the report form safely and securely with encryption.",
+      "step3_title": "Get Support",
+      "step3_desc": "Our consultants are ready to assist your next steps."
+    },
+    "security": {
+      "title": "Top Tier Security & Privacy",
+      "feature1_title": "Completely Anonymous",
+      "feature1_desc": "Report without leaving any identity traces.",
+      "feature2_title": "Encrypted Data",
+      "feature2_desc": "All data is secured with high-level encryption.",
+      "feature3_title": "Protected Identity",
+      "feature3_desc": "Only authorized parties can view your identity (if permitted).",
+      "feature4_title": "Quick Exit Anytime",
+      "feature4_desc": "A panic button is available to instantly close this page."
+    },
+    "impact": {
+      "title": "Collective Impact",
+      "stat1_value": "1,200+",
+      "stat1_label": "Reports Handled",
+      "stat2_value": "45",
+      "stat2_label": "Campuses Joined",
+      "stat3_value": "150+",
+      "stat3_label": "Active Consultants"
+    },
+    "campus": {
+      "title": "Make Your Campus Safer",
+      "subtitle": "Join the SafePlace network to provide better protection for students.",
+      "cta": "Register Campus"
+    },
+    "footer": {
+      "privacy_policy": "Privacy Policy",
+      "terms": "Terms of Use",
+      "contact": "Contact Us",
+      "rights": "All Rights Reserved"
+    }
   }
 }

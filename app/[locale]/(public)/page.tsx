@@ -1,19 +1,32 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from "next-intl/server";
+import Navbar from "./_components/Navbar";
+import HeroSection from "./_components/HeroSection";
+import HowItWorksSection from "./_components/HowItWorksSection";
+import SecuritySection from "./_components/SecuritySection";
+import ImpactSection from "./_components/ImpactSection";
+import CampusSection from "./_components/CampusSection";
+import Footer from "./_components/Footer";
+
+export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
+  const t = await getTranslations({ locale, namespace: "homepage.hero" });
+  return {
+    title: `SafePlace — ${t("title")}`,
+    description: t("subtitle"),
+  };
+}
 
 export default function HomePage() {
-  const t = useTranslations('nav');
-  const tCommon = useTranslations('common');
-
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center p-24 bg-[#FAFBFF]">
-      <h1 className="text-4xl font-display font-bold text-[#1B4F72] mb-4">
-        {tCommon('welcome')}
-      </h1>
-      <nav className="flex gap-4">
-        <a href="/report" className="text-[#4A90B8] hover:underline">{t('report')}</a>
-        <a href="/consultant" className="text-[#5B8A6F] hover:underline">{t('consultant')}</a>
-        <a href="/admin" className="text-[#2C3E6B] hover:underline">{t('admin')}</a>
-      </nav>
-    </main>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <main className="flex-1">
+        <HeroSection />
+        <HowItWorksSection />
+        <SecuritySection />
+        <ImpactSection />
+        <CampusSection />
+      </main>
+      <Footer />
+    </div>
   );
 }

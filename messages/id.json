@@ -15,5 +15,57 @@
     "login": "Masuk",
     "logout": "Keluar",
     "anonymous_login": "Masuk Anonim"
+  },
+  "homepage": {
+    "navbar": {
+      "login": "Masuk",
+      "start_report": "Mulai Lapor"
+    },
+    "hero": {
+      "title": "Ruang Aman untuk Bersuara",
+      "subtitle": "Kami hadir untuk mendengarkan, mendampingi, dan melindungi. Jangan ragu untuk melaporkan kejadian yang kamu alami atau saksikan.",
+      "primary_cta": "Mulai Lapor Sekarang",
+      "secondary_cta": "Pelajari Lebih Lanjut"
+    },
+    "howItWorks": {
+      "title": "Bagaimana SafePlace Bekerja?",
+      "step1_title": "Pilih Jalur",
+      "step1_desc": "Laporkan secara anonim atau dengan akun, sesuai kenyamananmu.",
+      "step2_title": "Ceritakan Kejadianmu",
+      "step2_desc": "Isi form laporan dengan aman dan terenkripsi.",
+      "step3_title": "Dapatkan Pendampingan",
+      "step3_desc": "Konsultan kami siap mendampingi langkahmu selanjutnya."
+    },
+    "security": {
+      "title": "Keamanan & Privasi Utama",
+      "feature1_title": "Anonim Sepenuhnya",
+      "feature1_desc": "Laporkan tanpa meninggalkan jejak identitas.",
+      "feature2_title": "Data Terenkripsi",
+      "feature2_desc": "Semua data diamankan dengan enkripsi tingkat tinggi.",
+      "feature3_title": "Identitas Terlindungi",
+      "feature3_desc": "Hanya pihak berwenang yang dapat melihat identitasmu (jika diizinkan).",
+      "feature4_title": "Keluar Cepat Kapan Saja",
+      "feature4_desc": "Tombol panik tersedia untuk segera menutup halaman ini."
+    },
+    "impact": {
+      "title": "Dampak Bersama",
+      "stat1_value": "1,200+",
+      "stat1_label": "Laporan Ditangani",
+      "stat2_value": "45",
+      "stat2_label": "Kampus Bergabung",
+      "stat3_value": "150+",
+      "stat3_label": "Konsultan Aktif"
+    },
+    "campus": {
+      "title": "Jadikan Kampusmu Lebih Aman",
+      "subtitle": "Bergabunglah dengan jaringan SafePlace untuk memberikan perlindungan lebih baik bagi mahasiswa.",
+      "cta": "Daftarkan Kampus"
+    },
+    "footer": {
+      "privacy_policy": "Kebijakan Privasi",
+      "terms": "Syarat Penggunaan",
+      "contact": "Kontak Kami",
+      "rights": "Hak Cipta Dilindungi"
+    }
   }
 }

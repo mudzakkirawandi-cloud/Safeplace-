@@ -32,7 +32,7 @@ export default function ReportFormPage() {
   const [currentStep, setCurrentStep] = useState(1);
   const totalSteps = 6;
 
-  const { register, handleSubmit, watch, formState: { errors } } = useForm<FormValues>({
+  const { register, handleSubmit, watch } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     defaultValues: state.formData as FormValues
   });
@@ -92,10 +92,10 @@ export default function ReportFormPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t("step1.incident_type")}</label>
                     <div className="grid sm:grid-cols-2 gap-3">
-                      {['verbal', 'physical', 'sexual', 'digital', 'other'].map(type => (
+                      {(['verbal', 'physical', 'sexual', 'digital', 'other'] as const).map(type => (
                         <label key={type} className="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-blue-50 hover:border-[#4A90B8] transition-colors has-[:checked]:border-[#4A90B8] has-[:checked]:bg-blue-50">
                           <input type="radio" value={type} {...register("incidentType")} className="w-4 h-4 text-[#4A90B8] focus:ring-[#4A90B8]" />
-                          <span className="ml-3 text-gray-700">{t(`step1.types.${type}` as any)}</span>
+                          <span className="ml-3 text-gray-700">{t(`step1.types.${type}`)}</span>
                         </label>
                       ))}
                     </div>
@@ -157,10 +157,10 @@ export default function ReportFormPage() {
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">{t("step3.safety")}</label>
                     <div className="grid sm:grid-cols-3 gap-3">
-                      {['yes', 'no', 'unknown'].map(opt => (
+                      {(['yes', 'no', 'unknown'] as const).map(opt => (
                         <label key={opt} className="flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:bg-blue-50 transition-colors has-[:checked]:border-[#4A90B8] has-[:checked]:bg-blue-50">
                           <input type="radio" value={opt} {...register("safety")} className="w-4 h-4 text-[#4A90B8] focus:ring-[#4A90B8] mr-2" />
-                          <span className="font-medium text-gray-700">{t(`step3.safety_${opt}` as any)}</span>
+                          <span className="font-medium text-gray-700">{t(`step3.safety_${opt}`)}</span>
                         </label>
                       ))}
                     </div>

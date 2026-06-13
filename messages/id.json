@@ -95,6 +95,58 @@
       "satgas_desc": "Ingin laporan ditangani secara resmi oleh Satgas PPKS kampusmu.",
       "continue_btn": "Lanjut",
       "change_later_note": "Kamu bisa mengubah pilihan ini nanti dari dashboard."
+    },
+    "form": {
+      "title": "Formulir Pelaporan",
+      "prev_btn": "Sebelumnya",
+      "next_btn": "Lanjut",
+      "save_draft_btn": "Simpan Draft",
+      "submit_btn": "Kirim Laporan",
+      "step1": {
+        "title": "Jenis Kejadian",
+        "incident_type": "Jenis Kejadian",
+        "date": "Tanggal Kejadian",
+        "is_ongoing": "Apakah kejadian ini masih berlangsung?",
+        "types": {
+          "verbal": "Pelecehan Verbal",
+          "physical": "Pelecehan Fisik",
+          "sexual": "Kekerasan Seksual",
+          "digital": "Kekerasan Digital",
+          "other": "Lainnya"
+        }
+      },
+      "step2": {
+        "title": "Lokasi",
+        "location_detail": "Detail Lokasi (Opsional)",
+        "campus": "Kampus Terkait",
+        "out_of_campus": "Di luar kampus / Tidak terkait kampus partner"
+      },
+      "step3": {
+        "title": "Pelaku & Keamanan",
+        "relationship": "Hubungan dengan Pelaku",
+        "safety": "Apakah kamu merasa aman saat ini?",
+        "safety_yes": "Ya",
+        "safety_no": "Tidak",
+        "safety_unknown": "Tidak Tahu",
+        "emergency_warning": "Jika kamu dalam bahaya segera, hubungi Layanan Darurat 119 ext 8."
+      },
+      "step4": {
+        "title": "Ceritakan Kejadian",
+        "description": "Deskripsi Kejadian (Opsional)",
+        "desc_placeholder": "Ceritakan apa yang terjadi sesuai kenyamananmu...",
+        "optional_label": "Sepenuhnya opsional"
+      },
+      "step5": {
+        "title": "Lampiran",
+        "upload_label": "Unggah file pendukung (Opsional)",
+        "upload_desc": "Maks. 5 file (JPG, PNG, PDF, MP4, maks 10MB/file)",
+        "encryption_note": "Semua file dienkripsi secara aman dan hanya dapat diakses oleh pihak yang berwenang."
+      },
+      "step6": {
+        "title": "Ringkasan & Persetujuan",
+        "consent": "Saya menyatakan bahwa laporan ini dibuat dengan sebenar-benarnya dan menyetujui data saya diproses untuk keperluan pendampingan.",
+        "review_desc": "Mohon periksa kembali laporanmu."
+      }
     }
   }
 }

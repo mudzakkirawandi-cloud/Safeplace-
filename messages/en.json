@@ -95,6 +95,58 @@
       "satgas_desc": "Want the report handled officially by your campus PPKS Task Force.",
       "continue_btn": "Continue",
       "change_later_note": "You can change this choice later from the dashboard."
+    },
+    "form": {
+      "title": "Reporting Form",
+      "prev_btn": "Previous",
+      "next_btn": "Next",
+      "save_draft_btn": "Save Draft",
+      "submit_btn": "Submit Report",
+      "step1": {
+        "title": "Incident Type",
+        "incident_type": "Type of Incident",
+        "date": "Date of Incident",
+        "is_ongoing": "Is this incident still ongoing?",
+        "types": {
+          "verbal": "Verbal Harassment",
+          "physical": "Physical Harassment",
+          "sexual": "Sexual Violence",
+          "digital": "Digital Violence",
+          "other": "Other"
+        }
+      },
+      "step2": {
+        "title": "Location",
+        "location_detail": "Location Details (Optional)",
+        "campus": "Related Campus",
+        "out_of_campus": "Outside campus / Not related to partner campus"
+      },
+      "step3": {
+        "title": "Perpetrator & Safety",
+        "relationship": "Relationship to Perpetrator",
+        "safety": "Do you feel safe right now?",
+        "safety_yes": "Yes",
+        "safety_no": "No",
+        "safety_unknown": "I do not know",
+        "emergency_warning": "If you are in immediate danger, contact Emergency Services at 119 ext 8."
+      },
+      "step4": {
+        "title": "Tell Your Story",
+        "description": "Incident Description (Optional)",
+        "desc_placeholder": "Tell us what happened in your own time...",
+        "optional_label": "Completely optional"
+      },
+      "step5": {
+        "title": "Attachments",
+        "upload_label": "Upload supporting files (Optional)",
+        "upload_desc": "Max 5 files (JPG, PNG, PDF, MP4, max 10MB/file)",
+        "encryption_note": "All files are securely encrypted and can only be accessed by authorized personnel."
+      },
+      "step6": {
+        "title": "Review & Consent",
+        "consent": "I declare that this report is true and I agree to my data being processed for support purposes.",
+        "review_desc": "Please review your report."
+      }
     }
   }
 }

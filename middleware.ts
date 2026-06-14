@@ -49,22 +49,86 @@ export async function middleware(request: NextRequest) {
     }
   );
 
+  let user = null;
   try {
-    const { data: { user } } = await supabase.auth.getUser();
+    const { data: userData } = await supabase.auth.getUser();
+    user = userData.user;
   } catch (error) {
     console.error('Supabase auth error in middleware:', error);
   }
 
-  // Basic route protection based on session and role
-  // This is a placeholder for actual role-based routing
   const pathname = request.nextUrl.pathname;
+  
+  // Deteksi locale dari URL, default ke 'id' jika tidak ada prefix
+  const localeMatch = pathname.match(/^\/(en|id)(\/|$)/);
+  const currentLocale = localeMatch ? localeMatch[1] : 'id';
+  const pathnameWithoutLocale = localeMatch ? pathname.replace(`/${currentLocale}`, '') || '/' : pathname;
 
-  // e.g. /admin requires admin role
-  // if (pathname.includes('/admin') && !session) {
-  //   // redirect to login
-  //   const loginUrl = new URL('/id/login', request.url);
-  //   return NextResponse.redirect(loginUrl);
-  // }
+  const isAuthPage = pathnameWithoutLocale === '/login' || pathnameWithoutLocale === '/register';
+  const isRootPage = pathnameWithoutLocale === '/';
+
+  const isProtectedRoute = 
+    pathnameWithoutLocale.startsWith('/admin') || 
+    pathnameWithoutLocale.startsWith('/consultant') || 
+    pathnameWithoutLocale.startsWith('/operator') || 
+    pathnameWithoutLocale.startsWith('/satgas') || 
+    pathnameWithoutLocale.startsWith('/report');
+
+  if (user) {
+    const { data: profile } = await supabase
+      .from('users')
+      .select('role')
+      .eq('id', user.id)
+      .single();
+
+    const role = profile?.role || 'reporter';
+    
+    // Tentukan allowed prefix dan default redirect path untuk role tersebut
+    let allowedPrefix = '/report';
+    let defaultPath = '/report/start';
+
+    if (role === 'admin') {
+      allowedPrefix = '/admin';
+      defaultPath = '/admin/dashboard';
+    } else if (role === 'consultant') {
+      allowedPrefix = '/consultant';
+      defaultPath = '/consultant/dashboard';
+    } else if (role === 'operator') {
+      allowedPrefix = '/operator';
+      defaultPath = '/operator/dashboard';
+    } else if (role === 'satgas') {
+      allowedPrefix = '/satgas';
+      defaultPath = '/satgas/dashboard';
+    }
+
+    // Redirect jika user berada di auth page, root page, atau mengakses rute terlindungi yang BUKAN milik role-nya
+    if (isAuthPage || isRootPage || (isProtectedRoute && !pathnameWithoutLocale.startsWith(allowedPrefix))) {
+      if (pathnameWithoutLocale !== defaultPath) {
+        // Karena NextResponse.redirect tidak membawa cookies dari response sebelumnya (termasuk next-intl),
+        // kita menggunakan response yang ada, lalu menambahkan header Location untuk redirect dan mengubah status.
+        // Tapi cara termudah di App Router Middleware adalah mem-passing cookies ke NextResponse.redirect
+        const redirectUrl = new URL(`/${currentLocale}${defaultPath}`, request.url);
+        const redirectResponse = NextResponse.redirect(redirectUrl);
+        
+        // Salin cookies auth dari middleware intl/supabase ke redirectResponse
+        response.cookies.getAll().forEach((cookie) => {
+          redirectResponse.cookies.set(cookie.name, cookie.value);
+        });
+        
+        return redirectResponse;
+      }
+    }
+  } else if (isProtectedRoute && !isAuthPage) {
+    // Jika belum login tapi mencoba akses halaman terlindungi
+    const redirectUrl = new URL(`/${currentLocale}/login`, request.url);
+    const redirectResponse = NextResponse.redirect(redirectUrl);
+    
+    response.cookies.getAll().forEach((cookie) => {
+      redirectResponse.cookies.set(cookie.name, cookie.value);
+    });
+    
+    return redirectResponse;
+  }
 
   return response;
 }

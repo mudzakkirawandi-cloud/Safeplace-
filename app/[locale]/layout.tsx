@@ -2,6 +2,8 @@ import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import '../globals.css';
+import IdleTimer from './_components/IdleTimer';
+import PanicButton from './_components/PanicButton';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-plus-jakarta-sans' });
@@ -24,7 +26,10 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased`}>
         <NextIntlClientProvider messages={messages}>
-          {children}
+          <IdleTimer>
+            {children}
+            <PanicButton />
+          </IdleTimer>
         </NextIntlClientProvider>
       </body>
     </html>

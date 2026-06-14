@@ -9,7 +9,6 @@ import {
   Clock,
   CheckCircle2,
   ChevronRight,
-  AlertTriangle,
 } from "lucide-react";
 
 // Data dummy — di produksi fetch dari Supabase

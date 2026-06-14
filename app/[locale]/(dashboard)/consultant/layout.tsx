@@ -10,8 +10,6 @@ import {
   User,
   LogOut,
   Menu,
-  X,
-  Circle,
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";

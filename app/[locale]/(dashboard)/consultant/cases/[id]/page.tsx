@@ -51,11 +51,7 @@ const STATUS_OPTIONS = [
   { value: "done", label: "Selesai" },
 ];
 
-export default function CaseDetailPage({
-  params,
-}: {
-  params: { id: string };
-}) {
+export default function CaseDetailPage() {
   const t = useTranslations("consultant");
   const router = useRouter();
 

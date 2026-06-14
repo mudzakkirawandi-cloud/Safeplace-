@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Allow: /id/
+Allow: /en/
+Disallow: /id/admin/
+Disallow: /en/admin/
+Disallow: /id/consultant/
+Disallow: /en/consultant/
+Disallow: /id/operator/
+Disallow: /en/operator/
+Disallow: /id/satgas/
+Disallow: /en/satgas/
+Disallow: /id/report/
+Disallow: /en/report/
+
+Sitemap: https://safeplace.com/sitemap.xml

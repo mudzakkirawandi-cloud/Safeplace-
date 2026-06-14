@@ -63,6 +63,26 @@ export default function ChatWindow({
     scrollToBottom();
   }, [messages, isTyping]);
 
+  const markMessagesAsRead = useCallback(async (msgs: Message[]) => {
+    const unreadIds = msgs
+      .filter(m => !m.is_read && !isMyMessage(m))
+      .map(m => m.id);
+
+    if (unreadIds.length > 0) {
+      await supabase
+        .from('messages')
+        .update({ is_read: true })
+        .in('id', unreadIds);
+    }
+  }, [isMyMessage, supabase]);
+
+  const markSingleMessageAsRead = useCallback(async (id: string) => {
+    await supabase
+      .from('messages')
+      .update({ is_read: true })
+      .eq('id', id);
+  }, [supabase]);
+
   useEffect(() => {
     const fetchMessages = async () => {
       setLoading(true);
@@ -135,26 +155,6 @@ export default function ChatWindow({
       supabase.removeChannel(channel);
     };
   }, [reportId, currentUserId, trackingCode, isMyMessage, markMessagesAsRead, markSingleMessageAsRead, supabase]);
-
-  const markMessagesAsRead = useCallback(async (msgs: Message[]) => {
-    const unreadIds = msgs
-      .filter(m => !m.is_read && !isMyMessage(m))
-      .map(m => m.id);
-
-    if (unreadIds.length > 0) {
-      await supabase
-        .from('messages')
-        .update({ is_read: true })
-        .in('id', unreadIds);
-    }
-  }, [isMyMessage, supabase]);
-
-  const markSingleMessageAsRead = useCallback(async (id: string) => {
-    await supabase
-      .from('messages')
-      .update({ is_read: true })
-      .eq('id', id);
-  }, [supabase]);
 
   const handleTyping = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);

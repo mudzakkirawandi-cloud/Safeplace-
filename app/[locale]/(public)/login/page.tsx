@@ -32,21 +32,9 @@ export default function LoginPage() {
       }
 
       if (data.user) {
-        // Fetch user profile/role
-        const { data: profileData } = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', data.user.id)
-          .single();
-          
-        const role = profileData?.role || 'reporter';
-
-        // Auto redirect based on role (dengan locale prefix)
-        if (role === 'admin') router.push('/id/admin/dashboard');
-        else if (role === 'consultant') router.push('/id/consultant/dashboard');
-        else if (role === 'operator') router.push('/id/operator/dashboard');
-        else if (role === 'satgas') router.push('/id/satgas/dashboard');
-        else router.push('/id/report/start');
+        // Biarkan middleware.ts yang menangani pengecekan role dan redirect
+        // Menggunakan window.location.href untuk memastikan middleware berjalan secara penuh
+        window.location.href = '/';
       }
     } catch (err: unknown) {
       console.error(err);

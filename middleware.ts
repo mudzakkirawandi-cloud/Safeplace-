@@ -75,7 +75,14 @@ export async function middleware(request: NextRequest) {
     pathnameWithoutLocale.startsWith('/report');
 
   if (user) {
-    const { data: profile } = await supabase
+    // Gunakan Service Role Key untuk membypass RLS saat membaca tabel users
+    const { createClient: createSupabaseClient } = await import('@supabase/supabase-js');
+    const supabaseAdmin = createSupabaseClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.SUPABASE_SERVICE_ROLE_KEY!
+    );
+
+    const { data: profile } = await supabaseAdmin
       .from('users')
       .select('role')
       .eq('id', user.id)

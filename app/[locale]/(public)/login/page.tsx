@@ -47,9 +47,13 @@ export default function LoginPage() {
         else if (role === 'satgas') router.push('/satgas/dashboard');
         else router.push('/report/track');
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      setError(err.message || "Email atau password salah.");
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Email atau password salah.");
+      }
     } finally {
       setLoading(false);
     }

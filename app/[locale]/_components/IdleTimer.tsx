@@ -48,6 +48,12 @@ export default function IdleTimer({ children }: { children: React.ReactNode }) {
     };
   }, [lastActivity, isIdle, resetTimer]);
 
+  const handleLogout = useCallback(async () => {
+    await supabase.auth.signOut();
+    setIsIdle(false);
+    router.push("/login?reason=idle");
+  }, [supabase.auth, router]);
+
   useEffect(() => {
     let countdownInterval: NodeJS.Timeout;
     
@@ -65,13 +71,7 @@ export default function IdleTimer({ children }: { children: React.ReactNode }) {
     }
 
     return () => clearInterval(countdownInterval);
-  }, [isIdle]);
-
-  const handleLogout = async () => {
-    await supabase.auth.signOut();
-    setIsIdle(false);
-    router.push("/login?reason=idle");
-  };
+  }, [isIdle, handleLogout]);
 
   return (
     <>

@@ -2,12 +2,21 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
-import { Search, Filter, Edit3, Eye } from "lucide-react";
-import { motion } from "framer-motion";
+import { Search, Filter, Edit3, Eye, X } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { createClient } from "../../../../../lib/supabase/client";
 
 export default function SatgasCasesPage() {
   const t = useTranslations("satgas");
+  const supabase = createClient();
+
   const [search, setSearch] = useState("");
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
+  const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
+  
+  const [updateStatus, setUpdateStatus] = useState("Diterima");
+  const [updateNotes, setUpdateNotes] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const CASES = [
     { id: "1", code: "RPT-UI-0128", date: "2024-06-18", type: "Pelecehan Fisik", priority: "Urgent", status: "Laporan Baru" },
@@ -18,6 +27,39 @@ export default function SatgasCasesPage() {
   ];
 
   const filtered = CASES.filter(c => c.code.toLowerCase().includes(search.toLowerCase()) || c.type.toLowerCase().includes(search.toLowerCase()));
+
+  const openUpdateModal = (reportId: string) => {
+    setSelectedReportId(reportId);
+    setUpdateStatus("Diterima");
+    setUpdateNotes("");
+    setIsUpdateModalOpen(true);
+  };
+
+  const handleUpdateSubmit = async () => {
+    if (!selectedReportId) return;
+    setIsSubmitting(true);
+    
+    try {
+      const { error } = await supabase.from('satgas_case_updates').insert({
+        report_id: selectedReportId,
+        status: updateStatus,
+        notes: updateNotes,
+        updated_at: new Date().toISOString()
+      });
+
+      if (error) {
+        console.error("Error saving update:", error);
+        alert("Gagal menyimpan update ke database.");
+      } else {
+        alert("Status berhasil diperbarui!");
+        setIsUpdateModalOpen(false);
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <div className="p-6 space-y-6 max-w-6xl mx-auto">
@@ -95,7 +137,11 @@ export default function SatgasCasesPage() {
                     </span>
                   </td>
                   <td className="px-6 py-4 text-right space-x-2">
-                    <button className="p-2 text-[#D4AC0D] hover:bg-[#D4AC0D]/10 rounded-lg transition-colors" title={t("btn_update_status")}>
+                    <button 
+                      onClick={() => openUpdateModal(report.id)}
+                      className="p-2 text-[#D4AC0D] hover:bg-[#D4AC0D]/10 rounded-lg transition-colors" 
+                      title={t("btn_update_status")}
+                    >
                       <Edit3 size={18} />
                     </button>
                     <button className="p-2 text-[#1A5276] hover:bg-[#1A5276]/10 rounded-lg transition-colors" title={t("btn_view_details")}>
@@ -108,6 +154,75 @@ export default function SatgasCasesPage() {
           </table>
         </div>
       </div>
+
+      {/* Modal Update Status */}
+      <AnimatePresence>
+        {isUpdateModalOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsUpdateModalOpen(false)}
+              className="fixed inset-0 bg-black/40 z-40"
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-xl z-50 overflow-hidden"
+            >
+              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+                <h2 className="font-bold text-lg text-[#154360]">{t("btn_update_status")}</h2>
+                <button onClick={() => setIsUpdateModalOpen(false)} className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                  <X size={20} />
+                </button>
+              </div>
+              <div className="px-6 py-4 space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-[#1A5276] mb-1">Status Penanganan</label>
+                  <select 
+                    value={updateStatus}
+                    onChange={(e) => setUpdateStatus(e.target.value)}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50 bg-white"
+                  >
+                    <option value="Diterima">Diterima</option>
+                    <option value="Sedang Diinvestigasi">Sedang Diinvestigasi</option>
+                    <option value="Mediasi">Mediasi</option>
+                    <option value="Selesai">Selesai</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-[#1A5276] mb-1">Catatan Resmi</label>
+                  <textarea 
+                    rows={4} 
+                    value={updateNotes}
+                    onChange={(e) => setUpdateNotes(e.target.value)}
+                    placeholder="Masukkan catatan perkembangan kasus..."
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50"
+                  />
+                </div>
+              </div>
+              <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-[#EBF5FB]/30">
+                <button 
+                  onClick={() => setIsUpdateModalOpen(false)} 
+                  disabled={isSubmitting}
+                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+                >
+                  Batal
+                </button>
+                <button 
+                  onClick={handleUpdateSubmit}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-[#1A5276] hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all"
+                >
+                  {isSubmitting ? "Menyimpan..." : "Simpan Update"}
+                </button>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

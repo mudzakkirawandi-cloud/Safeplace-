@@ -303,5 +303,26 @@
     "field_max_cases": "Maks. Kasus Aktif",
     "btn_cancel": "Batal",
     "btn_send_invite": "Kirim Undangan"
+  },
+  "operator": {
+    "nav_dashboard": "Dashboard",
+    "nav_reports": "Laporan Kampus",
+    "nav_satgas_directory": "Direktori Satgas",
+    "nav_profile": "Profil Saya",
+    "nav_logout": "Keluar",
+    "dashboard_title": "Dashboard Operator",
+    "dashboard_subtitle": "Kelola dan triase laporan dari kampus Anda.",
+    "stat_campus_reports": "Total Laporan Kampus",
+    "stat_pending_triage": "Menunggu Triase",
+    "stat_escalated": "Diteruskan ke Satgas",
+    "recent_reports_title": "Laporan Masuk Terbaru",
+    "reports_title": "Daftar Laporan Kampus",
+    "table_col_code": "Kode Laporan",
+    "table_col_date": "Tanggal",
+    "table_col_type": "Jenis Kekerasan",
+    "table_col_status": "Status",
+    "table_col_action": "Aksi",
+    "btn_view_details": "Lihat Detail",
+    "btn_escalate": "Eskalasi ke Satgas"
   }
 }

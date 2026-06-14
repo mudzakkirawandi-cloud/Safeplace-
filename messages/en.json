@@ -264,5 +264,26 @@
     "field_max_cases": "Max Active Cases",
     "btn_cancel": "Cancel",
     "btn_send_invite": "Send Invitation"
+  },
+  "operator": {
+    "nav_dashboard": "Dashboard",
+    "nav_reports": "Campus Reports",
+    "nav_satgas_directory": "Task Force Directory",
+    "nav_profile": "My Profile",
+    "nav_logout": "Logout",
+    "dashboard_title": "Operator Dashboard",
+    "dashboard_subtitle": "Manage and triage reports from your campus.",
+    "stat_campus_reports": "Total Campus Reports",
+    "stat_pending_triage": "Pending Triage",
+    "stat_escalated": "Escalated to Task Force",
+    "recent_reports_title": "Recent Incoming Reports",
+    "reports_title": "Campus Report List",
+    "table_col_code": "Report Code",
+    "table_col_date": "Date",
+    "table_col_type": "Violence Type",
+    "table_col_status": "Status",
+    "table_col_action": "Action",
+    "btn_view_details": "View Details",
+    "btn_escalate": "Escalate to Task Force"
   }
 }

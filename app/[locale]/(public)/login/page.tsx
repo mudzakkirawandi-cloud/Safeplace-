@@ -41,8 +41,12 @@ export default function LoginPage() {
           
         const role = profileData?.role || 'reporter';
 
-        // Middleware will handle role-based redirection
-        router.push('/');
+        // Auto redirect based on role (dengan locale prefix)
+        if (role === 'admin') router.push('/id/admin/dashboard');
+        else if (role === 'consultant') router.push('/id/consultant/dashboard');
+        else if (role === 'operator') router.push('/id/operator/dashboard');
+        else if (role === 'satgas') router.push('/id/satgas/dashboard');
+        else router.push('/id/report/start');
       }
     } catch (err: unknown) {
       console.error(err);

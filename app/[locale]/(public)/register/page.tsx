@@ -64,7 +64,7 @@ export default function RegisterPage() {
             console.error("DB Error:", dbError);
         }
         
-        router.push('/register/verify');
+        router.push('/id/register/verify');
       }
     } catch (err: unknown) {
       console.error(err);

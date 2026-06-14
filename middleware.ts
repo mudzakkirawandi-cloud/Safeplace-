@@ -5,7 +5,7 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 const intlMiddleware = createIntlMiddleware({
   locales: ['id', 'en'],
   defaultLocale: 'id',
-  localePrefix: 'as-needed'
+  localePrefix: 'always'
 });
 
 export async function middleware(request: NextRequest) {

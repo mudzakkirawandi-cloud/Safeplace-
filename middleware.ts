@@ -56,11 +56,11 @@ export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // e.g. /admin requires admin role
-  if (pathname.includes('/admin') && !session) {
-    // redirect to login
-    const loginUrl = new URL('/id/login', request.url);
-    return NextResponse.redirect(loginUrl);
-  }
+  // if (pathname.includes('/admin') && !session) {
+  //   // redirect to login
+  //   const loginUrl = new URL('/id/login', request.url);
+  //   return NextResponse.redirect(loginUrl);
+  // }
 
   return response;
 }

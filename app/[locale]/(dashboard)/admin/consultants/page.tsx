@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "../../../../../../lib/supabase/client";
+import { createClient } from "../../../../../lib/supabase/client";
 import { Plus, Search, Filter, MoreVertical, Mail, MailWarning, UserX, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Check, Shield, AlertCircle, Loader2 } from "lucide-react";
-import { createClient } from "../../../../../../lib/supabase/client";
+import { createClient } from "../../../../../lib/supabase/client";
 
 // Mock data for token validation
 const MOCK_TOKEN_DATA = {

@@ -285,5 +285,27 @@
     "table_col_action": "Action",
     "btn_view_details": "View Details",
     "btn_escalate": "Escalate to Task Force"
+  },
+  "satgas": {
+    "nav_dashboard": "Dashboard",
+    "nav_cases": "Handled Cases",
+    "nav_campus_stats": "Campus Stats",
+    "nav_profile": "Task Force Profile",
+    "nav_logout": "Logout",
+    "dashboard_title": "Task Force Dashboard",
+    "dashboard_subtitle": "Manage violence cases escalated to the Task Force.",
+    "stat_active_cases": "Cases in Progress",
+    "stat_pending_cases": "New Reports",
+    "stat_resolved_cases": "Resolved Cases",
+    "recent_cases_title": "Recent Escalated Reports",
+    "cases_title": "Active Cases List",
+    "table_col_code": "Report Code",
+    "table_col_date": "Date Received",
+    "table_col_type": "Type",
+    "table_col_priority": "Priority",
+    "table_col_status": "Handling Status",
+    "table_col_action": "Action",
+    "btn_update_status": "Update Status",
+    "btn_view_details": "Details"
   }
 }

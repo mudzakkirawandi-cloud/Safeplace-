@@ -324,5 +324,27 @@
     "table_col_action": "Aksi",
     "btn_view_details": "Lihat Detail",
     "btn_escalate": "Eskalasi ke Satgas"
+  },
+  "satgas": {
+    "nav_dashboard": "Dashboard",
+    "nav_cases": "Kasus Ditangani",
+    "nav_campus_stats": "Statistik Kampus",
+    "nav_profile": "Profil Satgas",
+    "nav_logout": "Keluar",
+    "dashboard_title": "Dashboard Satgas PPKS",
+    "dashboard_subtitle": "Kelola kasus kekerasan yang diekskalasi ke Satgas.",
+    "stat_active_cases": "Kasus Dalam Penanganan",
+    "stat_pending_cases": "Laporan Baru",
+    "stat_resolved_cases": "Kasus Selesai",
+    "recent_cases_title": "Eskalasi Laporan Terbaru",
+    "cases_title": "Daftar Kasus Aktif",
+    "table_col_code": "Kode Laporan",
+    "table_col_date": "Tgl Masuk",
+    "table_col_type": "Jenis",
+    "table_col_priority": "Prioritas",
+    "table_col_status": "Status Penanganan",
+    "table_col_action": "Aksi",
+    "btn_update_status": "Update Status",
+    "btn_view_details": "Detail"
   }
 }

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion } from "framer-motion";
 import { Shield, Eye, EyeOff } from "lucide-react";
+import Link from "next/link";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -131,6 +132,9 @@ export default function LoginPage() {
           </form>
 
           <div className="mt-8 pt-6 border-t border-gray-100 text-center">
+            <p className="text-sm text-gray-600 mb-4">
+              Belum punya akun? <Link href="/register" className="font-bold text-[#2C3E6B] hover:text-[#4ECDC4] transition-colors">Daftar</Link>
+            </p>
             <p className="text-xs text-gray-500">
               Dengan masuk, Anda menyetujui Kebijakan Privasi dan Perlindungan Data SafePlace. Segala akses dicatat dalam Audit Log.
             </p>

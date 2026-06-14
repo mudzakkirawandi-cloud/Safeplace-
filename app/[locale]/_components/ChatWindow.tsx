@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { createClient } from "../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import { Send, Check, CheckCheck, Loader2, User as UserIcon } from "lucide-react";
@@ -32,7 +32,7 @@ export default function ChatWindow({
   consultantName,
   onEndSession
 }: ChatWindowProps) {
-  const supabase = createClient();
+  const supabase = useMemo(() => createClient(), []);
   const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
@@ -42,11 +42,11 @@ export default function ChatWindow({
   const channelRef = useRef<ReturnType<typeof supabase.channel> | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  const isMyMessage = (msg: Message) => {
+  const isMyMessage = useCallback((msg: Message) => {
     if (currentUserId && msg.sender_id === currentUserId) return true;
     if (trackingCode && msg.sender_tracking_code === trackingCode) return true;
     return false;
-  };
+  }, [currentUserId, trackingCode]);
 
   const getOtherName = () => {
     if (userRole === 'reporter') {
@@ -115,7 +115,7 @@ export default function ChatWindow({
         for (const [key, presenceInfo] of Object.entries(newState)) {
           if (key !== myKey) {
             otherIsOnline = true;
-            // @ts-ignore
+            // @ts-expect-error - typing property is not strictly defined in Presence type
             if (presenceInfo.some(p => p.typing)) {
               otherIsTyping = true;
             }
@@ -134,9 +134,9 @@ export default function ChatWindow({
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [reportId, currentUserId, trackingCode]);
+  }, [reportId, currentUserId, trackingCode, isMyMessage, markMessagesAsRead, markSingleMessageAsRead, supabase]);
 
-  const markMessagesAsRead = async (msgs: Message[]) => {
+  const markMessagesAsRead = useCallback(async (msgs: Message[]) => {
     const unreadIds = msgs
       .filter(m => !m.is_read && !isMyMessage(m))
       .map(m => m.id);
@@ -147,14 +147,14 @@ export default function ChatWindow({
         .update({ is_read: true })
         .in('id', unreadIds);
     }
-  };
+  }, [isMyMessage, supabase]);
 
-  const markSingleMessageAsRead = async (id: string) => {
+  const markSingleMessageAsRead = useCallback(async (id: string) => {
     await supabase
       .from('messages')
       .update({ is_read: true })
       .eq('id', id);
-  };
+  }, [supabase]);
 
   const handleTyping = async (e: React.ChangeEvent<HTMLInputElement>) => {
     setNewMessage(e.target.value);

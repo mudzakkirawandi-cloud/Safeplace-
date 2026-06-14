@@ -2,14 +2,12 @@
 
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import ChatWindow from "../../../_components/ChatWindow";
 import { createClient } from "../../../../../lib/supabase/client";
 import { ArrowLeft } from "lucide-react";
 import { motion } from "framer-motion";
 
 function ChatContent() {
-  const t = useTranslations("report");
   const router = useRouter();
   const searchParams = useSearchParams();
   const reportId = searchParams.get("id");

@@ -15,7 +15,7 @@ export async function middleware(request: NextRequest) {
   // 2. Setup Supabase to check session
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
+    (process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY)!,
     {
       cookies: {
         get(name: string) {
@@ -49,7 +49,11 @@ export async function middleware(request: NextRequest) {
     }
   );
 
-  const { data: { session } } = await supabase.auth.getSession();
+  try {
+    const { data: { user } } = await supabase.auth.getUser();
+  } catch (error) {
+    console.error('Supabase auth error in middleware:', error);
+  }
 
   // Basic route protection based on session and role
   // This is a placeholder for actual role-based routing

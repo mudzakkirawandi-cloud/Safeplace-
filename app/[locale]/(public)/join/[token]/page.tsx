@@ -4,7 +4,6 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { Check, Shield, AlertCircle, Loader2 } from "lucide-react";
-import { createClient } from "../../../../../lib/supabase/client";
 
 // Mock data for token validation
 const MOCK_TOKEN_DATA = {
@@ -15,8 +14,6 @@ const MOCK_TOKEN_DATA = {
 
 export default function JoinConsultantPage({ params }: { params: { token: string } }) {
   const router = useRouter();
-  const supabase = createClient();
-  const [loading, setLoading] = useState(true);
   const [validating, setValidating] = useState(true);
   const [isValid, setIsValid] = useState(false);
   const [data, setData] = useState<{ email: string; fullName: string } | null>(null);
@@ -38,7 +35,6 @@ export default function JoinConsultantPage({ params }: { params: { token: string
       setIsValid(MOCK_TOKEN_DATA.isValid);
       setData(MOCK_TOKEN_DATA);
       setValidating(false);
-      setLoading(false);
     };
 
     validateToken();

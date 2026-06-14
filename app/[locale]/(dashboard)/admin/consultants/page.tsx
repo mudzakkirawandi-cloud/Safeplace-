@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { createClient } from "../../../../../lib/supabase/client";
-import { Plus, Search, Filter, MoreVertical, Mail, MailWarning, UserX, Loader2 } from "lucide-react";
+import { Plus, Search, Filter, MoreVertical, MailWarning, Loader2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
 
@@ -12,9 +11,18 @@ const CAMPUSES = [
   { id: "2", name: "Institut Teknologi Bandung" },
 ];
 
+interface Consultant {
+  id: string;
+  full_name: string;
+  email: string;
+  type: string;
+  status: string;
+  max_cases: number;
+  active_cases: number;
+}
+
 export default function AdminConsultantsPage() {
-  const supabase = createClient();
-  const [consultants, setConsultants] = useState<any[]>([]);
+  const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [submitting, setSubmitting] = useState(false);

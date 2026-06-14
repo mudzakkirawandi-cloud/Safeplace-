@@ -25,9 +25,23 @@ const MOCK_REPLACEMENT_CONSULTANTS = [
   { id: "6", full_name: "Citra Kirana", active_cases: 1, max_cases: 8 },
 ];
 
+interface Consultant {
+  id: string;
+  full_name: string;
+  email: string;
+  whatsapp: string;
+  type: string;
+  status: string;
+  education: string;
+  experience: string;
+  campus: string;
+  max_cases: number;
+  active_cases: number;
+}
+
 export default function ConsultantDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter();
-  const [consultant, setConsultant] = useState<any>(null);
+  const [consultant, setConsultant] = useState<Consultant | null>(null);
   const [loading, setLoading] = useState(true);
   const [isArchiveModalOpen, setIsArchiveModalOpen] = useState(false);
   const [replacementId, setReplacementId] = useState("");

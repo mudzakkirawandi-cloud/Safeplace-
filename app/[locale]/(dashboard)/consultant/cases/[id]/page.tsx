@@ -3,7 +3,9 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { createClient } from "../../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import ChatWindow from "../../../../_components/ChatWindow";
 import {
   ArrowLeft,
   FileText,
@@ -61,6 +63,14 @@ export default function CaseDetailPage() {
   const [newNote, setNewNote] = useState("");
   const [notes, setNotes] = useState(CASE.notes);
   const [savingNote, setSavingNote] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const supabase = createClient();
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data?.user) setCurrentUserId(data.user.id);
+    });
+  }, [supabase.auth]);
 
   const handleSaveNote = async () => {
     if (!newNote.trim()) return;
@@ -246,16 +256,19 @@ export default function CaseDetailPage() {
             initial={{ opacity: 0, x: -12 }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: 12 }}
-            className="bg-white rounded-2xl border border-gray-100 p-8 text-center"
+            className="w-full"
           >
-            <MessageCircle
-              size={40}
-              className="text-gray-200 mx-auto mb-3"
-            />
-            <p className="text-gray-400 text-sm">{t("chat_placeholder")}</p>
-            <p className="text-xs text-gray-300 mt-1">
-              {t("chat_placeholder_sub")}
-            </p>
+            {currentUserId ? (
+              <ChatWindow 
+                reportId={CASE.id}
+                currentUserId={currentUserId}
+                userRole="consultant"
+              />
+            ) : (
+              <div className="bg-white rounded-2xl border border-gray-100 p-8 text-center text-gray-400">
+                Memuat obrolan...
+              </div>
+            )}
           </motion.div>
         )}
 

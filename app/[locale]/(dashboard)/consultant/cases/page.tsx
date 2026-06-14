@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
-import { Search, Filter, ChevronRight } from "lucide-react";
+import { Search, ChevronRight } from "lucide-react";
 
 type Priority = "urgent" | "normal" | "low";
 type Intent = "document" | "consult" | "satgas";

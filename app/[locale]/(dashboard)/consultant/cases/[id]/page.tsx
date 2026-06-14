@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { createClient } from "../../../../../lib/supabase/client";
+import { createClient } from "../../../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatWindow from "../../../../_components/ChatWindow";
 import {

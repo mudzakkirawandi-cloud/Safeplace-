@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import NotificationBell from "../../_components/NotificationBell";
 
 export default function OperatorLayout({
   children,
@@ -125,18 +126,33 @@ export default function OperatorLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar mobile */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-[#7B5EA7] text-white">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-[#8c6ebf] transition-colors"
-          >
-            <Menu size={20} className="text-white" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#F4A261]" />
-            <span className="font-bold text-sm">Operator Portal</span>
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#7B5EA7] text-white">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg hover:bg-[#8c6ebf] transition-colors"
+            >
+              <Menu size={20} className="text-white" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#F4A261]" />
+              <span className="font-bold text-sm">Operator Portal</span>
+            </div>
+          </div>
+          <div className="md:hidden">
+            <NotificationBell />
           </div>
         </div>
+
+        {/* Topbar Desktop */}
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-white border-b border-gray-100 z-10 relative shadow-sm">
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+            <div className="h-8 w-8 rounded-full bg-[#7B5EA7] text-white flex items-center justify-center font-bold text-sm">
+              OP
+            </div>
+          </div>
+        </header>
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto custom-scrollbar">

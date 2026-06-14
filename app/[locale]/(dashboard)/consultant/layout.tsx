@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
+import NotificationBell from "../../_components/NotificationBell";
 
 type OnlineStatus = "online" | "busy" | "offline";
 
@@ -215,18 +216,33 @@ export default function ConsultantLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar mobile */}
-        <div className="md:hidden flex items-center gap-3 px-4 py-3 bg-white border-b border-gray-100">
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
-          >
-            <Menu size={20} className="text-gray-600" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-2 h-2 rounded-full bg-[#5B8A6F]" />
-            <span className="font-bold text-[#1B4F72] text-sm">SafePlace</span>
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            >
+              <Menu size={20} className="text-gray-600" />
+            </button>
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#5B8A6F]" />
+              <span className="font-bold text-[#1B4F72] text-sm">SafePlace</span>
+            </div>
+          </div>
+          <div className="md:hidden text-gray-800">
+            <NotificationBell />
           </div>
         </div>
+
+        {/* Topbar Desktop */}
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-white border-b border-gray-100 z-10 relative shadow-sm">
+          <div className="flex items-center gap-4 text-gray-800">
+            <NotificationBell />
+            <div className="h-8 w-8 rounded-full bg-[#EAF3EE] text-[#5B8A6F] flex items-center justify-center font-bold text-sm">
+              KN
+            </div>
+          </div>
+        </header>
 
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">{children}</main>

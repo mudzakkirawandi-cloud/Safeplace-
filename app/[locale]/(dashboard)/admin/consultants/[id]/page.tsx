@@ -56,6 +56,8 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
   }, [params.id]);
 
   const handleArchive = async () => {
+    if (!consultant) return;
+
     if (consultant.active_cases > 0 && !replacementId) {
       alert("Pilih konsultan pengganti untuk kasus aktif!");
       return;
@@ -76,7 +78,7 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
     alert("Konsultan berhasil diarsipkan.");
   };
 
-  if (loading) {
+  if (loading || !consultant) {
     return <div className="p-6 flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#2C3E6B]" /></div>;
   }
 

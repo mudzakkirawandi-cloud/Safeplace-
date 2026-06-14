@@ -242,6 +242,27 @@
     "tab_consultants": "Consultants",
     "tab_operators": "Operators",
     "tab_satgas": "Task Force",
-    "tab_campuses": "Campuses"
+    "tab_campuses": "Campuses",
+    "consultants_title": "Consultant Management",
+    "btn_invite_consultant": "Invite New Consultant",
+    "status_active": "Active",
+    "status_invited": "Invite Sent",
+    "status_expired": "Invite Expired",
+    "status_archived": "Archived",
+    "btn_resend_invite": "Resend Invite",
+    "modal_invite_title": "Invite New Consultant",
+    "modal_invite_desc": "Fill in the details below to invite a consultant. An invitation email will be sent automatically.",
+    "field_name": "Full Name",
+    "field_email": "Email",
+    "field_phone": "WhatsApp Number",
+    "field_education": "Educational Background",
+    "field_experience": "Relevant Experience",
+    "field_type": "Consultant Type",
+    "type_volunteer": "Volunteer",
+    "type_professional": "Professional",
+    "field_campus": "Affiliated Campus (Optional)",
+    "field_max_cases": "Max Active Cases",
+    "btn_cancel": "Cancel",
+    "btn_send_invite": "Send Invitation"
   }
 }

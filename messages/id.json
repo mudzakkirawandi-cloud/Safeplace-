@@ -281,6 +281,27 @@
     "tab_consultants": "Konsultan",
     "tab_operators": "Operator",
     "tab_satgas": "Satgas",
-    "tab_campuses": "Kampus"
+    "tab_campuses": "Kampus",
+    "consultants_title": "Manajemen Konsultan",
+    "btn_invite_consultant": "Undang Konsultan Baru",
+    "status_active": "Aktif",
+    "status_invited": "Undangan Terkirim",
+    "status_expired": "Undangan Expired",
+    "status_archived": "Diarsipkan",
+    "btn_resend_invite": "Kirim Ulang Undangan",
+    "modal_invite_title": "Undang Konsultan Baru",
+    "modal_invite_desc": "Isi detail di bawah untuk mengundang konsultan. Email undangan akan dikirim secara otomatis.",
+    "field_name": "Nama Lengkap",
+    "field_email": "Email",
+    "field_phone": "Nomor WhatsApp",
+    "field_education": "Latar Belakang Pendidikan",
+    "field_experience": "Pengalaman Relevan",
+    "field_type": "Tipe Konsultan",
+    "type_volunteer": "Volunteer",
+    "type_professional": "Profesional",
+    "field_campus": "Kampus Afiliasi (Opsional)",
+    "field_max_cases": "Maks. Kasus Aktif",
+    "btn_cancel": "Batal",
+    "btn_send_invite": "Kirim Undangan"
   }
 }

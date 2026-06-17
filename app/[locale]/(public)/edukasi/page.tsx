@@ -119,7 +119,7 @@ export default function EducationPage() {
                     <div className="aspect-video w-full bg-gray-900">
                       <iframe 
                         className="w-full h-full"
-                        src={getEmbedUrl(item.url)} 
+                        src={item.url ? getEmbedUrl(item.url) : ''} 
                         title={item.title}
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
                         allowFullScreen

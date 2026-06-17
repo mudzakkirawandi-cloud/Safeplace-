@@ -291,6 +291,29 @@
       "status_in_consultation": "Konsultasi Aktif",
       "status_escalated_satgas": "Diteruskan ke Satgas",
       "status_done": "Selesai"
+    },
+    "resources": {
+      "title": "Kontak Darurat & Panduan",
+      "subtitle": "Jika kamu dalam bahaya segera, hubungi layanan darurat di bawah ini. Jangan ragu untuk meminta bantuan.",
+      "btn_call_now": "Hubungi Sekarang",
+      "btn_whatsapp": "WhatsApp",
+      "polri_title": "Polri (Polisi Republik Indonesia) 110",
+      "polri_desc": "Untuk kondisi darurat yang mengancam nyawa atau keamanan fisik secara langsung.",
+      "sapa_title": "SAPA 129 (KemenPPPA)",
+      "sapa_desc": "Sahabat Perempuan dan Anak. Layanan khusus penanganan kasus kekerasan terhadap perempuan dan anak.",
+      "wa_sapa_title": "WhatsApp SAPA 129",
+      "wa_sapa_desc": "Alternatif jika tidak memungkinkan untuk menelepon (hanya bisa chat teks).",
+      "wa_humas_title": "WhatsApp Pengaduan Humas Polri",
+      "wa_humas_desc": "Layanan pengaduan masyarakat untuk tindak pidana, termasuk kekerasan seksual.",
+      "spkt_title": "Kantor Polisi Terdekat (SPKT)",
+      "spkt_desc": "Sentra Pelayanan Kepolisian Terpadu. Datang langsung untuk membuat laporan resmi kepolisian.",
+      "spkt_btn": "Cari di Google Maps",
+      "guide_title": "Panduan Menghubungi Layanan Darurat",
+      "guide_1": "Pastikan kamu berada di tempat yang aman sebelum menelepon.",
+      "guide_2": "Sampaikan lokasi persis kejadian atau tempat kamu berada.",
+      "guide_3": "Jelaskan secara singkat apa yang sedang terjadi.",
+      "guide_4": "Jika tidak bisa bicara, gunakan layanan WhatsApp dan informasikan bahwa kamu tidak bisa menelepon.",
+      "back_to_home": "Kembali ke Beranda"
     }
   },
   "consultant": {

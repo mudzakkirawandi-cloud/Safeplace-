@@ -72,7 +72,10 @@ export async function middleware(request: NextRequest) {
     pathnameWithoutLocale.startsWith('/consultant') || 
     pathnameWithoutLocale.startsWith('/operator') || 
     pathnameWithoutLocale.startsWith('/satgas') || 
-    pathnameWithoutLocale.startsWith('/report');
+    (pathnameWithoutLocale.startsWith('/report') && 
+     !pathnameWithoutLocale.startsWith('/report/resources') &&
+     !pathnameWithoutLocale.startsWith('/report/track') &&
+     !pathnameWithoutLocale.startsWith('/report/Track'));
 
   if (user) {
     // Gunakan Service Role Key untuk membypass RLS saat membaca tabel users

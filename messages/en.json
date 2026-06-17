@@ -252,6 +252,29 @@
         "consent": "I declare that this report is true and I agree to my data being processed for support purposes.",
         "review_desc": "Please review your report."
       }
+    },
+    "resources": {
+      "title": "Emergency Contacts & Guide",
+      "subtitle": "If you are in immediate danger, please contact the emergency services below. Do not hesitate to ask for help.",
+      "btn_call_now": "Call Now",
+      "btn_whatsapp": "WhatsApp",
+      "polri_title": "Police Call Center 110",
+      "polri_desc": "For emergencies that directly threaten life or physical safety.",
+      "sapa_title": "SAPA 129",
+      "sapa_desc": "Special services for handling cases of violence against women and children.",
+      "wa_sapa_title": "WhatsApp SAPA 129",
+      "wa_sapa_desc": "Alternative if calling is not possible (text chat only).",
+      "wa_humas_title": "Police PR WhatsApp",
+      "wa_humas_desc": "Public complaint service for criminal acts, including sexual violence.",
+      "spkt_title": "Nearest Police Station",
+      "spkt_desc": "Integrated Police Service Center. Visit directly to make an official police report.",
+      "spkt_btn": "Find on Google Maps",
+      "guide_title": "Guide to Contacting Emergency Services",
+      "guide_1": "Make sure you are in a safe place before calling.",
+      "guide_2": "State the exact location of the incident or where you are.",
+      "guide_3": "Briefly explain what is happening.",
+      "guide_4": "If you cannot speak, use WhatsApp and inform them you cannot make a call.",
+      "back_to_home": "Back to Home"
     }
   },
   "consultant": {

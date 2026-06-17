@@ -153,6 +153,27 @@
     }
   },
   "report": {
+    "dashboard": {
+      "title": "Halo, {name}",
+      "subtitle": "Ini adalah dashboard pelaporanmu. Kamu bisa memantau status laporan dan membuat laporan baru.",
+      "btn_new_report": "Buat Laporan Baru",
+      "btn_track_anon": "Lacak Laporan Anonim",
+      "stat_total": "Total Laporan",
+      "stat_active": "Laporan Aktif",
+      "stat_done": "Laporan Selesai",
+      "active_reports_title": "Laporan Aktif",
+      "history_title": "Riwayat Laporan",
+      "continue_chat": "Lanjut Chat",
+      "empty_state": "Kamu belum memiliki laporan.",
+      "status_received": "Diterima",
+      "status_in_review": "Ditinjau",
+      "status_in_consultation": "Konsultasi",
+      "status_escalated_satgas": "Satgas",
+      "status_done": "Selesai",
+      "status_closed": "Ditutup",
+      "notifications_title": "Notifikasi Terbaru",
+      "notifications_empty": "Tidak ada notifikasi"
+    },
     "start": {
       "title": "Pilih Jalur Pelaporan",
       "subtitle": "Keduanya sama-sama aman.",

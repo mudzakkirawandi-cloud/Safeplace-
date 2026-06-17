@@ -153,6 +153,27 @@
     }
   },
   "report": {
+    "dashboard": {
+      "title": "Hello, {name}",
+      "subtitle": "This is your reporting dashboard. You can monitor report statuses and create new reports.",
+      "btn_new_report": "Create New Report",
+      "btn_track_anon": "Track Anonymous Report",
+      "stat_total": "Total Reports",
+      "stat_active": "Active Reports",
+      "stat_done": "Completed Reports",
+      "active_reports_title": "Active Reports",
+      "history_title": "Report History",
+      "continue_chat": "Continue Chat",
+      "empty_state": "You don't have any reports yet.",
+      "status_received": "Received",
+      "status_in_review": "In Review",
+      "status_in_consultation": "Consultation",
+      "status_escalated_satgas": "Task Force",
+      "status_done": "Done",
+      "status_closed": "Closed",
+      "notifications_title": "Recent Notifications",
+      "notifications_empty": "No notifications"
+    },
     "start": {
       "title": "Choose Reporting Path",
       "subtitle": "Both are equally secure.",

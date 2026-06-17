@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
-import { createClient } from "../../../../lib/supabase/client";
+import { createClient } from "../../../../../lib/supabase/client";
 import { 
   Bell, 
   LogOut, 

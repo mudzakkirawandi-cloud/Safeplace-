@@ -98,15 +98,15 @@ export async function POST(req: NextRequest) {
 
       // 2. Fallback to Groq
       const groqMessages = [
-        { role: 'system', content: systemInstruction },
+        { role: 'system' as const, content: systemInstruction },
         ...messages.map((msg: { role: string; content: string }) => ({
-          role: msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user',
+          role: (msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user') as 'assistant' | 'user',
           content: msg.content
         }))
       ];
 
       const chatCompletion = await groq.chat.completions.create({
-        messages: groqMessages as any,
+        messages: groqMessages,
         model: 'llama3-8b-8192',
         temperature: 0.7,
         max_tokens: 1024,

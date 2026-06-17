@@ -67,6 +67,26 @@
       "subtitle": "Bergabunglah dengan jaringan SafePlace untuk memberikan perlindungan lebih baik bagi mahasiswa.",
       "cta": "Daftarkan Kampus"
     },
+    "demo": {
+      "title": "Proses Pelaporan yang Mudah",
+      "subtitle": "Lihat bagaimana SafePlace membantu kamu melaporkan dengan aman dan cepat.",
+      "step_1": "Cari SafePlace",
+      "step_2": "Buka Beranda",
+      "step_3": "Klik Mulai Lapor",
+      "step_4": "Pilih Jalur (Anonim/Akun)",
+      "step_5": "Isi Form & Selesai"
+    },
+    "collaboration": {
+      "title": "Dipercaya & Berkolaborasi Bersama"
+    },
+    "emergency": {
+      "title": "Butuh Bantuan Segera?",
+      "view_all": "Lihat Semua Layanan Darurat",
+      "polri": "Call Center Polri: 110",
+      "sapa": "Layanan SAPA: 129",
+      "wa_sapa": "WhatsApp SAPA: 0821-2600-129",
+      "wa_humas": "WA Humas Polri: 0896-8233-3678"
+    },
     "footer": {
       "tagline": "Ruang aman untuk bersuara, melaporkan, dan mendapatkan pendampingan kekerasan seksual.",
       "platform": "Platform",

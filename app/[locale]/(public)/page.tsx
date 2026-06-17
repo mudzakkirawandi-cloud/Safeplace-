@@ -2,9 +2,12 @@ import { getTranslations } from "next-intl/server";
 import Navbar from "./_components/Navbar";
 import HeroSection from "./_components/HeroSection";
 import HowItWorksSection from "./_components/HowItWorksSection";
+import DemoAnimationSection from "./_components/DemoAnimationSection";
 import SecuritySection from "./_components/SecuritySection";
 import ImpactSection from "./_components/ImpactSection";
 import CampusSection from "./_components/CampusSection";
+import CollaborationSection from "./_components/CollaborationSection";
+import EmergencySection from "./_components/EmergencySection";
 import Footer from "./_components/Footer";
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -22,9 +25,12 @@ export default function HomePage() {
       <main className="flex-1">
         <HeroSection />
         <HowItWorksSection />
+        <DemoAnimationSection />
         <SecuritySection />
         <ImpactSection />
         <CampusSection />
+        <CollaborationSection />
+        <EmergencySection />
       </main>
       <Footer />
     </div>

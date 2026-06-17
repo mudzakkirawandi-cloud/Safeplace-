@@ -67,6 +67,26 @@
       "subtitle": "Join the SafePlace network to provide better protection for students.",
       "cta": "Register Campus"
     },
+    "demo": {
+      "title": "Easy Reporting Process",
+      "subtitle": "See how SafePlace helps you report safely and quickly.",
+      "step_1": "Search SafePlace",
+      "step_2": "Open Homepage",
+      "step_3": "Click Start Report",
+      "step_4": "Choose Path (Anonymous/Account)",
+      "step_5": "Fill Form & Done"
+    },
+    "collaboration": {
+      "title": "Trusted & Collaborating Together"
+    },
+    "emergency": {
+      "title": "Need Immediate Help?",
+      "view_all": "View All Emergency Services",
+      "polri": "Police Call Center: 110",
+      "sapa": "SAPA Services: 129",
+      "wa_sapa": "WhatsApp SAPA: +62 821-2600-129",
+      "wa_humas": "Police PR WhatsApp: +62 896-8233-3678"
+    },
     "footer": {
       "tagline": "A safe space to speak up, report, and get support for sexual violence.",
       "platform": "Platform",

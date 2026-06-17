@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../../../lib/supabase/client";
+import { User } from "@supabase/supabase-js";
 import { 
   Bell, 
   LogOut, 
@@ -36,12 +37,17 @@ interface Notification {
   created_at: string;
 }
 
+interface UserProfile extends User {
+  full_name?: string;
+  role?: string;
+}
+
 export default function ReportDashboardPage() {
   const t = useTranslations("report.dashboard");
   const router = useRouter();
   const supabase = createClient();
 
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);

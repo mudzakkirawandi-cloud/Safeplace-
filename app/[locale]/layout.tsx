@@ -6,6 +6,7 @@ import IdleTimer from './_components/IdleTimer';
 import PanicButton from './_components/PanicButton';
 import AIAgentWidget from '@/components/ai/AIAgentWidget';
 
+
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-plus-jakarta-sans' });
 

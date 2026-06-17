@@ -137,6 +137,14 @@ export default function ReportDashboardPage() {
     router.push("/");
   };
 
+  const markAsRead = async (notifId: string) => {
+    // Optimistic UI update
+    setNotifications(prev => prev.map(n => n.id === notifId ? { ...n, is_read: true } : n));
+    
+    // Update in database
+    await supabase.from("notifications").update({ is_read: true }).eq("id", notifId);
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case "diterima": return "bg-yellow-100 text-yellow-700 border-yellow-200";
@@ -207,7 +215,11 @@ export default function ReportDashboardPage() {
                         </div>
                       ) : (
                         notifications.map((notif) => (
-                          <div key={notif.id} className={`p-4 border-b border-gray-50 text-sm ${notif.is_read ? 'bg-white' : 'bg-blue-50/50'}`}>
+                          <div 
+                            key={notif.id} 
+                            onClick={() => !notif.is_read && markAsRead(notif.id)}
+                            className={`p-4 border-b border-gray-50 text-sm transition-colors ${notif.is_read ? 'bg-white' : 'bg-blue-50/50 hover:bg-blue-50 cursor-pointer'}`}
+                          >
                             <p className="font-semibold text-gray-800 mb-1">{notif.title}</p>
                             <p className="text-gray-600 mb-2">{notif.message}</p>
                             <p className="text-xs text-gray-400">

@@ -31,10 +31,7 @@ export default function AIAgentWidget() {
   const isDashboard = pathname?.match(/\/(admin|consultant|operator|satgas)/);
   const isAIPage = pathname?.includes('/ai-assistant');
   
-  if (isDashboard || isAIPage) {
-    return null;
-  }
-  
+
   // Load from sessionStorage on mount
   useEffect(() => {
     const saved = sessionStorage.getItem("safeplace_ai_messages");
@@ -149,6 +146,10 @@ export default function AIAgentWidget() {
       handleSend();
     }
   };
+
+  if (isDashboard || isAIPage) {
+    return null;
+  }
 
   return (
     <div className="fixed bottom-[88px] right-6 z-[60] sm:bottom-6 sm:right-6">

@@ -112,7 +112,7 @@ export default function AIAgentWidget() {
           {
             id: uuidv4(),
             role: "assistant",
-            content: data.response,
+            content: data.response || data.reply,
           },
         ]);
       } else {

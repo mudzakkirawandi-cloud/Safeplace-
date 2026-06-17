@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "../../../../../lib/supabase/client";
 import { Plus, Edit2, Trash2, X, PlayCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 

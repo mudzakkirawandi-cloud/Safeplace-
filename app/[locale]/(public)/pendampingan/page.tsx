@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { createClient } from "@/lib/supabase/client";
+import { createClient } from "../../../../lib/supabase/client";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
 import { Users, Globe, MapPin, CheckCircle } from "lucide-react";

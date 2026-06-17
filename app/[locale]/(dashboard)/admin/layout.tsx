@@ -16,6 +16,7 @@ import {
   LogOut,
   Menu,
   Shield,
+  BookOpen
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -46,6 +47,7 @@ export default function AdminLayout({
     { href: "/admin/operators", icon: Shield, labelKey: "nav_operators" },
     { href: "/admin/satgas", icon: ShieldAlert, labelKey: "nav_satgas" },
     { href: "/admin/campuses", icon: Building, labelKey: "nav_campuses" },
+    { href: "/admin/education", icon: BookOpen, labelKey: "nav_education" },
     { href: "/admin/settings", icon: Settings, labelKey: "nav_settings" },
     { href: "/admin/export", icon: Download, labelKey: "nav_export" },
     { href: "/admin/audit", icon: Activity, labelKey: "nav_audit_log" },

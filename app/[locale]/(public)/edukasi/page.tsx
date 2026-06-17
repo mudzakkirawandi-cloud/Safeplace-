@@ -1,37 +1,53 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { createClient } from "../../../../lib/supabase/client";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
 import { PlayCircle, FileText, ExternalLink, Download } from "lucide-react";
 
+export interface EducationContent {
+  id: string;
+  title: string;
+  description?: string;
+  category: string;
+  content_type: string;
+  url?: string;
+  thumbnail_url?: string;
+  file_path?: string;
+  display_order: number;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export default function EducationPage() {
   const t = useTranslations("homepage.education");
   const supabase = createClient();
   
-  const [materials, setMaterials] = useState<any[]>([]);
+  const [materials, setMaterials] = useState<EducationContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("all");
 
-  useEffect(() => {
-    async function fetchContent() {
-      const { data, error } = await supabase
-        .from("education_content")
-        .select("*")
-        .eq("status", "published")
-        .order("display_order", { ascending: true })
-        .order("created_at", { ascending: false });
+  const fetchContent = useCallback(async () => {
+    const { data } = await supabase
+      .from("education_content")
+      .select("*")
+      .eq("status", "published")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
 
-      if (data) {
-        setMaterials(data);
-      }
-      setLoading(false);
+    if (data) {
+      setMaterials(data as EducationContent[]);
     }
+    setLoading(false);
+  }, [supabase]);
 
+  useEffect(() => {
     fetchContent();
-  }, []);
+  }, [fetchContent]);
 
   const categories = [
     { id: "all", label: t("filter_all") },
@@ -111,8 +127,8 @@ export default function EducationPage() {
                     </div>
                   )}
                   {(item.content_type === "pdf" || item.content_type === "article" || item.content_type === "link") && item.thumbnail_url && (
-                    <div className="aspect-video w-full bg-gray-100 overflow-hidden">
-                      <img src={item.thumbnail_url} alt={item.title} className="w-full h-full object-cover" />
+                    <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
+                      <Image unoptimized src={item.thumbnail_url} alt={item.title} fill className="object-cover" />
                     </div>
                   )}
                   

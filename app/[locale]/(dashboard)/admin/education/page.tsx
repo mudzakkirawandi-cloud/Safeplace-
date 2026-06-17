@@ -1,19 +1,33 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { createClient } from "../../../../../lib/supabase/client";
 import { Plus, Edit2, Trash2, X, PlayCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+export interface EducationContent {
+  id: string;
+  title: string;
+  description?: string;
+  category: string;
+  content_type: string;
+  url?: string;
+  thumbnail_url?: string;
+  display_order: number;
+  status: string;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export default function AdminEducationPage() {
   const t = useTranslations("admin");
   const supabase = createClient();
   
-  const [contents, setContents] = useState<any[]>([]);
+  const [contents, setContents] = useState<EducationContent[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingContent, setEditingContent] = useState<any>(null);
+  const [editingContent, setEditingContent] = useState<EducationContent | null>(null);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -27,25 +41,25 @@ export default function AdminEducationPage() {
     status: "draft"
   });
 
-  const fetchContents = async () => {
+  const fetchContents = useCallback(async () => {
     setLoading(true);
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("education_content")
       .select("*")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
 
     if (data) {
-      setContents(data);
+      setContents(data as EducationContent[]);
     }
     setLoading(false);
-  };
+  }, [supabase]);
 
   useEffect(() => {
     fetchContents();
-  }, []);
+  }, [fetchContents]);
 
-  const openModal = (content: any = null) => {
+  const openModal = (content: EducationContent | null = null) => {
     if (content) {
       setEditingContent(content);
       setFormData({

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { createClient } from "../../../../lib/supabase/client";
 import Navbar from "../_components/Navbar";
@@ -8,32 +9,51 @@ import Footer from "../_components/Footer";
 import { Users, Globe, MapPin, CheckCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
 
+export interface UserMetadata {
+  avatar_url?: string;
+  show_public?: boolean;
+  is_online?: boolean;
+  specialization?: string;
+  bio?: string;
+}
+
+export interface Consultant {
+  id: string;
+  full_name: string;
+  email: string;
+  role: string;
+  is_active: boolean;
+  show_public?: boolean;
+  metadata?: UserMetadata;
+}
+
 export default function ConsultationPage() {
   const t = useTranslations("consultation");
   const router = useRouter();
   const supabase = createClient();
   
-  const [consultants, setConsultants] = useState<any[]>([]);
+  const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
 
-  useEffect(() => {
-    async function fetchConsultants() {
-      const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("role", "consultant")
-        .eq("is_active", true);
+  const fetchConsultants = useCallback(async () => {
+    const { data } = await supabase
+      .from("users")
+      .select("*")
+      .eq("role", "consultant")
+      .eq("is_active", true);
 
-      if (data) {
-        const publicConsultants = data.filter(c => c.show_public === true || c.metadata?.show_public === true);
-        setConsultants(publicConsultants);
-      }
-      setLoading(false);
+    if (data) {
+      const typedData = data as Consultant[];
+      const publicConsultants = typedData.filter(c => c.show_public === true || c.metadata?.show_public === true);
+      setConsultants(publicConsultants);
     }
+    setLoading(false);
+  }, [supabase]);
 
+  useEffect(() => {
     fetchConsultants();
-  }, []);
+  }, [fetchConsultants]);
 
   const filteredConsultants = activeFilter === "all" 
     ? consultants 
@@ -115,11 +135,15 @@ export default function ConsultationPage() {
                 <div key={consultant.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col p-6 group">
                   <div className="flex items-start gap-4 mb-4">
                     {consultant.metadata?.avatar_url ? (
-                      <img 
-                        src={consultant.metadata.avatar_url} 
-                        alt={consultant.full_name} 
-                        className="w-16 h-16 rounded-full object-cover border-2 border-gray-100"
-                      />
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-100 flex-shrink-0">
+                        <Image 
+                          unoptimized 
+                          src={consultant.metadata.avatar_url} 
+                          alt={consultant.full_name} 
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
                     ) : (
                       <div className="w-16 h-16 rounded-full bg-[#5B8A6F] flex items-center justify-center text-white font-bold text-xl border-2 border-gray-100">
                         {getInitials(consultant.full_name)}

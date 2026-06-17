@@ -490,6 +490,13 @@
     "contact_human": "Hubungi Konsultan Manusia →",
     "input_placeholder": "Ketik pesan di sini...",
     "error_unavailable": "AI sedang tidak tersedia, coba beberapa saat lagi",
-    "greeting": "Halo! Saya adalah Asisten AI SafePlace. Ada yang bisa saya bantu?"
+    "greeting": "Halo! Saya adalah Asisten AI SafePlace. Ada yang bisa saya bantu?",
+    "quick_actions_title": "Aksi Cepat",
+    "qa_report_start": "Mulai Laporan",
+    "qa_report_track": "Lacak Laporan",
+    "qa_consultant": "Cari Konsultan",
+    "qa_education": "Materi Edukasi",
+    "qa_emergency": "Nomor Darurat",
+    "page_subtitle": "Ceritakan keluhan Anda pada asisten kami untuk mendapatkan panduan cepat."
   }
 }

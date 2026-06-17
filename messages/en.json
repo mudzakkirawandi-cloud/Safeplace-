@@ -451,6 +451,13 @@
     "contact_human": "Contact Human Consultant →",
     "input_placeholder": "Type a message here...",
     "error_unavailable": "AI is currently unavailable, please try again later",
-    "greeting": "Hello! I am the SafePlace AI Assistant. How can I help you?"
+    "greeting": "Hello! I am the SafePlace AI Assistant. How can I help you?",
+    "quick_actions_title": "Quick Actions",
+    "qa_report_start": "Start Report",
+    "qa_report_track": "Track Report",
+    "qa_consultant": "Find Consultant",
+    "qa_education": "Educational Materials",
+    "qa_emergency": "Emergency Contacts",
+    "page_subtitle": "Tell our assistant about your concerns to get quick guidance."
   }
 }

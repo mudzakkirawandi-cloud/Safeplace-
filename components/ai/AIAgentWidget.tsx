@@ -5,6 +5,7 @@ import { useTranslations, useLocale } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Bot, X, Send, User } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { v4 as uuidv4 } from "uuid";
 
 type Message = {
@@ -25,6 +26,15 @@ export default function AIAgentWidget() {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
+  // Hide widget in dashboards and full page ai assistant
+  const pathname = usePathname();
+  const isDashboard = pathname?.match(/\/(admin|consultant|operator|satgas)/);
+  const isAIPage = pathname?.includes('/ai-assistant');
+  
+  if (isDashboard || isAIPage) {
+    return null;
+  }
+  
   // Load from sessionStorage on mount
   useEffect(() => {
     const saved = sessionStorage.getItem("safeplace_ai_messages");

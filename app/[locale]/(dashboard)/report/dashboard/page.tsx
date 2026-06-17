@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import LogoutConfirmModal from "../../../_components/LogoutConfirmModal";
 
 interface Report {
   id: string;
@@ -52,6 +53,8 @@ export default function ReportDashboardPage() {
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
     const fetchUserAndData = async () => {
@@ -124,10 +127,14 @@ export default function ReportDashboardPage() {
     fetchUserAndData();
   }, [router, supabase]);
 
-  const handleLogout = async () => {
-    // We will replace this with LogoutConfirmModal later in Phase 13 Task 3
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
     await supabase.auth.signOut();
-    router.push("/id");
+    router.push("/");
   };
 
   const getStatusColor = (status: string) => {
@@ -216,7 +223,7 @@ export default function ReportDashboardPage() {
             </div>
             
             <button 
-              onClick={handleLogout}
+              onClick={handleLogoutClick}
               className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
             >
               <LogOut size={16} />
@@ -356,6 +363,13 @@ export default function ReportDashboardPage() {
           </section>
         </div>
       </main>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        isLoggingOut={isLoggingOut}
+      />
     </div>
   );
 }

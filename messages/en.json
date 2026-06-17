@@ -14,7 +14,11 @@
   "auth": {
     "login": "Login",
     "logout": "Logout",
-    "anonymous_login": "Anonymous Login"
+    "anonymous_login": "Anonymous Login",
+    "logout_confirm_title": "Confirm Logout",
+    "logout_confirm_desc": "Are you sure you want to log out? You will need to log in again to access your dashboard.",
+    "logout_cancel": "Cancel",
+    "logout_confirm": "Yes, Logout"
   },
   "homepage": {
     "navbar": {

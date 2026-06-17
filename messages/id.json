@@ -14,7 +14,11 @@
   "auth": {
     "login": "Masuk",
     "logout": "Keluar",
-    "anonymous_login": "Masuk Anonim"
+    "anonymous_login": "Masuk Anonim",
+    "logout_confirm_title": "Konfirmasi Keluar",
+    "logout_confirm_desc": "Apakah kamu yakin ingin keluar? Kamu perlu masuk kembali untuk mengakses dashboard.",
+    "logout_cancel": "Batal",
+    "logout_confirm": "Ya, Keluar"
   },
   "homepage": {
     "navbar": {

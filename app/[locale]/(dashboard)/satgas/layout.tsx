@@ -14,6 +14,7 @@ import {
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
+import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
 
 export default function SatgasLayout({
   children,
@@ -26,8 +27,15 @@ export default function SatgasLayout({
   const supabase = createClient();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
     await supabase.auth.signOut();
     router.push("/");
   };
@@ -82,7 +90,7 @@ export default function SatgasLayout({
       {/* Logout */}
       <div className="px-3 py-4 border-t border-[#2471A3]">
         <button
-          onClick={handleLogout}
+          onClick={handleLogoutClick}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-all"
         >
           <LogOut size={18} />
@@ -159,6 +167,13 @@ export default function SatgasLayout({
           {children}
         </main>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        isLoggingOut={isLoggingOut}
+      />
     </div>
   );
 }

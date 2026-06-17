@@ -14,6 +14,7 @@ import {
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
+import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
 
 type OnlineStatus = "online" | "busy" | "offline";
 
@@ -36,6 +37,8 @@ export default function ConsultantLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [status, setStatus] = useState<OnlineStatus>("online");
   const [statusDropdown, setStatusDropdown] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleStatusChange = async (newStatus: OnlineStatus) => {
     setStatus(newStatus);
@@ -44,7 +47,12 @@ export default function ConsultantLayout({
     // await supabase.from("users").update({ online_status: newStatus }).eq("id", userId);
   };
 
-  const handleLogout = async () => {
+  const handleLogoutClick = () => {
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
     await supabase.auth.signOut();
     router.push("/");
   };
@@ -172,7 +180,7 @@ export default function ConsultantLayout({
       {/* Logout */}
       <div className="px-3 py-4 border-t border-gray-100">
         <button
-          onClick={handleLogout}
+          onClick={handleLogoutClick}
           className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all"
         >
           <LogOut size={18} />
@@ -247,6 +255,13 @@ export default function ConsultantLayout({
         {/* Page content */}
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        isLoggingOut={isLoggingOut}
+      />
     </div>
   );
 }

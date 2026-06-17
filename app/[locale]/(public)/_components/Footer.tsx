@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Shield, Phone, MessageCircle, Instagram, Twitter, Mail } from "lucide-react";
+import { Shield, Phone, MessageCircle, Camera, Globe, Mail } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
@@ -26,10 +26,10 @@ export default function Footer() {
             </p>
             <div className="flex items-center gap-4 text-gray-400">
               <a href="#" className="hover:text-[#1B4F72] transition-colors" aria-label="Instagram">
-                <Instagram size={20} />
+                <Camera size={20} />
               </a>
               <a href="#" className="hover:text-[#1B4F72] transition-colors" aria-label="Twitter">
-                <Twitter size={20} />
+                <Globe size={20} />
               </a>
               <a href="#" className="hover:text-[#1B4F72] transition-colors" aria-label="Email">
                 <Mail size={20} />

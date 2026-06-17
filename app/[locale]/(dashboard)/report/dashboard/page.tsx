@@ -47,7 +47,7 @@ export default function ReportDashboardPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [user, setUser] = useState<UserProfile | null>(null);
+  const [user, setUser] = useState<UserProfile | null>(null); // State for current user
   const [reports, setReports] = useState<Report[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);

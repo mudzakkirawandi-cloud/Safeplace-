@@ -18,6 +18,12 @@
   },
   "homepage": {
     "navbar": {
+      "home": "Beranda",
+      "report": "Laporkan",
+      "consultation": "Pendampingan",
+      "education": "Edukasi",
+      "community": "Komunitas",
+      "about": "Tentang",
       "login": "Masuk",
       "start_report": "Mulai Lapor"
     },
@@ -62,10 +68,27 @@
       "cta": "Daftarkan Kampus"
     },
     "footer": {
+      "tagline": "Ruang aman untuk bersuara, melaporkan, dan mendapatkan pendampingan kekerasan seksual.",
+      "platform": "Platform",
+      "nav_home": "Beranda",
+      "nav_report": "Laporkan",
+      "nav_consultation": "Pendampingan",
+      "nav_education": "Edukasi",
+      "community": "Komunitas",
+      "forum": "Forum",
+      "categories": "Kategori",
+      "moderation": "Moderasi",
+      "emergency": "Bantuan Darurat",
+      "emergency_polri": "Polri: 110",
+      "emergency_sapa": "SAPA: 129",
+      "emergency_wa": "WA SAPA: 0821-2600-129",
+      "legal": "Legal",
       "privacy_policy": "Kebijakan Privasi",
       "terms": "Syarat Penggunaan",
+      "data_security": "Keamanan Data",
       "contact": "Kontak Kami",
-      "rights": "Hak Cipta Dilindungi"
+      "rights": "Hak Cipta Dilindungi",
+      "made_with": "Dibuat dengan ❤️ untuk Indonesia yang lebih aman"
     }
   },
   "report": {

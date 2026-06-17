@@ -18,6 +18,12 @@
   },
   "homepage": {
     "navbar": {
+      "home": "Home",
+      "report": "Report",
+      "consultation": "Consultation",
+      "education": "Education",
+      "community": "Community",
+      "about": "About",
       "login": "Log In",
       "start_report": "Start Report"
     },
@@ -62,10 +68,27 @@
       "cta": "Register Campus"
     },
     "footer": {
+      "tagline": "A safe space to speak up, report, and get support for sexual violence.",
+      "platform": "Platform",
+      "nav_home": "Home",
+      "nav_report": "Report",
+      "nav_consultation": "Consultation",
+      "nav_education": "Education",
+      "community": "Community",
+      "forum": "Forum",
+      "categories": "Categories",
+      "moderation": "Moderation",
+      "emergency": "Emergency Help",
+      "emergency_polri": "Police: 110",
+      "emergency_sapa": "SAPA: 129",
+      "emergency_wa": "WA SAPA: 0821-2600-129",
+      "legal": "Legal",
       "privacy_policy": "Privacy Policy",
       "terms": "Terms of Use",
+      "data_security": "Data Security",
       "contact": "Contact Us",
-      "rights": "All Rights Reserved"
+      "rights": "All Rights Reserved",
+      "made_with": "Made with ❤️ for a safer Indonesia"
     }
   },
   "report": {

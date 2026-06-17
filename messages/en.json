@@ -445,5 +445,12 @@
     "table_col_action": "Action",
     "btn_update_status": "Update Status",
     "btn_view_details": "Details"
+  },
+  "ai_agent": {
+    "title": "SafePlace AI Assistant",
+    "contact_human": "Contact Human Consultant →",
+    "input_placeholder": "Type a message here...",
+    "error_unavailable": "AI is currently unavailable, please try again later",
+    "greeting": "Hello! I am the SafePlace AI Assistant. How can I help you?"
   }
 }

@@ -4,6 +4,7 @@ import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import '../globals.css';
 import IdleTimer from './_components/IdleTimer';
 import PanicButton from './_components/PanicButton';
+import AIAgentWidget from '@/components/ai/AIAgentWidget';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
 const plusJakartaSans = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-plus-jakarta-sans' });
@@ -66,6 +67,7 @@ export default async function LocaleLayout({
         <NextIntlClientProvider messages={messages}>
           <IdleTimer>
             {children}
+            <AIAgentWidget />
             <PanicButton />
           </IdleTimer>
         </NextIntlClientProvider>

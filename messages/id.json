@@ -484,5 +484,12 @@
     "table_col_action": "Aksi",
     "btn_update_status": "Update Status",
     "btn_view_details": "Detail"
+  },
+  "ai_agent": {
+    "title": "AI Assistant SafePlace",
+    "contact_human": "Hubungi Konsultan Manusia →",
+    "input_placeholder": "Ketik pesan di sini...",
+    "error_unavailable": "AI sedang tidak tersedia, coba beberapa saat lagi",
+    "greeting": "Halo! Saya adalah Asisten AI SafePlace. Ada yang bisa saya bantu?"
   }
 }

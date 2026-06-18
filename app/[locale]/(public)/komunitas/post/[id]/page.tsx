@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations, useLocale } from "next-intl";
-import Navbar from "../../../../_components/Navbar";
-import Footer from "../../../../_components/Footer";
+import Navbar from "../../../_components/Navbar";
+import Footer from "../../../_components/Footer";
 import { createClient } from "@/lib/supabase/client";
 import { motion } from "framer-motion";
 import { 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
 import { motion, AnimatePresence } from "framer-motion";
@@ -30,10 +30,10 @@ type Post = {
 
 export default function CommunityPage() {
   const t = useTranslations("community_page");
+  const locale = useLocale();
   const supabase = createClient();
 
   const [activeTab, setActiveTab] = useState("latest");
-  const [activeCategory, setActiveCategory] = useState("all");
   const [posts, setPosts] = useState<Post[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -60,10 +60,6 @@ export default function CommunityPage() {
     setIsLoading(true);
     let query = supabase.from("community_posts").select("*").eq("status", "published");
 
-    if (activeCategory !== "all") {
-      query = query.eq("category", activeCategory);
-    }
-
     if (activeTab === "latest") {
       query = query.order("created_at", { ascending: false });
     } else {
@@ -81,7 +77,7 @@ export default function CommunityPage() {
   useEffect(() => {
     fetchPosts();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, activeCategory]);
+  }, [activeTab]);
 
   const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -151,7 +147,7 @@ export default function CommunityPage() {
                       key={cat.id}
                       href={cat.id === "all" ? `/${locale}/komunitas` : `/${locale}/komunitas/${cat.id}`}
                       className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                        activeCategory === cat.id
+                        cat.id === "all"
                           ? "bg-[#1B4F72]/10 text-[#1B4F72]"
                           : "text-gray-600 hover:bg-gray-50"
                       }`}

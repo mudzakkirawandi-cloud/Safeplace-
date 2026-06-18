@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { GoogleGenerativeAI } from '@google/generative-ai';
-import Groq from 'groq-sdk';
+
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
@@ -10,8 +9,7 @@ if (process.env.NODE_ENV !== 'production') {
   console.log('[AI Agent] GROQ_API_KEY exists:', !!GROQ_API_KEY);
 }
 
-const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
-const groq = new Groq({ apiKey: GROQ_API_KEY });
+
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -86,22 +84,38 @@ export async function POST(req: NextRequest) {
     const systemInstruction = isEnglish ? SYSTEM_PROMPT_EN : SYSTEM_PROMPT_ID;
 
     try {
-      // 1. Try Gemini first
-      const model = genAI.getGenerativeModel({
-        model: 'gemini-1.5-flash',
-        systemInstruction,
+      // 1. Try Gemini REST API
+      const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+      
+      const geminiContents = messages.map((msg: { role: string; content: string }) => ({
+        role: msg.role === 'assistant' || msg.role === 'model' ? 'model' : 'user',
+        parts: [{ text: msg.content }]
+      }));
+
+      const geminiBody = {
+        system_instruction: {
+          parts: [{ text: systemInstruction }]
+        },
+        contents: geminiContents
+      };
+
+      const geminiResponse = await fetch(geminiUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(geminiBody)
       });
 
-      // Format messages for Gemini (last message is the prompt, previous are history)
-      const history = messages.slice(0, -1).map((msg: { role: string; content: string }) => ({
-        role: msg.role === 'assistant' || msg.role === 'model' ? 'model' : 'user',
-        parts: [{ text: msg.content }],
-      }));
-      const currentMessage = messages[messages.length - 1].content;
+      if (!geminiResponse.ok) {
+        const errorText = await geminiResponse.text();
+        throw new Error(`Gemini status ${geminiResponse.status}: ${errorText}`);
+      }
 
-      const chatSession = model.startChat({ history });
-      const result = await chatSession.sendMessage(currentMessage);
-      const responseText = result.response.text();
+      const geminiData = await geminiResponse.json();
+      const responseText = geminiData.candidates?.[0]?.content?.parts?.[0]?.text;
+
+      if (!responseText) {
+        throw new Error('No response text from Gemini');
+      }
 
       return NextResponse.json({
         response: responseText,
@@ -110,28 +124,47 @@ export async function POST(req: NextRequest) {
 
     } catch (geminiError: unknown) {
       const errorMessage = geminiError instanceof Error ? geminiError.message : String(geminiError);
-      console.error('[AI Agent] Gemini API Error Details:', errorMessage);
+      console.error('[AI Agent] Gemini REST API Error Details:', errorMessage);
 
-      // 2. Fallback to Groq
+      // 2. Fallback to Groq REST API
+      const groqUrl = 'https://api.groq.com/openai/v1/chat/completions';
+      
       const groqMessages = [
-        { role: 'system' as const, content: systemInstruction },
+        { role: 'system', content: systemInstruction },
         ...messages.map((msg: { role: string; content: string }) => ({
-          role: (msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user') as 'assistant' | 'user',
+          role: msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user',
           content: msg.content
         }))
       ];
 
-      const chatCompletion = await groq.chat.completions.create({
-        messages: groqMessages,
-        model: 'llama3-8b-8192',
-        temperature: 0.7,
-        max_tokens: 1024,
+      const groqResponse = await fetch(groqUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${GROQ_API_KEY}`
+        },
+        body: JSON.stringify({
+          model: 'llama3-8b-8192',
+          messages: groqMessages,
+          temperature: 0.7,
+          max_tokens: 1024,
+        })
       });
 
-      const responseText = chatCompletion.choices[0]?.message?.content || '';
+      if (!groqResponse.ok) {
+        const errorText = await groqResponse.text();
+        throw new Error(`Groq status ${groqResponse.status}: ${errorText}`);
+      }
+
+      const groqData = await groqResponse.json();
+      const fallbackResponseText = groqData.choices?.[0]?.message?.content || '';
+
+      if (!fallbackResponseText) {
+        throw new Error('No response text from Groq');
+      }
 
       return NextResponse.json({
-        response: responseText,
+        response: fallbackResponseText,
         provider: 'groq'
       }, { headers: corsHeaders });
     }

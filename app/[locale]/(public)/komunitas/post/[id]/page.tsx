@@ -6,11 +6,12 @@ import Navbar from "../../../_components/Navbar";
 import Footer from "../../../_components/Footer";
 import { createClient } from "@/lib/supabase/client";
 import { 
-  ArrowLeft, AlertTriangle, EyeOff, User, 
+  ArrowLeft, EyeOff, User, 
   Send, MessageCircle
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import TriggerWarning from "../../../_components/TriggerWarning";
 
 // Define Types
 type Post = {
@@ -59,7 +60,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
   // States for interaction
-  const [showContent, setShowContent] = useState(false);
+
   const [replyContent, setReplyContent] = useState("");
   const [isAnonReply, setIsAnonReply] = useState(false);
   const [anonNameReply, setAnonNameReply] = useState("");
@@ -90,8 +91,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
     }
     setPost(postData);
 
-    // Initial showContent logic
-    setShowContent(!postData.has_trigger_warning);
+    // Trigger Warning state is now handled by TriggerWarning component
 
     // Fetch Replies
     const { data: repliesData } = await supabase
@@ -244,34 +244,15 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
             <h1 className="mb-4 text-2xl font-bold text-gray-900">{post.title}</h1>
 
             {/* Content Area with Trigger Warning Handling */}
-            {post.has_trigger_warning && !showContent ? (
-              <div className="rounded-xl bg-red-50 p-6 text-center border border-red-100">
-                <AlertTriangle className="mx-auto h-8 w-8 text-red-500 mb-3" />
-                <p className="font-semibold text-red-800 mb-1">Trigger Warning</p>
-                <p className="text-sm text-red-600 mb-4">{t("trigger_warning_hidden")} <br/><span className="font-medium">&quot;{post.trigger_warning_text}&quot;</span></p>
-                <button 
-                  onClick={() => setShowContent(true)}
-                  className="rounded-lg bg-white px-5 py-2 text-sm font-semibold text-red-700 shadow-sm border border-red-200 hover:bg-red-50 transition"
-                >
-                  {t("trigger_warning_show")}
-                </button>
-              </div>
-            ) : (
-              <div>
-                {post.has_trigger_warning && (
-                  <div className="mb-4 flex items-center justify-between rounded-lg bg-red-50 p-3 text-sm border border-red-100">
-                    <div className="flex items-center gap-2 text-red-800">
-                      <AlertTriangle className="h-4 w-4 shrink-0" />
-                      <span><span className="font-semibold">TW:</span> {post.trigger_warning_text}</span>
-                    </div>
-                    <button onClick={() => setShowContent(false)} className="text-red-600 hover:text-red-800 underline text-xs font-medium">
-                      {t("trigger_warning_hide")}
-                    </button>
-                  </div>
-                )}
+            {post.has_trigger_warning ? (
+              <TriggerWarning postId={post.id} triggerText={post.trigger_warning_text || ""}>
                 <div className="prose max-w-none text-gray-800 whitespace-pre-wrap leading-relaxed">
                   {post.content}
                 </div>
+              </TriggerWarning>
+            ) : (
+              <div className="prose max-w-none text-gray-800 whitespace-pre-wrap leading-relaxed">
+                {post.content}
               </div>
             )}
 

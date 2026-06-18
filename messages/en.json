@@ -501,6 +501,7 @@
     "reaction_thanks": "Thanks",
     "trigger_warning_hidden": "This content is hidden because it contains sensitive elements:",
     "trigger_warning_show": "Show Content",
+    "trigger_warning_ready": "I am ready to read",
     "trigger_warning_hide": "Hide Content",
     "reply_placeholder": "Write your support or reply here...",
     "reply_submit": "Submit Reply",

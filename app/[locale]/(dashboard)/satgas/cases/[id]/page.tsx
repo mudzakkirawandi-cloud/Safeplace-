@@ -120,7 +120,7 @@ export default function SatgasCaseDetailPage() {
     // Realtime subscriptions
     const msgSub = supabase.channel('satgas_chat')
       .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'messages', filter: `report_id=eq.${reportId}` }, (payload) => {
-        setMessages((prev) => [...prev, payload.new]);
+        setMessages((prev) => [...prev, payload.new as Message]);
       })
       .subscribe();
       

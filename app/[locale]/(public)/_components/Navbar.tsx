@@ -25,7 +25,7 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: t("home") },
-    { href: "/laporkan", label: t("report") },
+    { href: "/report/start", label: t("report") },
     { href: "/pendampingan", label: t("consultation") },
     { href: "/edukasi", label: t("education") },
     { href: "/komunitas", label: t("community") },

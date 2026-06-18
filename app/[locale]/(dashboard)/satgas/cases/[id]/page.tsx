@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
 import { ArrowLeft, MessageCircle, FileText, Search, Upload, File, Download, Trash2, Send, Clock, CheckCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "../../../../../../lib/supabase/client";

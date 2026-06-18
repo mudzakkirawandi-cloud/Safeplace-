@@ -5,10 +5,9 @@ import { useTranslations, useLocale } from "next-intl";
 import Navbar from "../../../_components/Navbar";
 import Footer from "../../../_components/Footer";
 import { createClient } from "@/lib/supabase/client";
-import { motion } from "framer-motion";
 import { 
   ArrowLeft, AlertTriangle, EyeOff, User, 
-  Send, Heart, MessageCircle
+  Send, MessageCircle
 } from "lucide-react";
 import Link from "next/link";
 import { notFound } from "next/navigation";
@@ -121,10 +120,10 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
     // Subscribe to realtime changes
     const channel = supabase
       .channel(`room_${postId}`)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'community_replies', filter: `post_id=eq.${postId}` }, payload => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'community_replies', filter: `post_id=eq.${postId}` }, () => {
         fetchPostData(); 
       })
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'community_reactions', filter: `post_id=eq.${postId}` }, payload => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'community_reactions', filter: `post_id=eq.${postId}` }, () => {
         fetchPostData();
       })
       .subscribe();
@@ -249,7 +248,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
               <div className="rounded-xl bg-red-50 p-6 text-center border border-red-100">
                 <AlertTriangle className="mx-auto h-8 w-8 text-red-500 mb-3" />
                 <p className="font-semibold text-red-800 mb-1">Trigger Warning</p>
-                <p className="text-sm text-red-600 mb-4">{t("trigger_warning_hidden")} <br/><span className="font-medium">"{post.trigger_warning_text}"</span></p>
+                <p className="text-sm text-red-600 mb-4">{t("trigger_warning_hidden")} <br/><span className="font-medium">&quot;{post.trigger_warning_text}&quot;</span></p>
                 <button 
                   onClick={() => setShowContent(true)}
                   className="rounded-lg bg-white px-5 py-2 text-sm font-semibold text-red-700 shadow-sm border border-red-200 hover:bg-red-50 transition"

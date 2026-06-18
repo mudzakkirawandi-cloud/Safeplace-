@@ -238,16 +238,18 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                       </div>
                     )}
 
-                    <h3 className="mb-2 text-lg font-bold text-gray-900">{post.title}</h3>
+                    <Link href={`/${locale}/komunitas/post/${post.id}`}>
+                      <h3 className="mb-2 text-lg font-bold text-gray-900 hover:text-[#1B4F72] transition-colors">{post.title}</h3>
+                    </Link>
                     <p className="mb-4 text-gray-600 line-clamp-3">{post.content}</p>
 
                     <div className="flex items-center gap-4 border-t border-gray-100 pt-4">
                       <button className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
                         <Heart className="h-4 w-4" /> 0
                       </button>
-                      <button className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
+                      <Link href={`/${locale}/komunitas/post/${post.id}`} className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
                         <MessageCircle className="h-4 w-4" /> {t("comments")}
-                      </button>
+                      </Link>
                     </div>
                   </div>
                 ))}

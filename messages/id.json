@@ -533,6 +533,18 @@
     "back_to_community": "Kembali ke Komunitas",
     "anonymous_user": "Anonim",
     "read_more": "Baca selengkapnya",
-    "comments": "Komentar"
+    "comments": "Komentar",
+    "reaction_support": "Support",
+    "reaction_strong": "Kuat",
+    "reaction_hug": "Peluk",
+    "reaction_thanks": "Terima Kasih",
+    "trigger_warning_hidden": "Konten ini disembunyikan karena memuat elemen sensitif:",
+    "trigger_warning_show": "Tampilkan Konten",
+    "trigger_warning_hide": "Sembunyikan Kembali",
+    "reply_placeholder": "Tulis dukungan atau balasanmu di sini...",
+    "reply_submit": "Kirim Balasan",
+    "reply_anon_toggle": "Balas sebagai Anonim",
+    "back_to_feed": "Kembali ke Feed",
+    "replies_title": "Balasan"
   }
 }

@@ -5,9 +5,17 @@
 :root {
   --font-sans: var(--font-inter);
   --font-display: var(--font-plus-jakarta-sans);
+  
+  --bg-primary: #FAFBFF;
+  --text-primary: #333333;
+}
+
+.dark {
+  --bg-primary: #121212;
+  --text-primary: #E7E9EB;
 }
 
 body {
-  color: #333;
-  background: #FAFBFF;
+  color: var(--text-primary);
+  background: var(--bg-primary);
 }

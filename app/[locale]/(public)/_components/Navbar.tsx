@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { Shield, Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
+import ThemeToggle from "../../_components/ThemeToggle";
 
 export default function Navbar() {
   const t = useTranslations("homepage.navbar");
@@ -34,16 +35,16 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-white/90 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
+          isScrolled ? "bg-white/90 dark:bg-gray-900/90 backdrop-blur-md shadow-sm py-3" : "bg-transparent py-5"
         }`}
       >
         <div className="container mx-auto px-6 max-w-6xl flex items-center justify-between">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group z-50">
-            <div className="bg-[#1B4F72] text-white p-2 rounded-lg group-hover:bg-[#E74C3C] transition-colors">
+            <div className="bg-[#1B4F72] dark:bg-blue-600 text-white p-2 rounded-lg group-hover:bg-[#E74C3C] transition-colors">
               <Shield size={24} />
             </div>
-            <span className="font-display font-bold text-xl text-[#1B4F72] tracking-tight">
+            <span className="font-display font-bold text-xl text-[#1B4F72] dark:text-blue-400 tracking-tight">
               SafePlace
             </span>
           </Link>
@@ -62,8 +63,8 @@ export default function Navbar() {
                 <Link
                   key={link.href}
                   href={link.href}
-                  className={`text-sm font-medium transition-all duration-300 hover:text-[#E74C3C] relative group ${
-                    isActive ? "text-[#E74C3C]" : "text-[#1B4F72]"
+                  className={`text-sm font-medium transition-all duration-300 hover:text-[#E74C3C] dark:hover:text-[#E74C3C] relative group ${
+                    isActive ? "text-[#E74C3C] dark:text-[#E74C3C]" : "text-[#1B4F72] dark:text-gray-300"
                   }`}
                 >
                   {link.label}
@@ -79,11 +80,12 @@ export default function Navbar() {
 
           {/* Right Actions Desktop */}
           <div className="hidden lg:flex items-center gap-4">
+            <ThemeToggle />
             <LanguageSwitcher />
             
             <Link 
               href="/login" 
-              className="px-4 py-2 text-sm font-medium text-[#1B4F72] hover:bg-gray-100 rounded-lg transition-colors"
+              className="px-4 py-2 text-sm font-medium text-[#1B4F72] dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition-colors"
             >
               {t("login")}
             </Link>
@@ -97,10 +99,11 @@ export default function Navbar() {
 
           {/* Mobile Menu Button */}
           <div className="lg:hidden flex items-center gap-4 z-50">
+            <ThemeToggle />
             <LanguageSwitcher />
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="text-[#1B4F72] hover:text-[#E74C3C] transition-colors"
+              className="text-[#1B4F72] dark:text-gray-300 hover:text-[#E74C3C] transition-colors"
               aria-label="Toggle mobile menu"
             >
               {isMobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
@@ -111,7 +114,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div 
-        className={`fixed inset-0 bg-[#FAFBFF] z-40 transition-transform duration-300 ease-in-out transform lg:hidden ${
+        className={`fixed inset-0 bg-[#FAFBFF] dark:bg-[#1a1a1a] z-40 transition-transform duration-300 ease-in-out transform lg:hidden ${
           isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
@@ -129,7 +132,7 @@ export default function Navbar() {
                   href={link.href}
                   onClick={() => setIsMobileMenuOpen(false)}
                   className={`text-xl font-medium transition-colors ${
-                    isActive ? "text-[#E74C3C]" : "text-[#1B4F72]"
+                    isActive ? "text-[#E74C3C] dark:text-[#E74C3C]" : "text-[#1B4F72] dark:text-gray-300"
                   }`}
                 >
                   {link.label}
@@ -138,11 +141,11 @@ export default function Navbar() {
             })}
           </div>
           
-          <div className="flex flex-col gap-4 mt-8 border-t border-gray-200 pt-8">
+          <div className="flex flex-col gap-4 mt-8 border-t border-gray-200 dark:border-gray-800 pt-8">
             <Link 
               href="/login" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="w-full text-center px-4 py-3 text-lg font-medium text-[#1B4F72] bg-gray-100 rounded-xl transition-colors"
+              className="w-full text-center px-4 py-3 text-lg font-medium text-[#1B4F72] dark:text-gray-300 bg-gray-100 dark:bg-gray-800 rounded-xl transition-colors"
             >
               {t("login")}
             </Link>

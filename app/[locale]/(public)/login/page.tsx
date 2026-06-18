@@ -3,8 +3,9 @@
 import { useState } from "react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion } from "framer-motion";
-import { Shield, Eye, EyeOff } from "lucide-react";
+import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 export default function LoginPage() {
   const supabase = createClient();
@@ -55,13 +56,10 @@ export default function LoginPage() {
       >
         <div className="bg-[#2C3E6B] p-8 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#4ECDC4] opacity-20 rounded-full -translate-y-16 translate-x-16 blur-2xl"></div>
-          <div className="relative z-10">
-            <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
-              <Shield className="text-white" size={32} />
+            <div className="flex justify-center mb-6">
+              <SafePlaceLogo variant="white" iconSize={32} textSize="text-2xl" />
             </div>
-            <h1 className="text-2xl font-bold text-white mb-1">Masuk ke SafePlace</h1>
-            <p className="text-[#EBF5FB] text-sm">Sistem Pelaporan Tersentralisasi</p>
-          </div>
+            <h1 className="text-xl font-medium text-white/90 mb-1">Akses Sistem Tersentralisasi</h1>
         </div>
 
         <div className="p-8">

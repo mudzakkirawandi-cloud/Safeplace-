@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { Shield, Menu, X } from "lucide-react";
+import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "../../_components/ThemeToggle";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 export default function Navbar() {
   const t = useTranslations("homepage.navbar");
@@ -39,14 +40,8 @@ export default function Navbar() {
         }`}
       >
         <div className="container mx-auto px-6 max-w-6xl flex items-center justify-between">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group z-50">
-            <div className="bg-[#1B4F72] dark:bg-blue-600 text-white p-2 rounded-lg group-hover:bg-[#E74C3C] transition-colors">
-              <Shield size={24} />
-            </div>
-            <span className="font-display font-bold text-xl text-[#1B4F72] dark:text-blue-400 tracking-tight">
-              SafePlace
-            </span>
+          <Link href="/" className="z-50 hover:opacity-80 transition-opacity">
+            <SafePlaceLogo role="public" />
           </Link>
 
           {/* Desktop Navigation */}

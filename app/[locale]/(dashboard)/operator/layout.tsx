@@ -16,6 +16,7 @@ import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 export default function OperatorLayout({
   children,
@@ -53,12 +54,7 @@ export default function OperatorLayout({
     <div className="flex flex-col h-full bg-[#7B5EA7] text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#8c6ebf]">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#F4A261]" />
-          <span className="font-bold text-white text-base tracking-tight">
-            SafePlace
-          </span>
-        </div>
+        <SafePlaceLogo variant="white" role="operator" iconSize={20} textSize="text-base" />
         <span className="text-xs text-[#F4A261] font-medium mt-0.5 block">
           Portal Operator Komunitas
         </span>
@@ -145,8 +141,7 @@ export default function OperatorLayout({
               <Menu size={20} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#F4A261]" />
-              <span className="font-bold text-sm">Operator Portal</span>
+              <SafePlaceLogo variant="white" role="operator" iconSize={16} textSize="text-sm" />
             </div>
           </div>
           <div className="md:hidden">

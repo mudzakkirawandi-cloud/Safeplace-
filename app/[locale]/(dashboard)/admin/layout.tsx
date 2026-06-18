@@ -22,6 +22,7 @@ import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 export default function AdminLayout({
   children,
@@ -65,12 +66,7 @@ export default function AdminLayout({
     <div className="flex flex-col h-full bg-[#2C3E6B] text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#3b5082]">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#4ECDC4]" />
-          <span className="font-bold text-white text-base tracking-tight">
-            SafePlace
-          </span>
-        </div>
+        <SafePlaceLogo variant="white" role="admin" iconSize={20} textSize="text-base" />
         <span className="text-xs text-[#4ECDC4] font-medium mt-0.5 block">
           Portal Admin
         </span>
@@ -158,8 +154,7 @@ export default function AdminLayout({
               <Menu size={20} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#4ECDC4]" />
-              <span className="font-bold text-sm">SafePlace Admin</span>
+              <SafePlaceLogo variant="white" role="admin" iconSize={16} textSize="text-sm" />
             </div>
           </div>
           <div className="md:hidden">

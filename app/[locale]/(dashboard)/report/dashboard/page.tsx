@@ -17,6 +17,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import SafePlaceLogo from "../../../_components/SafePlaceLogo";
 import LogoutConfirmModal from "../../../_components/LogoutConfirmModal";
 
 interface Report {
@@ -184,7 +185,7 @@ export default function ReportDashboardPage() {
       {/* Header */}
       <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between max-w-6xl">
-          <h1 className="text-xl font-bold text-[#1B4F72]">SafePlace</h1>
+          <SafePlaceLogo role="reporter" iconSize={20} textSize="text-xl" />
           <div className="flex items-center gap-4">
             <div className="relative">
               <button 

@@ -1,8 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Shield, Phone, MessageCircle, Camera, Globe, Mail } from "lucide-react";
+import { Phone, MessageCircle, Camera, Globe, Mail } from "lucide-react";
 import Link from "next/link";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 export default function Footer() {
   const t = useTranslations("homepage.footer");
@@ -13,13 +14,8 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
           {/* Column 1: Brand & Tagline */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2 mb-4 group">
-              <div className="bg-[#1B4F72] text-white p-2 rounded-lg group-hover:bg-[#E74C3C] transition-colors">
-                <Shield size={24} />
-              </div>
-              <span className="font-display font-bold text-xl text-[#1B4F72] tracking-tight">
-                SafePlace
-              </span>
+            <Link href="/" className="mb-4 inline-block hover:opacity-80 transition-opacity">
+              <SafePlaceLogo role="public" />
             </Link>
             <p className="text-gray-500 text-sm leading-relaxed mb-6">
               {t("tagline")}

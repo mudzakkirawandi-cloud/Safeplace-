@@ -15,6 +15,7 @@ import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 type OnlineStatus = "online" | "busy" | "offline";
 
@@ -84,12 +85,7 @@ export default function ConsultantLayout({
     <div className="flex flex-col h-full bg-white border-r border-gray-100">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-gray-100">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#5B8A6F]" />
-          <span className="font-bold text-[#1B4F72] text-base tracking-tight">
-            SafePlace
-          </span>
-        </div>
+        <SafePlaceLogo variant="colored" role="consultant" iconSize={20} textSize="text-base" />
         <span className="text-xs text-[#5B8A6F] font-medium mt-0.5 block">
           Portal Konsultan
         </span>
@@ -233,8 +229,7 @@ export default function ConsultantLayout({
               <Menu size={20} className="text-gray-600" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#5B8A6F]" />
-              <span className="font-bold text-[#1B4F72] text-sm">SafePlace</span>
+              <SafePlaceLogo variant="colored" role="consultant" iconSize={16} textSize="text-sm" />
             </div>
           </div>
           <div className="md:hidden text-gray-800">

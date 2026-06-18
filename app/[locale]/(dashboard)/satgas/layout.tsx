@@ -15,6 +15,7 @@ import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
+import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
 export default function SatgasLayout({
   children,
@@ -51,12 +52,7 @@ export default function SatgasLayout({
     <div className="flex flex-col h-full bg-[#1A5276] text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#2471A3]">
-        <div className="flex items-center gap-2">
-          <div className="w-2.5 h-2.5 rounded-full bg-[#D4AC0D]" />
-          <span className="font-bold text-white text-base tracking-tight">
-            SafePlace
-          </span>
-        </div>
+        <SafePlaceLogo variant="white" role="satgas" iconSize={20} textSize="text-base" />
         <span className="text-xs text-[#D4AC0D] font-medium mt-0.5 block">
           Portal Satgas PPKS
         </span>
@@ -143,8 +139,7 @@ export default function SatgasLayout({
               <Menu size={20} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <div className="w-2 h-2 rounded-full bg-[#D4AC0D]" />
-              <span className="font-bold text-sm">Satgas Portal</span>
+              <SafePlaceLogo variant="white" role="satgas" iconSize={16} textSize="text-sm" />
             </div>
           </div>
           <div className="md:hidden">

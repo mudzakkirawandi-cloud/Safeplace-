@@ -546,6 +546,21 @@
     "reply_submit": "Kirim Balasan",
     "reply_anon_toggle": "Balas sebagai Anonim",
     "back_to_feed": "Kembali ke Feed",
-    "replies_title": "Balasan"
+    "replies_title": "Balasan",
+    "form_title_label": "Judul Post",
+    "form_title_placeholder": "Judul singkat yang menggambarkan isi post...",
+    "form_category_label": "Kategori",
+    "form_content_label": "Isi Post",
+    "form_content_placeholder": "Ceritakan dengan detail...",
+    "form_anon_label": "Post sebagai Anonim",
+    "form_anon_name_placeholder": "Nama Tampil (contoh: Pejuang123) - opsional",
+    "form_tw_label": "Tambahkan Trigger Warning",
+    "form_tw_placeholder": "Contoh: Menyebutkan kekerasan fisik, manipulasi",
+    "form_cancel": "Batal",
+    "form_submit": "Kirim Post",
+    "form_error_title_length": "Judul post minimal 10 karakter",
+    "form_error_content_length": "Konten post minimal 50 karakter",
+    "form_error_login": "Anda harus login untuk membuat post",
+    "form_error_submit": "Gagal membuat post: "
   }
 }

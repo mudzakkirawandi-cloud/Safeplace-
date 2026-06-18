@@ -84,7 +84,17 @@ export default function CommunityPage() {
     const { data: userData } = await supabase.auth.getUser();
     
     if (!userData.user) {
-      alert("Anda harus login untuk membuat post");
+      alert(t("form_error_login"));
+      return;
+    }
+
+    if (newTitle.length < 10) {
+      alert(t("form_error_title_length"));
+      return;
+    }
+
+    if (newContent.length < 50) {
+      alert(t("form_error_content_length"));
       return;
     }
 
@@ -110,7 +120,7 @@ export default function CommunityPage() {
       setTwText("");
       fetchPosts();
     } else {
-      alert("Gagal membuat post: " + error.message);
+      alert(t("form_error_submit") + error.message);
     }
   };
 
@@ -364,19 +374,19 @@ export default function CommunityPage() {
               <form onSubmit={handleCreatePost} className="p-6">
                 <div className="space-y-5">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">Judul Post</label>
+                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{t("form_title_label")}</label>
                     <input
                       required
                       type="text"
                       value={newTitle}
                       onChange={e => setNewTitle(e.target.value)}
                       className="w-full rounded-xl border border-gray-300 px-4 py-2.5 focus:border-[#1B4F72] focus:outline-none focus:ring-1 focus:ring-[#1B4F72]"
-                      placeholder="Judul singkat yang menggambarkan isi post..."
+                      placeholder={t("form_title_placeholder")}
                     />
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">Kategori</label>
+                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{t("form_category_label")}</label>
                     <select
                       value={newCategory}
                       onChange={e => setNewCategory(e.target.value)}
@@ -389,14 +399,14 @@ export default function CommunityPage() {
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">Isi Post</label>
+                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{t("form_content_label")}</label>
                     <textarea
                       required
                       rows={5}
                       value={newContent}
                       onChange={e => setNewContent(e.target.value)}
                       className="w-full resize-none rounded-xl border border-gray-300 px-4 py-3 focus:border-[#1B4F72] focus:outline-none focus:ring-1 focus:ring-[#1B4F72]"
-                      placeholder="Ceritakan dengan detail..."
+                      placeholder={t("form_content_placeholder")}
                     />
                   </div>
 
@@ -408,7 +418,7 @@ export default function CommunityPage() {
                         onChange={e => setIsAnon(e.target.checked)}
                         className="h-4 w-4 rounded border-gray-300 text-[#1B4F72] focus:ring-[#1B4F72]"
                       />
-                      <span className="text-sm font-medium text-gray-700">Post sebagai Anonim</span>
+                      <span className="text-sm font-medium text-gray-700">{t("form_anon_label")}</span>
                     </label>
                     
                     {isAnon && (
@@ -418,7 +428,7 @@ export default function CommunityPage() {
                           value={anonName}
                           onChange={e => setAnonName(e.target.value)}
                           className="w-full rounded-lg border border-gray-300 px-3 py-2 text-sm focus:border-[#1B4F72] focus:outline-none"
-                          placeholder="Nama Tampil (contoh: Pejuang123) - opsional"
+                          placeholder={t("form_anon_name_placeholder")}
                         />
                       </div>
                     )}
@@ -432,7 +442,7 @@ export default function CommunityPage() {
                         onChange={e => setHasTW(e.target.checked)}
                         className="h-4 w-4 rounded border-red-300 text-red-600 focus:ring-red-600"
                       />
-                      <span className="text-sm font-medium text-red-800">Tambahkan Trigger Warning</span>
+                      <span className="text-sm font-medium text-red-800">{t("form_tw_label")}</span>
                     </label>
                     
                     {hasTW && (
@@ -443,7 +453,7 @@ export default function CommunityPage() {
                           value={twText}
                           onChange={e => setTwText(e.target.value)}
                           className="w-full rounded-lg border border-red-200 px-3 py-2 text-sm focus:border-red-500 focus:outline-none"
-                          placeholder="Contoh: Menyebutkan kekerasan fisik, manipulasi"
+                          placeholder={t("form_tw_placeholder")}
                         />
                       </div>
                     )}
@@ -456,13 +466,13 @@ export default function CommunityPage() {
                     onClick={() => setIsModalOpen(false)}
                     className="rounded-xl px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
                   >
-                    Batal
+                    {t("form_cancel")}
                   </button>
                   <button
                     type="submit"
                     className="rounded-xl bg-[#1B4F72] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#133A54]"
                   >
-                    Kirim Post
+                    {t("form_submit")}
                   </button>
                 </div>
               </form>

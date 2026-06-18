@@ -507,6 +507,21 @@
     "reply_submit": "Submit Reply",
     "reply_anon_toggle": "Reply as Anonymous",
     "back_to_feed": "Back to Feed",
-    "replies_title": "Replies"
+    "replies_title": "Replies",
+    "form_title_label": "Post Title",
+    "form_title_placeholder": "A short title describing your post...",
+    "form_category_label": "Category",
+    "form_content_label": "Post Content",
+    "form_content_placeholder": "Tell us in detail...",
+    "form_anon_label": "Post as Anonymous",
+    "form_anon_name_placeholder": "Display Name (e.g. Survivor123) - optional",
+    "form_tw_label": "Add Trigger Warning",
+    "form_tw_placeholder": "Example: Mentions physical violence, manipulation",
+    "form_cancel": "Cancel",
+    "form_submit": "Submit Post",
+    "form_error_title_length": "Post title must be at least 10 characters",
+    "form_error_content_length": "Post content must be at least 50 characters",
+    "form_error_login": "You must be logged in to create a post",
+    "form_error_submit": "Failed to create post: "
   }
 }

@@ -7,19 +7,55 @@ import { ArrowLeft, MessageCircle, FileText, Search, Upload, File, Download, Tra
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "../../../../../../lib/supabase/client";
 
+interface Report {
+  id: string;
+  tracking_code?: string;
+  status: string;
+  incident_type: string;
+  description: string;
+  reporter?: { full_name: string };
+  consultant?: { full_name: string };
+  [key: string]: unknown;
+}
+
+interface Message {
+  id: string;
+  sender_id: string;
+  content: string;
+  created_at: string;
+  [key: string]: unknown;
+}
+
+interface Investigation {
+  id: string;
+  status: string;
+  findings: string;
+  created_at: string;
+  investigator?: { full_name: string };
+  [key: string]: unknown;
+}
+
+interface Document {
+  id: string;
+  file_name: string;
+  file_url: string;
+  uploaded_by: string;
+  created_at: string;
+  [key: string]: unknown;
+}
+
 export default function SatgasCaseDetailPage() {
-  const t = useTranslations("satgas");
   const params = useParams();
   const router = useRouter();
   const reportId = params.id as string;
   const supabase = createClient();
 
   const [activeTab, setActiveTab] = useState("detail");
-  const [report, setReport] = useState<any>(null);
-  const [messages, setMessages] = useState<any[]>([]);
+  const [report, setReport] = useState<Report | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [newMessage, setNewMessage] = useState("");
-  const [investigations, setInvestigations] = useState<any[]>([]);
-  const [documents, setDocuments] = useState<any[]>([]);
+  const [investigations, setInvestigations] = useState<Investigation[]>([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
   
   const [loading, setLoading] = useState(true);
   const [userId, setUserId] = useState<string | null>(null);
@@ -28,6 +64,7 @@ export default function SatgasCaseDetailPage() {
 
   useEffect(() => {
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId]);
 
   useEffect(() => {

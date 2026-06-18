@@ -36,7 +36,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     };
     
     fetchThemePreference();
-  }, [supabase.auth]);
+  }, [supabase]);
 
   // Prevent hydration mismatch by not rendering until mounted
   if (!mounted) {

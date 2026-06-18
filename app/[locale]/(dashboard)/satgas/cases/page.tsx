@@ -7,6 +7,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "../../../../../lib/supabase/client";
 import { useRouter, useParams } from "next/navigation";
 
+interface Report {
+  id: string;
+  tracking_code?: string;
+  status: string;
+  incident_type: string;
+  priority: string;
+  created_at: string;
+  [key: string]: unknown;
+}
+
 export default function SatgasCasesPage() {
   const t = useTranslations("satgas");
   const router = useRouter();
@@ -21,17 +31,18 @@ export default function SatgasCasesPage() {
   const [updateNotes, setUpdateNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [cases, setCases] = useState<any[]>([]);
+  const [cases, setCases] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCases();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const fetchCases = async () => {
     setLoading(true);
     // RLS handles the filtering by assigned_satgas_campus_id
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("reports")
       .select("*")
       .not("assigned_satgas_campus_id", "is", null)

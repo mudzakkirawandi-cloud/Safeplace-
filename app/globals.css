@@ -71,7 +71,11 @@
 }
 
 html {
-  background-color: var(--background);
+  background-color: #FAFBFF;
+}
+
+html.dark {
+  background-color: #0A1628;
 }
 
 body {

@@ -38,10 +38,5 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
     fetchThemePreference();
   }, [supabase]);
 
-  // Prevent hydration mismatch by not rendering until mounted
-  if (!mounted) {
-    return <>{children}</>;
-  }
-
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

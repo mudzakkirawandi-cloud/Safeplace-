@@ -108,8 +108,9 @@ export async function POST(req: NextRequest) {
         provider: 'gemini'
       }, { headers: corsHeaders });
 
-    } catch (geminiError: any) {
-      console.error('[AI Agent] Gemini API Error Details:', geminiError?.message || geminiError);
+    } catch (geminiError: unknown) {
+      const errorMessage = geminiError instanceof Error ? geminiError.message : String(geminiError);
+      console.error('[AI Agent] Gemini API Error Details:', errorMessage);
 
       // 2. Fallback to Groq
       const groqMessages = [
@@ -135,12 +136,14 @@ export async function POST(req: NextRequest) {
       }, { headers: corsHeaders });
     }
 
-  } catch (error: any) {
-    console.error('[AI Agent] Fatal Error Details:', error?.message || error, error?.stack);
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const errorStack = error instanceof Error ? error.stack : undefined;
+    console.error('[AI Agent] Fatal Error Details:', errorMessage, errorStack);
     return NextResponse.json(
       { 
         error: 'AI sedang tidak tersedia, coba beberapa saat lagi',
-        details: process.env.NODE_ENV !== 'production' ? (error?.message || String(error)) : undefined
+        details: process.env.NODE_ENV !== 'production' ? errorMessage : undefined
       },
       { status: 500, headers: corsHeaders }
     );

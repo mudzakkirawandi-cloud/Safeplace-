@@ -10,6 +10,7 @@ import {
   User,
   LogOut,
   Menu,
+  MessageSquare
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -43,6 +44,7 @@ export default function OperatorLayout({
   const navItems = [
     { href: "/operator/dashboard", icon: LayoutDashboard, labelKey: "nav_dashboard" },
     { href: "/operator/reports", icon: Files, labelKey: "nav_reports" },
+    { href: "/operator/community", icon: MessageSquare, labelKey: "nav_community_moderation" },
     { href: "/operator/satgas", icon: Users, labelKey: "nav_satgas_directory" },
     { href: "/operator/profile", icon: User, labelKey: "nav_profile" },
   ];

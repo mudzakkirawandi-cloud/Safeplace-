@@ -422,7 +422,22 @@
     "table_col_status": "Status",
     "table_col_action": "Action",
     "btn_view_details": "View Details",
-    "btn_escalate": "Escalate to Task Force"
+    "btn_escalate": "Escalate to Task Force",
+    "nav_community_moderation": "Community Moderation",
+    "community_title": "Community Moderation",
+    "community_subtitle": "Manage community posts from your campus.",
+    "filter_all": "All",
+    "filter_reported": "Reported",
+    "filter_hidden": "Hidden",
+    "table_col_title": "Post Title",
+    "table_col_author": "Author",
+    "table_col_category": "Category",
+    "table_col_status": "Status",
+    "table_col_action": "Action",
+    "btn_hide": "Hide",
+    "btn_delete": "Delete",
+    "btn_mark_safe": "Mark Safe",
+    "empty_state": "No community posts yet."
   },
   "satgas": {
     "nav_dashboard": "Dashboard",

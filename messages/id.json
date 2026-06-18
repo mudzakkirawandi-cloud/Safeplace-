@@ -461,7 +461,22 @@
     "table_col_status": "Status",
     "table_col_action": "Aksi",
     "btn_view_details": "Lihat Detail",
-    "btn_escalate": "Eskalasi ke Satgas"
+    "btn_escalate": "Eskalasi ke Satgas",
+    "nav_community_moderation": "Moderasi Komunitas",
+    "community_title": "Moderasi Komunitas",
+    "community_subtitle": "Kelola post komunitas dari kampus Anda.",
+    "filter_all": "Semua",
+    "filter_reported": "Dilaporkan",
+    "filter_hidden": "Disembunyikan",
+    "table_col_title": "Judul Post",
+    "table_col_author": "Penulis",
+    "table_col_category": "Kategori",
+    "table_col_status": "Status",
+    "table_col_action": "Aksi",
+    "btn_hide": "Sembunyikan",
+    "btn_delete": "Hapus",
+    "btn_mark_safe": "Tandai Aman",
+    "empty_state": "Belum ada post komunitas."
   },
   "satgas": {
     "nav_dashboard": "Dashboard",

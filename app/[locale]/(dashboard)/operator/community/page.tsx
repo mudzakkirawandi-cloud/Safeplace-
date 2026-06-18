@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { createClient } from "@/lib/supabase/client";
 import { 
   Search, 
-  Filter, 
   EyeOff, 
   Trash2, 
   CheckCircle,
@@ -59,6 +58,7 @@ export default function OperatorCommunityPage() {
 
   useEffect(() => {
     fetchPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter]);
 
   const handleUpdateStatus = async (postId: string, newStatus: string) => {

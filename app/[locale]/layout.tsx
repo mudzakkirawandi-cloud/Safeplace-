@@ -5,7 +5,6 @@ import '../globals.css';
 import IdleTimer from './_components/IdleTimer';
 import PanicButton from './_components/PanicButton';
 import AIAgentWidget from '@/components/ai/AIAgentWidget';
-import { ThemeProvider } from './_components/ThemeProvider';
 import PageTransition from './_components/PageTransition';
 
 
@@ -67,23 +66,9 @@ export default async function LocaleLayout({
   return (
     <html lang={locale} suppressHydrationWarning>
       <head>
-        <script
-          dangerouslySetInnerHTML={{
-            __html: `
-              try {
-                if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                  document.documentElement.classList.add('dark');
-                } else {
-                  document.documentElement.classList.remove('dark');
-                }
-              } catch (_) {}
-            `,
-          }}
-        />
       </head>
       <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-background text-foreground`}>
         <NextIntlClientProvider messages={messages}>
-          <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <IdleTimer>
               <PageTransition>
                 {children}
@@ -91,7 +76,6 @@ export default async function LocaleLayout({
               <AIAgentWidget />
             <PanicButton />
           </IdleTimer>
-          </ThemeProvider>
         </NextIntlClientProvider>
       </body>
     </html>

@@ -53,6 +53,7 @@ export default function AdminLayout({
     { href: "/admin/reports", icon: Files, labelKey: "nav_reports" },
     { href: "/admin/users", icon: Users, labelKey: "nav_users" },
     { href: "/admin/consultants", icon: UserCheck, labelKey: "nav_consultants" },
+    { href: "/admin/peer-consultants", icon: UserCheck, labelKey: "nav_peer_consultants" },
     { href: "/admin/operators", icon: Shield, labelKey: "nav_operators" },
     { href: "/admin/satgas", icon: ShieldAlert, labelKey: "nav_satgas" },
     { href: "/admin/campuses", icon: Building, labelKey: "nav_campuses" },

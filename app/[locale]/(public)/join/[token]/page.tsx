@@ -10,13 +10,14 @@ const MOCK_TOKEN_DATA = {
   isValid: true,
   email: "konsultan@example.com",
   fullName: "Dr. Consultant Baru",
+  role: "consultant" // bisa juga 'peer_consultant'
 };
 
 export default function JoinConsultantPage({ params }: { params: { token: string } }) {
   const router = useRouter();
   const [validating, setValidating] = useState(true);
   const [isValid, setIsValid] = useState(false);
-  const [data, setData] = useState<{ email: string; fullName: string } | null>(null);
+  const [data, setData] = useState<{ email: string; fullName: string; role: string } | null>(null);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -64,7 +65,11 @@ export default function JoinConsultantPage({ params }: { params: { token: string
     // 3. Update users table status to 'Aktif'
     
     alert("Akun berhasil diaktifkan! Selamat datang di SafePlace.");
-    router.push("/id/consultant/dashboard");
+    if (data?.role === "peer_consultant") {
+      router.push("/id/peer-consultant/dashboard");
+    } else {
+      router.push("/id/consultant/dashboard");
+    }
   };
 
   if (validating) {

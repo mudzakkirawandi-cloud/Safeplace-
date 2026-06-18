@@ -2,16 +2,13 @@
 
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { type ThemeProviderProps } from "next-themes";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
-  const [mounted, setMounted] = useState(false);
   const supabase = createClient();
 
   useEffect(() => {
-    setMounted(true);
-
     const fetchThemePreference = async () => {
       const { data: { session } } = await supabase.auth.getSession();
       if (session?.user) {

@@ -458,6 +458,8 @@
     "qa_consultant": "Find Consultant",
     "qa_education": "Educational Materials",
     "qa_emergency": "Emergency Contacts",
-    "page_subtitle": "Tell our assistant about your concerns to get quick guidance."
+    "page_subtitle": "Tell our assistant about your concerns to get quick guidance.",
+    "limit_exceeded": "Sorry, this session has reached the maximum message limit. Please contact a human consultant for further assistance.",
+    "disclaimer": "AI Assistant may provide inaccurate information. Please verify important information with a human consultant."
   }
 }

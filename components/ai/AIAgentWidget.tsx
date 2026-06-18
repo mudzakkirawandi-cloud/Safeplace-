@@ -82,7 +82,7 @@ export default function AIAgentWidget() {
         {
           id: uuidv4(),
           role: "assistant",
-          content: "Maaf, sesi ini telah mencapai batas maksimum pesan. Silakan hubungi konsultan manusia untuk bantuan lebih lanjut.",
+          content: t("limit_exceeded"),
         },
       ]);
       return;

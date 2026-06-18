@@ -64,7 +64,7 @@ export default function AIAssistantPage() {
         {
           id: uuidv4(),
           role: "assistant",
-          content: "Maaf, sesi ini telah mencapai batas maksimum pesan. Silakan hubungi konsultan manusia untuk bantuan lebih lanjut.",
+          content: t("limit_exceeded"),
         },
       ]);
       return;
@@ -284,7 +284,7 @@ export default function AIAssistantPage() {
                 </button>
               </div>
               <div className="text-center mt-3 text-xs text-gray-400">
-                AI Assistant dapat memberikan informasi yang tidak akurat. Harap verifikasi informasi penting dengan konsultan manusia.
+                {t("disclaimer")}
               </div>
             </div>
           </div>

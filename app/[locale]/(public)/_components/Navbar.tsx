@@ -7,7 +7,7 @@ import { useTranslations } from "next-intl";
 import { Menu, X } from "lucide-react";
 import LanguageSwitcher from "./LanguageSwitcher";
 import ThemeToggle from "../../_components/ThemeToggle";
-import SafePlaceLogo from "../../_components/SafePlaceLogo";
+import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function Navbar() {
   const t = useTranslations("homepage.navbar");

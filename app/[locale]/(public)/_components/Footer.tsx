@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Phone, MessageCircle, Camera, Globe, Mail } from "lucide-react";
 import Link from "next/link";
-import SafePlaceLogo from "../../_components/SafePlaceLogo";
+import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function Footer() {
   const t = useTranslations("homepage.footer");

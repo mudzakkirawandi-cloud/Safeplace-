@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import SafePlaceLogo from "../../../_components/SafePlaceLogo";
+import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 import LogoutConfirmModal from "../../../_components/LogoutConfirmModal";
 
 interface Report {

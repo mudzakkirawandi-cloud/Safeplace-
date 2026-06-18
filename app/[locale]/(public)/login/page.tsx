@@ -5,7 +5,7 @@ import { createClient } from "../../../../lib/supabase/client";
 import { motion } from "framer-motion";
 import { Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
-import SafePlaceLogo from "../../_components/SafePlaceLogo";
+import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function LoginPage() {
   const supabase = createClient();

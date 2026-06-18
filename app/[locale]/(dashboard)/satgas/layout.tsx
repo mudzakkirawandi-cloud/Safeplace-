@@ -15,7 +15,7 @@ import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
-import SafePlaceLogo from "../../_components/SafePlaceLogo";
+import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function SatgasLayout({
   children,

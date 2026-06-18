@@ -18,7 +18,7 @@
 }
 
 /* Base Dark Theme (Homepage & Reporter) */
-.dark {
+.dark, [data-theme="dark"] {
   --background: #0A1628;
   --foreground: #E2E8F0;
   --card: #112240;
@@ -31,7 +31,8 @@
 }
 
 /* Consultant / Peer Consultant */
-.dark[data-role="konsultan"], .dark [data-role="konsultan"] {
+.dark[data-role="konsultan"], .dark [data-role="konsultan"],
+[data-theme="dark"][data-role="konsultan"], [data-theme="dark"] [data-role="konsultan"] {
   --background: #0A1F14;
   --card: #133323;
   --primary: #5B8A6F;
@@ -40,7 +41,8 @@
 }
 
 /* Admin */
-.dark[data-role="admin"], .dark [data-role="admin"] {
+.dark[data-role="admin"], .dark [data-role="admin"],
+[data-theme="dark"][data-role="admin"], [data-theme="dark"] [data-role="admin"] {
   --background: #080D1A;
   --card: #111C30;
   --primary: #2C3E6B;
@@ -49,7 +51,8 @@
 }
 
 /* Operator */
-.dark[data-role="operator"], .dark [data-role="operator"] {
+.dark[data-role="operator"], .dark [data-role="operator"],
+[data-theme="dark"][data-role="operator"], [data-theme="dark"] [data-role="operator"] {
   --background: #130A1F;
   --card: #201133;
   --primary: #7B5EA7;
@@ -58,7 +61,8 @@
 }
 
 /* Satgas */
-.dark[data-role="satgas"], .dark [data-role="satgas"] {
+.dark[data-role="satgas"], .dark [data-role="satgas"],
+[data-theme="dark"][data-role="satgas"], [data-theme="dark"] [data-role="satgas"] {
   --background: #071018;
   --card: #0C1D2B;
   --primary: #1A5276;
@@ -66,9 +70,14 @@
   --border: #1A5276;
 }
 
+html {
+  background-color: var(--background);
+}
+
 body {
   color: var(--foreground);
-  background: var(--background);
+  background-color: var(--background);
+  min-height: 100vh;
 }
 
 /* Smooth transition for dark mode */

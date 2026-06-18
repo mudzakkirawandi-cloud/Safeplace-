@@ -64,7 +64,7 @@ export default function AdminLayout({
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#2C3E6B] text-white">
+    <div className="flex flex-col h-full bg-primary text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#3b5082]">
         <SafePlaceLogo variant="white" role="admin" iconSize={20} textSize="text-base" />
@@ -87,7 +87,7 @@ export default function AdminLayout({
               }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-[#4ECDC4] text-[#1B4F72]"
+                  ? "bg-[#4ECDC4] text-primary"
                   : "text-gray-300 hover:bg-[#3b5082] hover:text-white"
               }`}
             >
@@ -112,7 +112,7 @@ export default function AdminLayout({
   );
 
   return (
-    <div className="flex h-screen bg-[#F5F6FA] overflow-hidden">
+    <div data-role="admin" className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Sidebar desktop */}
       <aside className="hidden md:flex w-60 flex-shrink-0 flex-col">
         <SidebarContent />
@@ -146,7 +146,7 @@ export default function AdminLayout({
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
 
         {/* Topbar mobile */}
-        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#2C3E6B] text-white">
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-primary text-white">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -164,10 +164,10 @@ export default function AdminLayout({
         </div>
 
         {/* Topbar Desktop */}
-        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-white border-b border-gray-100 z-10 relative shadow-sm">
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-card border-b border-border z-10 relative shadow-sm">
           <div className="flex items-center gap-4">
             <NotificationBell />
-            <div className="h-8 w-8 rounded-full bg-[#2C3E6B] text-white flex items-center justify-center font-bold text-sm">
+            <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
               AD
             </div>
           </div>

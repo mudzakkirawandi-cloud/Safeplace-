@@ -9,7 +9,7 @@ export default function Footer() {
   const t = useTranslations("homepage.footer");
 
   return (
-    <footer className="bg-[#FAFBFF] border-t border-gray-100 pt-16 pb-8">
+    <footer className="bg-background border-t border-border pt-16 pb-8">
       <div className="container mx-auto px-6 max-w-6xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 mb-16">
           {/* Column 1: Brand & Tagline */}
@@ -17,17 +17,17 @@ export default function Footer() {
             <Link href="/" className="mb-4 inline-block hover:opacity-80 transition-opacity">
               <SafePlaceLogo role="public" />
             </Link>
-            <p className="text-gray-500 text-sm leading-relaxed mb-6">
+            <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               {t("tagline")}
             </p>
-            <div className="flex items-center gap-4 text-gray-400">
-              <a href="#" className="hover:text-[#1B4F72] transition-colors" aria-label="Instagram">
+            <div className="flex items-center gap-4 text-muted-foreground">
+              <a href="#" className="hover:text-primary transition-colors" aria-label="Instagram">
                 <Camera size={20} />
               </a>
-              <a href="#" className="hover:text-[#1B4F72] transition-colors" aria-label="Twitter">
+              <a href="#" className="hover:text-primary transition-colors" aria-label="Twitter">
                 <Globe size={20} />
               </a>
-              <a href="#" className="hover:text-[#1B4F72] transition-colors" aria-label="Email">
+              <a href="#" className="hover:text-primary transition-colors" aria-label="Email">
                 <Mail size={20} />
               </a>
             </div>
@@ -35,8 +35,8 @@ export default function Footer() {
 
           {/* Column 2: Platform */}
           <div>
-            <h3 className="font-bold text-[#1B4F72] mb-4">{t("platform")}</h3>
-            <ul className="space-y-3 text-sm text-gray-500">
+            <h3 className="font-bold text-primary mb-4">{t("platform")}</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <Link href="/" className="hover:text-[#E74C3C] transition-colors">{t("nav_home")}</Link>
               </li>
@@ -54,8 +54,8 @@ export default function Footer() {
 
           {/* Column 3: Komunitas */}
           <div>
-            <h3 className="font-bold text-[#1B4F72] mb-4">{t("community")}</h3>
-            <ul className="space-y-3 text-sm text-gray-500">
+            <h3 className="font-bold text-primary mb-4">{t("community")}</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
                 <Link href="/komunitas" className="hover:text-[#E74C3C] transition-colors">{t("forum")}</Link>
               </li>
@@ -70,8 +70,8 @@ export default function Footer() {
 
           {/* Column 4: Bantuan Darurat */}
           <div>
-            <h3 className="font-bold text-[#1B4F72] mb-4">{t("emergency")}</h3>
-            <ul className="space-y-3 text-sm text-gray-500">
+            <h3 className="font-bold text-primary mb-4">{t("emergency")}</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li className="flex items-center gap-2">
                 <Phone size={14} className="text-[#E74C3C]" />
                 <a href="tel:110" className="hover:text-[#E74C3C] transition-colors">{t("emergency_polri")}</a>
@@ -89,26 +89,26 @@ export default function Footer() {
 
           {/* Column 5: Legal */}
           <div>
-            <h3 className="font-bold text-[#1B4F72] mb-4">{t("legal")}</h3>
-            <ul className="space-y-3 text-sm text-gray-500">
+            <h3 className="font-bold text-primary mb-4">{t("legal")}</h3>
+            <ul className="space-y-3 text-sm text-muted-foreground">
               <li>
-                <Link href="/privacy" className="hover:text-[#1B4F72] transition-colors">{t("privacy_policy")}</Link>
+                <Link href="/privacy" className="hover:text-primary transition-colors">{t("privacy_policy")}</Link>
               </li>
               <li>
-                <Link href="/terms" className="hover:text-[#1B4F72] transition-colors">{t("terms")}</Link>
+                <Link href="/terms" className="hover:text-primary transition-colors">{t("terms")}</Link>
               </li>
               <li>
-                <Link href="/security" className="hover:text-[#1B4F72] transition-colors">{t("data_security")}</Link>
+                <Link href="/security" className="hover:text-primary transition-colors">{t("data_security")}</Link>
               </li>
               <li>
-                <Link href="/contact" className="hover:text-[#1B4F72] transition-colors">{t("contact")}</Link>
+                <Link href="/contact" className="hover:text-primary transition-colors">{t("contact")}</Link>
               </li>
             </ul>
           </div>
         </div>
         
         {/* Bottom Footer */}
-        <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-gray-400">
+        <div className="border-t border-border pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-xs text-muted-foreground">
           <div>
             &copy; {new Date().getFullYear()} SafePlace. {t("rights")}.
           </div>

@@ -51,8 +51,8 @@ export default function AdminDashboardPage() {
   return (
     <div className="p-6 space-y-6">
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold text-[#2C3E6B]">{t("dashboard_title")}</h1>
-        <p className="text-gray-500 text-sm mt-1">{t("dashboard_subtitle")}</p>
+        <h1 className="text-2xl font-bold text-primary">{t("dashboard_title")}</h1>
+        <p className="text-muted-foreground text-sm mt-1">{t("dashboard_subtitle")}</p>
       </motion.div>
 
       {/* Stats */}
@@ -66,7 +66,7 @@ export default function AdminDashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
+              className="bg-card rounded-2xl p-5 border border-border shadow-sm"
             >
               <div className="flex justify-between items-start mb-4">
                 <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center`}>
@@ -76,8 +76,8 @@ export default function AdminDashboardPage() {
                   {stat.trend}
                 </span>
               </div>
-              <p className="text-3xl font-bold text-[#2C3E6B]">{stat.value}</p>
-              <p className="text-xs text-gray-400 mt-1">{t(stat.labelKey)}</p>
+              <p className="text-3xl font-bold text-primary">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t(stat.labelKey)}</p>
             </motion.div>
           );
         })}
@@ -89,9 +89,9 @@ export default function AdminDashboardPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.4 }}
-          className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm lg:col-span-2"
+          className="bg-card rounded-2xl p-5 border border-border shadow-sm lg:col-span-2"
         >
-          <h2 className="font-semibold text-[#2C3E6B] mb-6">{t("chart_trend_title")}</h2>
+          <h2 className="font-semibold text-primary mb-6">{t("chart_trend_title")}</h2>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={TREND_DATA} margin={{ top: 5, right: 20, bottom: 5, left: 0 }}>
@@ -112,9 +112,9 @@ export default function AdminDashboardPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
+          className="bg-card rounded-2xl p-5 border border-border shadow-sm"
         >
-          <h2 className="font-semibold text-[#2C3E6B] mb-6">{t("chart_intent_title")}</h2>
+          <h2 className="font-semibold text-primary mb-6">{t("chart_intent_title")}</h2>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
@@ -146,10 +146,10 @@ export default function AdminDashboardPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.6 }}
-        className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden p-6"
+        className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden p-6"
       >
-        <h2 className="font-semibold text-[#2C3E6B] mb-4">{t("recent_reports_title")}</h2>
-        <p className="text-sm text-gray-500">To see full reports, go to the Reports menu.</p>
+        <h2 className="font-semibold text-primary mb-4">{t("recent_reports_title")}</h2>
+        <p className="text-sm text-muted-foreground">To see full reports, go to the Reports menu.</p>
       </motion.div>
     </div>
   );

@@ -10,7 +10,7 @@ export default function OperatorDashboardPage() {
   const router = useRouter();
 
   const STATS = [
-    { key: "total", labelKey: "stat_campus_reports", value: 45, icon: FileText, color: "text-[#7B5EA7]", bg: "bg-[#7B5EA7]/10" },
+    { key: "total", labelKey: "stat_campus_reports", value: 45, icon: FileText, color: "text-primary", bg: "bg-primary/10" },
     { key: "pending", labelKey: "stat_pending_triage", value: 12, icon: AlertCircle, color: "text-[#F4A261]", bg: "bg-[#F4A261]/20" },
     { key: "escalated", labelKey: "stat_escalated", value: 8, icon: ShieldAlert, color: "text-red-500", bg: "bg-red-100" },
   ];
@@ -25,7 +25,7 @@ export default function OperatorDashboardPage() {
     <div className="p-6 space-y-6 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-2xl font-bold text-[#4a3568]">{t("dashboard_title")}</h1>
-        <p className="text-gray-500 text-sm mt-1">{t("dashboard_subtitle")}</p>
+        <p className="text-muted-foreground text-sm mt-1">{t("dashboard_subtitle")}</p>
       </motion.div>
 
       {/* Stats */}
@@ -38,7 +38,7 @@ export default function OperatorDashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-2xl p-5 border border-purple-100 shadow-sm"
+              className="bg-card rounded-2xl p-5 border border-purple-100 shadow-sm"
             >
               <div className="flex items-start gap-4">
                 <div className={`w-12 h-12 rounded-xl ${stat.bg} flex items-center justify-center flex-shrink-0`}>
@@ -46,7 +46,7 @@ export default function OperatorDashboardPage() {
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-[#4a3568]">{stat.value}</p>
-                  <p className="text-sm text-gray-500 font-medium mt-1">{t(stat.labelKey)}</p>
+                  <p className="text-sm text-muted-foreground font-medium mt-1">{t(stat.labelKey)}</p>
                 </div>
               </div>
             </motion.div>
@@ -59,13 +59,13 @@ export default function OperatorDashboardPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white rounded-2xl border border-purple-100 shadow-sm overflow-hidden"
+        className="bg-card rounded-2xl border border-purple-100 shadow-sm overflow-hidden"
       >
-        <div className="px-6 py-4 border-b border-purple-50 flex justify-between items-center bg-[#F8F5FC]">
+        <div className="px-6 py-4 border-b border-purple-50 flex justify-between items-center bg-background">
           <h2 className="font-bold text-[#4a3568]">{t("recent_reports_title")}</h2>
           <button 
             onClick={() => router.push('/operator/reports')}
-            className="text-sm font-semibold text-[#7B5EA7] hover:text-[#5a4282]"
+            className="text-sm font-semibold text-primary hover:text-[#5a4282]"
           >
             Lihat Semua
           </button>
@@ -75,22 +75,22 @@ export default function OperatorDashboardPage() {
             <div key={report.id} className="p-4 flex items-center justify-between hover:bg-purple-50/50 transition-colors">
               <div>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono font-semibold text-[#7B5EA7]">{report.code}</span>
+                  <span className="font-mono font-semibold text-primary">{report.code}</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
                     report.status.includes('Triase') ? 'bg-[#F4A261]/20 text-[#c87630]' : 'bg-red-100 text-red-700'
                   }`}>
                     {report.status}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+                <div className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
                   <span className="bg-gray-100 px-2 py-0.5 rounded text-xs">{report.type}</span>
-                  <span className="text-gray-400">&bull;</span>
+                  <span className="text-muted-foreground">&bull;</span>
                   <span>{report.date}</span>
                 </div>
               </div>
               <button 
                 onClick={() => router.push(`/operator/reports/${report.id}`)}
-                className="px-3 py-1.5 bg-white border border-[#7B5EA7] text-[#7B5EA7] hover:bg-[#7B5EA7] hover:text-white rounded-lg text-sm font-medium transition-colors"
+                className="px-3 py-1.5 bg-card border border-[#7B5EA7] text-primary hover:bg-primary hover:text-white rounded-lg text-sm font-medium transition-colors"
               >
                 {t("btn_view_details")}
               </button>

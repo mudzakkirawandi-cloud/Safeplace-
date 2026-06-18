@@ -53,7 +53,7 @@ export default function ConfirmationPage() {
   const userEmail = "u***@email.com";
 
   return (
-    <main className="min-h-screen bg-[#F0F7FC] flex flex-col items-center justify-center p-6">
+    <main className="min-h-screen bg-background flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-lg">
 
         {/* Checkmark animasi */}
@@ -71,10 +71,10 @@ export default function ConfirmationPage() {
                   initial={{ scale: 0.8, opacity: 0.6 }}
                   animate={{ scale: 1.4, opacity: 0 }}
                   transition={{ duration: 1, repeat: Infinity, repeatDelay: 1 }}
-                  className="absolute inset-0 rounded-full bg-[#4A90B8]"
+                  className="absolute inset-0 rounded-full bg-primary"
                 />
                 {/* Lingkaran utama */}
-                <div className="w-24 h-24 rounded-full bg-[#4A90B8] flex items-center justify-center shadow-lg">
+                <div className="w-24 h-24 rounded-full bg-primary flex items-center justify-center shadow-lg">
                   <motion.svg
                     viewBox="0 0 52 52"
                     className="w-12 h-12"
@@ -106,10 +106,10 @@ export default function ConfirmationPage() {
           transition={{ delay: 0.4 }}
           className="text-center mb-8"
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1B4F72] mb-3">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary mb-3">
             {t("title")}
           </h1>
-          <p className="text-gray-600 leading-relaxed">
+          <p className="text-muted-foreground leading-relaxed">
             {t("subtitle")}
           </p>
         </motion.div>
@@ -119,16 +119,16 @@ export default function ConfirmationPage() {
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl shadow-sm border border-[#BDE0F5] p-6 mb-4"
+          className="bg-card rounded-2xl shadow-sm border border-[#BDE0F5] p-6 mb-4"
         >
-          <p className="text-sm font-semibold text-[#4A90B8] uppercase tracking-wider mb-3">
+          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-3">
             {t("tracking_code_label")}
           </p>
 
           <div className="flex items-center gap-3">
             {/* Kode */}
-            <div className="flex-1 bg-[#F0F7FC] border-2 border-dashed border-[#4A90B8] rounded-xl px-5 py-4 text-center">
-              <span className="text-3xl font-bold tracking-[0.3em] text-[#1B4F72] font-mono select-all">
+            <div className="flex-1 bg-background border-2 border-dashed border-[#4A90B8] rounded-xl px-5 py-4 text-center">
+              <span className="text-3xl font-bold tracking-[0.3em] text-primary font-mono select-all">
                 {trackingCode}
               </span>
             </div>
@@ -136,7 +136,7 @@ export default function ConfirmationPage() {
             {/* Tombol copy */}
             <button
               onClick={handleCopy}
-              className="w-14 h-14 rounded-xl bg-[#4A90B8] hover:bg-[#3a7da8] text-white flex items-center justify-center transition-all hover:scale-105 active:scale-95 flex-shrink-0 shadow-sm"
+              className="w-14 h-14 rounded-xl bg-primary hover:bg-[#3a7da8] text-white flex items-center justify-center transition-all hover:scale-105 active:scale-95 flex-shrink-0 shadow-sm"
               title={t("copy_button")}
             >
               <AnimatePresence mode="wait">
@@ -170,7 +170,7 @@ export default function ConfirmationPage() {
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0 }}
-                className="text-center text-sm text-[#4A90B8] font-medium mt-3"
+                className="text-center text-sm text-primary font-medium mt-3"
               >
                 ✓ {t("copied_toast")}
               </motion.p>
@@ -201,12 +201,12 @@ export default function ConfirmationPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.65 }}
-            className="flex items-center gap-3 bg-white border border-gray-100 rounded-xl px-5 py-4 mb-4 shadow-sm"
+            className="flex items-center gap-3 bg-card border border-border rounded-xl px-5 py-4 mb-4 shadow-sm"
           >
-            <Mail className="w-5 h-5 text-[#4A90B8] flex-shrink-0" />
-            <p className="text-sm text-gray-600">
+            <Mail className="w-5 h-5 text-primary flex-shrink-0" />
+            <p className="text-sm text-muted-foreground">
               {t("email_sent_prefix")}{" "}
-              <span className="font-semibold text-[#1B4F72]">{userEmail}</span>
+              <span className="font-semibold text-primary">{userEmail}</span>
             </p>
           </motion.div>
         )}
@@ -220,7 +220,7 @@ export default function ConfirmationPage() {
         >
           <button
             onClick={() => router.push("/report/track")}
-            className="flex-1 bg-[#4A90B8] hover:bg-[#3a7da8] text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-md active:scale-95"
+            className="flex-1 bg-primary hover:bg-[#3a7da8] text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-md active:scale-95"
           >
             {t("track_button")}
             <ArrowRight className="w-4 h-4" />
@@ -228,7 +228,7 @@ export default function ConfirmationPage() {
 
           <button
             onClick={() => router.push("/resources")}
-            className="flex-1 bg-white hover:bg-[#F0F7FC] text-[#4A90B8] font-semibold py-3 px-5 rounded-xl border border-[#4A90B8] flex items-center justify-center gap-2 transition-all active:scale-95"
+            className="flex-1 bg-card hover:bg-background text-primary font-semibold py-3 px-5 rounded-xl border border-[#4A90B8] flex items-center justify-center gap-2 transition-all active:scale-95"
           >
             <BookOpen className="w-4 h-4" />
             {t("resources_button")}
@@ -240,7 +240,7 @@ export default function ConfirmationPage() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.9 }}
-          className="text-center text-xs text-gray-400 mt-6 leading-relaxed"
+          className="text-center text-xs text-muted-foreground mt-6 leading-relaxed"
         >
           {t("footer_note")}
         </motion.p>

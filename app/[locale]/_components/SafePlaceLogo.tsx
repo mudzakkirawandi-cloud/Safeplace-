@@ -33,7 +33,7 @@ export default function SafePlaceLogo({
     <div className={`flex items-center gap-2 group ${className}`}>
       {/* Placeholder SVG Icon (Shield) adapting to role color */}
       <div 
-        className={`${variant === 'white' ? 'bg-white/20 text-white border border-white/30' : 'text-white'} p-2 rounded-lg transition-colors`}
+        className={`${variant === 'white' ? 'bg-card/20 text-white border border-border/30' : 'text-white'} p-2 rounded-lg transition-colors`}
         style={variant === 'colored' ? { backgroundColor: primaryColor } : {}}
       >
         <Shield size={iconSize} />

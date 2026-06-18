@@ -48,7 +48,7 @@ export default function CommunityPage() {
   const [twText, setTwText] = useState("");
 
   const categories = [
-    { id: "all", icon: Users, label: "Semua Kategori", color: "text-gray-600 bg-gray-100" },
+    { id: "all", icon: Users, label: "Semua Kategori", color: "text-muted-foreground bg-gray-100" },
     { id: "share_story", icon: Heart, label: t("cat_share_story"), color: "text-red-500 bg-red-50" },
     { id: "recovery", icon: Shield, label: t("cat_recovery"), color: "text-blue-500 bg-blue-50" },
     { id: "legal", icon: GraduationCap, label: t("cat_legal"), color: "text-purple-500 bg-purple-50" },
@@ -125,7 +125,7 @@ export default function CommunityPage() {
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFBFF]">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1 pt-28 pb-16">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -133,12 +133,12 @@ export default function CommunityPage() {
           {/* Header */}
           <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h1 className="text-3xl font-bold text-[#1B4F72]">{t("title")}</h1>
-              <p className="mt-2 text-gray-600">{t("subtitle")}</p>
+              <h1 className="text-3xl font-bold text-primary">{t("title")}</h1>
+              <p className="mt-2 text-muted-foreground">{t("subtitle")}</p>
             </div>
             <button
               onClick={() => setIsModalOpen(true)}
-              className="flex items-center justify-center gap-2 rounded-xl bg-[#1B4F72] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#133A54]"
+              className="flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-[#133A54]"
             >
               <Plus className="h-5 w-5" />
               {t("create_post")}
@@ -149,8 +149,8 @@ export default function CommunityPage() {
             
             {/* Left Sidebar */}
             <div className="lg:col-span-3 space-y-6">
-              <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
-                <h2 className="mb-4 font-semibold text-gray-900">{t("tab_categories")}</h2>
+              <div className="rounded-2xl bg-card p-5 shadow-sm border border-border">
+                <h2 className="mb-4 font-semibold text-foreground">{t("tab_categories")}</h2>
                 <nav className="space-y-1">
                   {categories.map((cat) => (
                     <Link
@@ -158,8 +158,8 @@ export default function CommunityPage() {
                       href={cat.id === "all" ? `/${locale}/komunitas` : `/${locale}/komunitas/${cat.id}`}
                       className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                         cat.id === "all"
-                          ? "bg-[#1B4F72]/10 text-[#1B4F72]"
-                          : "text-gray-600 hover:bg-gray-50"
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground hover:bg-muted"
                       }`}
                     >
                       <div className={`flex h-8 w-8 items-center justify-center rounded-md ${cat.color}`}>
@@ -171,19 +171,19 @@ export default function CommunityPage() {
                 </nav>
               </div>
 
-              <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100 hidden md:block">
-                <h2 className="mb-4 font-semibold text-gray-900">{t("stats_title")}</h2>
+              <div className="rounded-2xl bg-card p-5 shadow-sm border border-border hidden md:block">
+                <h2 className="mb-4 font-semibold text-foreground">{t("stats_title")}</h2>
                 <div className="space-y-4">
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{t("stats_members")}</span>
-                    <span className="font-semibold text-gray-900">1,245</span>
+                    <span className="text-sm text-muted-foreground">{t("stats_members")}</span>
+                    <span className="font-semibold text-foreground">1,245</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{t("stats_posts")}</span>
-                    <span className="font-semibold text-gray-900">856</span>
+                    <span className="text-sm text-muted-foreground">{t("stats_posts")}</span>
+                    <span className="font-semibold text-foreground">856</span>
                   </div>
                   <div className="flex items-center justify-between">
-                    <span className="text-sm text-gray-500">{t("stats_online")}</span>
+                    <span className="text-sm text-muted-foreground">{t("stats_online")}</span>
                     <span className="flex items-center gap-1.5 font-semibold text-green-600">
                       <span className="relative flex h-2 w-2">
                         <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75"></span>
@@ -200,13 +200,13 @@ export default function CommunityPage() {
             <div className="lg:col-span-6 space-y-6">
               
               {/* Tabs */}
-              <div className="flex gap-4 border-b border-gray-200">
+              <div className="flex gap-4 border-b border-border">
                 <button
                   onClick={() => setActiveTab("latest")}
                   className={`pb-4 text-sm font-medium transition-colors ${
                     activeTab === "latest"
-                      ? "border-b-2 border-[#1B4F72] text-[#1B4F72]"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "border-b-2 border-[#1B4F72] text-primary"
+                      : "text-muted-foreground hover:text-card-foreground"
                   }`}
                 >
                   {t("tab_latest")}
@@ -215,8 +215,8 @@ export default function CommunityPage() {
                   onClick={() => setActiveTab("popular")}
                   className={`pb-4 text-sm font-medium transition-colors ${
                     activeTab === "popular"
-                      ? "border-b-2 border-[#1B4F72] text-[#1B4F72]"
-                      : "text-gray-500 hover:text-gray-700"
+                      ? "border-b-2 border-[#1B4F72] text-primary"
+                      : "text-muted-foreground hover:text-card-foreground"
                   }`}
                 >
                   {t("tab_popular")}
@@ -227,7 +227,7 @@ export default function CommunityPage() {
               {isLoading ? (
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
-                    <div key={i} className="animate-pulse rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                    <div key={i} className="animate-pulse rounded-2xl bg-card p-6 shadow-sm border border-border">
                       <div className="mb-4 flex items-center gap-3">
                         <div className="h-10 w-10 rounded-full bg-gray-200"></div>
                         <div className="space-y-2">
@@ -241,34 +241,34 @@ export default function CommunityPage() {
                   ))}
                 </div>
               ) : posts.length === 0 ? (
-                <div className="rounded-2xl bg-white p-12 text-center shadow-sm border border-gray-100">
-                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 text-gray-400">
+                <div className="rounded-2xl bg-card p-12 text-center shadow-sm border border-border">
+                  <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
                     <MessageSquare className="h-8 w-8" />
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900">{t("empty_state")}</h3>
+                  <h3 className="text-lg font-medium text-foreground">{t("empty_state")}</h3>
                 </div>
               ) : (
                 <div className="space-y-4">
                   {posts.map((post) => (
-                    <div key={post.id} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
+                    <div key={post.id} className="rounded-2xl bg-card p-6 shadow-sm border border-border transition-shadow hover:shadow-md">
                       
                       <div className="mb-4 flex items-center justify-between">
                         <div className="flex items-center gap-3">
                           <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                            post.is_anonymous ? "bg-gray-100 text-gray-500" : "bg-[#1B4F72] text-white"
+                            post.is_anonymous ? "bg-gray-100 text-muted-foreground" : "bg-primary text-white"
                           }`}>
                             {post.is_anonymous ? <EyeOff className="h-5 w-5" /> : <User className="h-5 w-5" />}
                           </div>
                           <div>
-                            <p className="font-semibold text-gray-900">
+                            <p className="font-semibold text-foreground">
                               {post.is_anonymous ? (post.display_name || t("anonymous_user")) : "User"}
                             </p>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-xs text-muted-foreground">
                               {new Date(post.created_at).toLocaleDateString()}
                             </p>
                           </div>
                         </div>
-                        <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-600">
+                        <span className="inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-muted-foreground">
                           {categories.find(c => c.id === post.category)?.label || post.category}
                         </span>
                       </div>
@@ -283,15 +283,15 @@ export default function CommunityPage() {
                       )}
 
                       <Link href={`/${locale}/komunitas/post/${post.id}`}>
-                        <h3 className="mb-2 text-lg font-bold text-gray-900 hover:text-[#1B4F72] transition-colors">{post.title}</h3>
+                        <h3 className="mb-2 text-lg font-bold text-foreground hover:text-primary transition-colors">{post.title}</h3>
                       </Link>
-                      <p className="mb-4 text-gray-600 line-clamp-3">{post.content}</p>
+                      <p className="mb-4 text-muted-foreground line-clamp-3">{post.content}</p>
 
-                      <div className="flex items-center gap-4 border-t border-gray-100 pt-4">
-                        <button className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
+                      <div className="flex items-center gap-4 border-t border-border pt-4">
+                        <button className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary">
                           <Heart className="h-4 w-4" /> 0
                         </button>
-                        <Link href={`/${locale}/komunitas/post/${post.id}`} className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
+                        <Link href={`/${locale}/komunitas/post/${post.id}`} className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary">
                           <MessageCircle className="h-4 w-4" /> {t("comments")}
                         </Link>
                       </div>
@@ -303,26 +303,26 @@ export default function CommunityPage() {
 
             {/* Right Sidebar */}
             <div className="hidden lg:block lg:col-span-3 space-y-6">
-              <div className="rounded-2xl bg-white p-5 shadow-sm border border-gray-100">
+              <div className="rounded-2xl bg-card p-5 shadow-sm border border-border">
                 <div className="mb-4 flex items-center gap-2">
                   <TrendingUp className="h-5 w-5 text-orange-500" />
-                  <h2 className="font-semibold text-gray-900">{t("trending_title")}</h2>
+                  <h2 className="font-semibold text-foreground">{t("trending_title")}</h2>
                 </div>
                 <div className="space-y-4">
                   {[1, 2, 3].map((i) => (
                     <div key={i} className="group cursor-pointer">
-                      <h4 className="text-sm font-medium text-gray-900 group-hover:text-[#1B4F72] line-clamp-2">
+                      <h4 className="text-sm font-medium text-foreground group-hover:text-primary line-clamp-2">
                         Pentingnya menjaga kesehatan mental selama proses hukum
                       </h4>
-                      <p className="mt-1 text-xs text-gray-500">24 {t("comments")}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">24 {t("comments")}</p>
                     </div>
                   ))}
                 </div>
               </div>
 
               <div className="rounded-2xl bg-blue-50 p-5 border border-blue-100">
-                <h2 className="mb-3 font-semibold text-[#1B4F72]">{t("guidelines_title")}</h2>
-                <ul className="space-y-2 text-sm text-[#1B4F72]/80">
+                <h2 className="mb-3 font-semibold text-primary">{t("guidelines_title")}</h2>
+                <ul className="space-y-2 text-sm text-primary/80">
                   <li className="flex gap-2">
                     <span className="font-bold">•</span> {t("guidelines_1")}
                   </li>
@@ -359,13 +359,13 @@ export default function CommunityPage() {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl"
+              className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-card shadow-xl"
             >
-              <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-                <h3 className="text-xl font-bold text-gray-900">{t("create_post")}</h3>
+              <div className="flex items-center justify-between border-b border-border px-6 py-4">
+                <h3 className="text-xl font-bold text-foreground">{t("create_post")}</h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="rounded-full p-2 text-muted-foreground hover:bg-gray-100 hover:text-muted-foreground"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -374,7 +374,7 @@ export default function CommunityPage() {
               <form onSubmit={handleCreatePost} className="p-6">
                 <div className="space-y-5">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{t("form_title_label")}</label>
+                    <label className="mb-1.5 block text-sm font-medium text-card-foreground">{t("form_title_label")}</label>
                     <input
                       required
                       type="text"
@@ -386,11 +386,11 @@ export default function CommunityPage() {
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{t("form_category_label")}</label>
+                    <label className="mb-1.5 block text-sm font-medium text-card-foreground">{t("form_category_label")}</label>
                     <select
                       value={newCategory}
                       onChange={e => setNewCategory(e.target.value)}
-                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 bg-white focus:border-[#1B4F72] focus:outline-none focus:ring-1 focus:ring-[#1B4F72]"
+                      className="w-full rounded-xl border border-gray-300 px-4 py-2.5 bg-card focus:border-[#1B4F72] focus:outline-none focus:ring-1 focus:ring-[#1B4F72]"
                     >
                       {categories.filter(c => c.id !== "all").map(c => (
                         <option key={c.id} value={c.id}>{c.label}</option>
@@ -399,7 +399,7 @@ export default function CommunityPage() {
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">{t("form_content_label")}</label>
+                    <label className="mb-1.5 block text-sm font-medium text-card-foreground">{t("form_content_label")}</label>
                     <textarea
                       required
                       rows={5}
@@ -410,15 +410,15 @@ export default function CommunityPage() {
                     />
                   </div>
 
-                  <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
+                  <div className="rounded-xl border border-border bg-muted p-4 space-y-4">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={isAnon}
                         onChange={e => setIsAnon(e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300 text-[#1B4F72] focus:ring-[#1B4F72]"
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-[#1B4F72]"
                       />
-                      <span className="text-sm font-medium text-gray-700">{t("form_anon_label")}</span>
+                      <span className="text-sm font-medium text-card-foreground">{t("form_anon_label")}</span>
                     </label>
                     
                     {isAnon && (
@@ -464,13 +464,13 @@ export default function CommunityPage() {
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="rounded-xl px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                    className="rounded-xl px-5 py-2.5 text-sm font-medium text-card-foreground hover:bg-gray-100"
                   >
                     {t("form_cancel")}
                   </button>
                   <button
                     type="submit"
-                    className="rounded-xl bg-[#1B4F72] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#133A54]"
+                    className="rounded-xl bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-[#133A54]"
                   >
                     {t("form_submit")}
                   </button>

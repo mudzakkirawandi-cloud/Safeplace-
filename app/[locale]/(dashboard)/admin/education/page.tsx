@@ -128,22 +128,22 @@ export default function AdminEducationPage() {
     <div className="p-6 md:p-10 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">{t("education_title")}</h1>
-          <p className="text-sm text-gray-500 mt-1">Kelola materi edukasi untuk pengguna</p>
+          <h1 className="text-2xl font-bold text-foreground">{t("education_title")}</h1>
+          <p className="text-sm text-muted-foreground mt-1">Kelola materi edukasi untuk pengguna</p>
         </div>
         <button
           onClick={() => openModal()}
-          className="bg-[#1B4F72] hover:bg-[#1B4F72]/90 text-white px-4 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
+          className="bg-primary hover:bg-primary/90 text-white px-4 py-2.5 rounded-xl font-medium transition-colors flex items-center gap-2"
         >
           <Plus size={18} />
           {t("btn_add_content")}
         </button>
       </div>
 
-      <div className="bg-white border border-gray-100 rounded-2xl shadow-sm overflow-hidden">
+      <div className="bg-card border border-border rounded-2xl shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="w-full text-left text-sm text-gray-500">
-            <thead className="bg-gray-50/50 text-gray-700 text-xs uppercase font-semibold">
+          <table className="w-full text-left text-sm text-muted-foreground">
+            <thead className="bg-muted/50 text-card-foreground text-xs uppercase font-semibold">
               <tr>
                 <th className="px-6 py-4">{t("table_col_title")}</th>
                 <th className="px-6 py-4">{t("table_col_category")}</th>
@@ -155,16 +155,16 @@ export default function AdminEducationPage() {
             <tbody className="divide-y divide-gray-100">
               {loading ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">Loading...</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Loading...</td>
                 </tr>
               ) : contents.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">Belum ada konten.</td>
+                  <td colSpan={5} className="px-6 py-8 text-center text-muted-foreground">Belum ada konten.</td>
                 </tr>
               ) : (
                 contents.map((item) => (
-                  <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-6 py-4 font-medium text-gray-900">
+                  <tr key={item.id} className="hover:bg-muted/50 transition-colors">
+                    <td className="px-6 py-4 font-medium text-foreground">
                       {item.title}
                       {item.content_type === 'video' && <PlayCircle size={14} className="inline ml-2 text-red-500" />}
                     </td>
@@ -172,7 +172,7 @@ export default function AdminEducationPage() {
                     <td className="px-6 py-4 capitalize">{item.content_type}</td>
                     <td className="px-6 py-4">
                       <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                        item.status === 'published' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-gray-600'
+                        item.status === 'published' ? 'bg-green-50 text-green-600' : 'bg-gray-100 text-muted-foreground'
                       }`}>
                         {item.status}
                       </span>
@@ -181,13 +181,13 @@ export default function AdminEducationPage() {
                       <div className="flex justify-end gap-2">
                         <button 
                           onClick={() => openModal(item)}
-                          className="p-1.5 text-gray-400 hover:text-[#4A90B8] hover:bg-blue-50 rounded-lg transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-primary hover:bg-blue-50 rounded-lg transition-colors"
                         >
                           <Edit2 size={16} />
                         </button>
                         <button 
                           onClick={() => handleDelete(item.id)}
-                          className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-1.5 text-muted-foreground hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                         >
                           <Trash2 size={16} />
                         </button>
@@ -215,15 +215,15 @@ export default function AdminEducationPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="relative bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              className="relative bg-card rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto"
             >
-              <div className="flex items-center justify-between p-6 border-b border-gray-100 sticky top-0 bg-white z-10">
-                <h2 className="text-xl font-bold text-gray-900">
+              <div className="flex items-center justify-between p-6 border-b border-border sticky top-0 bg-card z-10">
+                <h2 className="text-xl font-bold text-foreground">
                   {editingContent ? "Edit Konten Edukasi" : "Tambah Konten Edukasi"}
                 </h2>
                 <button 
                   onClick={() => setIsModalOpen(false)}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-50 rounded-xl transition-colors"
+                  className="p-2 text-muted-foreground hover:text-muted-foreground hover:bg-muted rounded-xl transition-colors"
                 >
                   <X size={20} />
                 </button>
@@ -232,33 +232,33 @@ export default function AdminEducationPage() {
               <form onSubmit={handleSave} className="p-6 space-y-6">
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Judul</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-1">Judul</label>
                     <input 
                       type="text" 
                       required
                       value={formData.title}
                       onChange={(e) => setFormData({...formData, title: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Deskripsi</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-1">Deskripsi</label>
                     <textarea 
                       rows={3}
                       value={formData.description}
                       onChange={(e) => setFormData({...formData, description: e.target.value})}
-                      className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                     ></textarea>
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Kategori</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Kategori</label>
                       <select 
                         value={formData.category}
                         onChange={(e) => setFormData({...formData, category: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       >
                         <option value="pencegahan">Pencegahan</option>
                         <option value="penanganan">Penanganan</option>
@@ -268,11 +268,11 @@ export default function AdminEducationPage() {
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Tipe Konten</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Tipe Konten</label>
                       <select 
                         value={formData.content_type}
                         onChange={(e) => setFormData({...formData, content_type: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       >
                         <option value="video">Video (YouTube)</option>
                         <option value="pdf">PDF</option>
@@ -283,13 +283,13 @@ export default function AdminEducationPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">URL / Link</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-1">URL / Link</label>
                     <input 
                       type="url" 
                       value={formData.url}
                       onChange={(e) => setFormData({...formData, url: e.target.value})}
                       placeholder="https://"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                     />
                   </div>
 
@@ -304,7 +304,7 @@ export default function AdminEducationPage() {
                           allowFullScreen
                         ></iframe>
                       ) : (
-                        <div className="w-full h-full flex items-center justify-center text-gray-400 text-sm">
+                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
                           URL YouTube tidak valid
                         </div>
                       )}
@@ -312,51 +312,51 @@ export default function AdminEducationPage() {
                   )}
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Thumbnail URL (Opsional)</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-1">Thumbnail URL (Opsional)</label>
                     <input 
                       type="url" 
                       value={formData.thumbnail_url}
                       onChange={(e) => setFormData({...formData, thumbnail_url: e.target.value})}
                       placeholder="https://"
-                      className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                     />
                   </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Status</label>
                       <select 
                         value={formData.status}
                         onChange={(e) => setFormData({...formData, status: e.target.value})}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       >
                         <option value="draft">Draft</option>
                         <option value="published">Published</option>
                       </select>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Urutan Tampil</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Urutan Tampil</label>
                       <input 
                         type="number" 
                         value={formData.display_order}
                         onChange={(e) => setFormData({...formData, display_order: parseInt(e.target.value) || 0})}
-                        className="w-full px-4 py-2 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="pt-4 border-t border-gray-100 flex justify-end gap-3">
+                <div className="pt-4 border-t border-border flex justify-end gap-3">
                   <button 
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="px-4 py-2 text-gray-600 hover:bg-gray-50 font-medium rounded-xl transition-colors"
+                    className="px-4 py-2 text-muted-foreground hover:bg-muted font-medium rounded-xl transition-colors"
                   >
                     Batal
                   </button>
                   <button 
                     type="submit"
-                    className="px-6 py-2 bg-[#1B4F72] hover:bg-[#1B4F72]/90 text-white font-medium rounded-xl transition-colors"
+                    className="px-6 py-2 bg-primary hover:bg-primary/90 text-white font-medium rounded-xl transition-colors"
                   >
                     Simpan
                   </button>

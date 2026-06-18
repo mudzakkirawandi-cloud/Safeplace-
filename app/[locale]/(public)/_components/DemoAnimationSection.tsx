@@ -25,13 +25,13 @@ export default function DemoAnimationSection() {
   }, [steps.length]);
 
   return (
-    <section className="py-24 bg-[#FAFBFF]">
+    <section className="py-24 bg-background">
       <div className="container mx-auto px-6 max-w-6xl">
         <div className="text-center mb-16">
-          <h2 className="text-3xl font-display font-bold text-[#1B4F72] mb-4">
+          <h2 className="text-3xl font-display font-bold text-primary mb-4">
             {t("title")}
           </h2>
-          <p className="text-gray-600 max-w-2xl mx-auto">
+          <p className="text-muted-foreground max-w-2xl mx-auto">
             {t("subtitle")}
           </p>
         </div>
@@ -44,15 +44,15 @@ export default function DemoAnimationSection() {
                 key={index}
                 className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-300 ${
                   currentStep === index 
-                    ? "bg-white shadow-md border-l-4 border-[#1B4F72] transform scale-105" 
+                    ? "bg-card shadow-md border-l-4 border-[#1B4F72] transform scale-105" 
                     : "opacity-50 grayscale hover:grayscale-0 hover:opacity-100 cursor-pointer"
                 }`}
                 onClick={() => setCurrentStep(index)}
               >
-                <div className={`p-2 rounded-lg ${currentStep === index ? "bg-[#1B4F72]/10 text-[#1B4F72]" : "bg-gray-100 text-gray-500"}`}>
+                <div className={`p-2 rounded-lg ${currentStep === index ? "bg-primary/10 text-primary" : "bg-gray-100 text-muted-foreground"}`}>
                   <step.icon size={24} />
                 </div>
-                <span className={`font-semibold ${currentStep === index ? "text-[#1B4F72]" : "text-gray-500"}`}>
+                <span className={`font-semibold ${currentStep === index ? "text-primary" : "text-muted-foreground"}`}>
                   {step.title}
                 </span>
               </div>
@@ -61,21 +61,21 @@ export default function DemoAnimationSection() {
 
           {/* Browser Mockup */}
           <div className="w-full lg:w-2/3">
-            <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-100">
+            <div className="bg-card rounded-2xl shadow-xl overflow-hidden border border-border">
               {/* Browser Header */}
-              <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-gray-200">
+              <div className="bg-gray-100 px-4 py-3 flex items-center gap-2 border-b border-border">
                 <div className="flex gap-1.5">
                   <div className="w-3 h-3 rounded-full bg-red-400"></div>
                   <div className="w-3 h-3 rounded-full bg-yellow-400"></div>
                   <div className="w-3 h-3 rounded-full bg-green-400"></div>
                 </div>
-                <div className="mx-auto bg-white px-4 py-1 rounded-md text-xs text-gray-400 font-medium w-1/2 text-center flex items-center justify-center gap-2">
-                  <Shield size={12} className="text-[#4A90B8]" /> safeplace.id
+                <div className="mx-auto bg-card px-4 py-1 rounded-md text-xs text-muted-foreground font-medium w-1/2 text-center flex items-center justify-center gap-2">
+                  <Shield size={12} className="text-primary" /> safeplace.id
                 </div>
               </div>
 
               {/* Browser Content */}
-              <div className="relative h-[400px] bg-gray-50 p-6 overflow-hidden flex items-center justify-center">
+              <div className="relative h-[400px] bg-muted p-6 overflow-hidden flex items-center justify-center">
                 <AnimatePresence mode="wait">
                   {currentStep === 0 && (
                     <motion.div
@@ -83,14 +83,14 @@ export default function DemoAnimationSection() {
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -20 }}
-                      className="w-full max-w-sm bg-white p-4 rounded-full shadow-sm border border-gray-200 flex items-center gap-3"
+                      className="w-full max-w-sm bg-card p-4 rounded-full shadow-sm border border-border flex items-center gap-3"
                     >
-                      <Search size={20} className="text-gray-400" />
+                      <Search size={20} className="text-muted-foreground" />
                       <motion.div 
                         initial={{ width: 0 }} 
                         animate={{ width: "100%" }} 
                         transition={{ duration: 1.5, ease: "linear" }}
-                        className="overflow-hidden whitespace-nowrap text-gray-700 font-medium"
+                        className="overflow-hidden whitespace-nowrap text-card-foreground font-medium"
                       >
                         SafePlace
                       </motion.div>
@@ -105,8 +105,8 @@ export default function DemoAnimationSection() {
                       exit={{ opacity: 0, scale: 1.05 }}
                       className="w-full h-full flex flex-col"
                     >
-                      <div className="h-12 bg-white flex items-center px-6 shadow-sm mb-6 rounded-xl">
-                        <div className="w-8 h-8 bg-[#1B4F72] rounded-lg mr-4"></div>
+                      <div className="h-12 bg-card flex items-center px-6 shadow-sm mb-6 rounded-xl">
+                        <div className="w-8 h-8 bg-primary rounded-lg mr-4"></div>
                         <div className="flex-1 flex gap-4">
                           <div className="w-16 h-3 bg-gray-200 rounded"></div>
                           <div className="w-16 h-3 bg-gray-200 rounded"></div>
@@ -114,7 +114,7 @@ export default function DemoAnimationSection() {
                         </div>
                         <div className="w-24 h-8 bg-[#E74C3C] rounded-lg"></div>
                       </div>
-                      <div className="flex-1 bg-white rounded-xl shadow-sm p-8 flex flex-col items-center justify-center gap-6">
+                      <div className="flex-1 bg-card rounded-xl shadow-sm p-8 flex flex-col items-center justify-center gap-6">
                         <div className="w-3/4 h-8 bg-gray-200 rounded-lg"></div>
                         <div className="w-1/2 h-4 bg-gray-100 rounded"></div>
                         <div className="w-32 h-10 bg-[#E74C3C] rounded-lg mt-4"></div>
@@ -128,7 +128,7 @@ export default function DemoAnimationSection() {
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
-                      className="relative w-full h-full bg-white rounded-xl shadow-sm p-8 flex flex-col items-center justify-center gap-6"
+                      className="relative w-full h-full bg-card rounded-xl shadow-sm p-8 flex flex-col items-center justify-center gap-6"
                     >
                       <div className="w-3/4 h-8 bg-gray-200 rounded-lg"></div>
                       <div className="w-1/2 h-4 bg-gray-100 rounded"></div>
@@ -148,7 +148,7 @@ export default function DemoAnimationSection() {
                           initial={{ scale: 0, opacity: 0 }}
                           animate={{ scale: 2, opacity: [0, 0.5, 0] }}
                           transition={{ duration: 0.5, delay: 1.5 }}
-                          className="absolute top-5 left-[64px] w-6 h-6 bg-[#1B4F72] rounded-full -ml-3 -mt-3"
+                          className="absolute top-5 left-[64px] w-6 h-6 bg-primary rounded-full -ml-3 -mt-3"
                         ></motion.div>
                       </div>
                     </motion.div>
@@ -162,7 +162,7 @@ export default function DemoAnimationSection() {
                       exit={{ opacity: 0, y: -20 }}
                       className="w-full h-full flex items-center justify-center gap-6"
                     >
-                      <div className="w-40 h-48 bg-white rounded-xl shadow-md border-2 border-transparent p-6 flex flex-col items-center justify-center gap-4">
+                      <div className="w-40 h-48 bg-card rounded-xl shadow-md border-2 border-transparent p-6 flex flex-col items-center justify-center gap-4">
                         <div className="w-12 h-12 bg-blue-50 rounded-full"></div>
                         <div className="w-24 h-4 bg-gray-200 rounded"></div>
                         <div className="w-20 h-8 bg-gray-100 rounded mt-2"></div>
@@ -170,12 +170,12 @@ export default function DemoAnimationSection() {
                       <motion.div 
                         initial={{ borderColor: "transparent" }}
                         animate={{ borderColor: "#4A90B8" }}
-                        className="w-40 h-48 bg-white rounded-xl shadow-md border-2 p-6 flex flex-col items-center justify-center gap-4 relative"
+                        className="w-40 h-48 bg-card rounded-xl shadow-md border-2 p-6 flex flex-col items-center justify-center gap-4 relative"
                       >
                         <motion.div 
                           initial={{ scale: 0 }}
                           animate={{ scale: 1 }}
-                          className="absolute -top-3 -right-3 w-6 h-6 bg-[#4A90B8] rounded-full border-2 border-white"
+                          className="absolute -top-3 -right-3 w-6 h-6 bg-primary rounded-full border-2 border-border"
                         ></motion.div>
                         <div className="w-12 h-12 bg-blue-50 rounded-full"></div>
                         <div className="w-24 h-4 bg-gray-200 rounded"></div>
@@ -190,7 +190,7 @@ export default function DemoAnimationSection() {
                       initial={{ opacity: 0, scale: 0.95 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 1.05 }}
-                      className="w-full h-full bg-white rounded-xl shadow-sm p-8 flex flex-col items-center justify-center"
+                      className="w-full h-full bg-card rounded-xl shadow-sm p-8 flex flex-col items-center justify-center"
                     >
                       <motion.div 
                         initial={{ scale: 0 }}

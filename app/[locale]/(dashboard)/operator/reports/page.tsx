@@ -24,33 +24,33 @@ export default function OperatorReportsPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#4a3568]">{t("reports_title")}</h1>
-          <p className="text-sm text-gray-500 mt-1">Hanya menampilkan laporan anonim dari kampus Anda.</p>
+          <p className="text-sm text-muted-foreground mt-1">Hanya menampilkan laporan anonim dari kampus Anda.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-purple-100 shadow-sm p-4">
+      <div className="bg-card rounded-2xl border border-purple-100 shadow-sm p-4">
         <div className="flex flex-wrap gap-3">
           <div className="flex-1 relative min-w-[250px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <input 
               type="text" 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari kode atau jenis..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]/30 focus:border-[#7B5EA7]"
+              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#7B5EA7]/30 focus:border-[#7B5EA7]"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 text-gray-600 text-sm font-medium">
+          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-xl hover:bg-muted text-muted-foreground text-sm font-medium">
             <Filter size={16} />
             Filter
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-purple-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-purple-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[#F8F5FC] text-[#4a3568] text-xs uppercase font-bold border-b border-purple-100">
+            <thead className="bg-background text-[#4a3568] text-xs uppercase font-bold border-b border-purple-100">
               <tr>
                 <th className="px-6 py-4">{t("table_col_code")}</th>
                 <th className="px-6 py-4">{t("table_col_date")}</th>
@@ -68,10 +68,10 @@ export default function OperatorReportsPage() {
                   key={report.id} 
                   className="hover:bg-purple-50/30 transition-colors"
                 >
-                  <td className="px-6 py-4 font-mono font-semibold text-[#7B5EA7]">{report.code}</td>
-                  <td className="px-6 py-4 text-gray-500">{report.date}</td>
+                  <td className="px-6 py-4 font-mono font-semibold text-primary">{report.code}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{report.date}</td>
                   <td className="px-6 py-4">
-                    <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md text-xs font-medium">
+                    <span className="bg-gray-100 text-card-foreground px-2.5 py-1 rounded-md text-xs font-medium">
                       {report.type}
                     </span>
                   </td>
@@ -91,7 +91,7 @@ export default function OperatorReportsPage() {
                         <ShieldAlert size={18} />
                       </button>
                     )}
-                    <button className="p-2 text-[#7B5EA7] hover:bg-[#7B5EA7]/10 rounded-lg transition-colors" title={t("btn_view_details")}>
+                    <button className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors" title={t("btn_view_details")}>
                       <Eye size={18} />
                     </button>
                   </td>

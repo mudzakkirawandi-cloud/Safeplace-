@@ -69,9 +69,9 @@ export default function ResourcesPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F0F7FC] py-12 px-6">
+    <div className="min-h-screen bg-background py-12 px-6">
       <div className="max-w-4xl mx-auto">
-        <Link href="/" className="inline-flex items-center gap-2 text-gray-500 hover:text-[#1B4F72] transition-colors mb-8 font-medium">
+        <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8 font-medium">
           <ArrowLeft size={20} />
           {t("back_to_home")}
         </Link>
@@ -84,10 +84,10 @@ export default function ResourcesPage() {
           <div className="w-16 h-16 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6">
             <ShieldAlert size={32} />
           </div>
-          <h1 className="text-3xl md:text-4xl font-bold text-[#1B4F72] mb-4">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             {t("title")}
           </h1>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             {t("subtitle")}
           </p>
         </motion.div>
@@ -99,15 +99,15 @@ export default function ResourcesPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
-              className={`bg-white rounded-2xl border-2 ${contact.color.split(' ')[2]} p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full`}
+              className={`bg-card rounded-2xl border-2 ${contact.color.split(' ')[2]} p-6 shadow-sm hover:shadow-md transition-shadow flex flex-col h-full`}
             >
               <div className="flex items-start gap-4 mb-6 flex-1">
                 <div className={`w-12 h-12 rounded-xl flex items-center justify-center shrink-0 ${contact.color.split(' ')[0]} ${contact.color.split(' ')[1]}`}>
                   {contact.icon}
                 </div>
                 <div>
-                  <h3 className="font-bold text-gray-800 text-lg mb-1">{contact.title}</h3>
-                  <p className="text-sm text-gray-600 leading-relaxed">{contact.desc}</p>
+                  <h3 className="font-bold text-card-foreground text-lg mb-1">{contact.title}</h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">{contact.desc}</p>
                 </div>
               </div>
               <a 
@@ -127,13 +127,13 @@ export default function ResourcesPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.5 }}
-          className="bg-white rounded-2xl border border-gray-200 p-8 shadow-sm"
+          className="bg-card rounded-2xl border border-border p-8 shadow-sm"
         >
           <div className="flex items-center gap-3 mb-6">
             <div className="w-10 h-10 bg-blue-50 text-blue-600 rounded-lg flex items-center justify-center">
               <Info size={24} />
             </div>
-            <h2 className="text-xl font-bold text-gray-800">{t("guide_title")}</h2>
+            <h2 className="text-xl font-bold text-card-foreground">{t("guide_title")}</h2>
           </div>
           <ul className="space-y-4">
             {guides.map((guide, idx) => (
@@ -141,7 +141,7 @@ export default function ResourcesPage() {
                 <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center shrink-0 text-sm font-bold mt-0.5">
                   {idx + 1}
                 </span>
-                <span className="text-gray-700 leading-relaxed">{guide}</span>
+                <span className="text-card-foreground leading-relaxed">{guide}</span>
               </li>
             ))}
           </ul>

@@ -43,7 +43,7 @@ export default function EmergencySection() {
             <div className="bg-red-100 p-3 rounded-full">
               <AlertTriangle className="text-red-600 w-8 h-8" />
             </div>
-            <h2 className="text-2xl md:text-3xl font-bold text-gray-900">
+            <h2 className="text-2xl md:text-3xl font-bold text-foreground">
               {t("title")}
             </h2>
           </div>
@@ -68,12 +68,12 @@ export default function EmergencySection() {
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               whileHover={{ y: -5 }}
-              className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-all flex flex-col items-center text-center gap-4 group"
+              className="bg-card p-6 rounded-2xl shadow-sm border border-border hover:shadow-md transition-all flex flex-col items-center text-center gap-4 group"
             >
               <div className={`p-4 rounded-full transition-transform group-hover:scale-110 ${item.color}`}>
                 <item.icon size={28} />
               </div>
-              <span className="font-semibold text-gray-800 text-sm md:text-base">
+              <span className="font-semibold text-card-foreground text-sm md:text-base">
                 {item.label}
               </span>
             </motion.a>

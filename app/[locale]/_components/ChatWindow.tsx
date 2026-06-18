@@ -206,21 +206,21 @@ export default function ChatWindow({
   };
 
   return (
-    <div className="flex flex-col h-[600px] bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+    <div className="flex flex-col h-[600px] bg-card rounded-2xl shadow-sm border border-border overflow-hidden">
       {/* Header */}
-      <div className="p-4 bg-white border-b border-gray-100 flex items-center justify-between z-10 shadow-sm relative">
+      <div className="p-4 bg-card border-b border-border flex items-center justify-between z-10 shadow-sm relative">
         <div className="flex items-center space-x-3">
           <div className="relative">
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${userRole === 'reporter' ? 'bg-[#5B8A6F]/10 text-[#5B8A6F]' : 'bg-[#4A90B8]/10 text-[#4A90B8]'}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center ${userRole === 'reporter' ? 'bg-primary/10 text-primary' : 'bg-primary/10 text-primary'}`}>
               <UserIcon size={20} />
             </div>
             {otherOnline && (
-              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
+              <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-border rounded-full"></div>
             )}
           </div>
           <div>
-            <h3 className="font-bold text-gray-800">{getOtherName()}</h3>
-            <p className="text-xs text-gray-500">{otherOnline ? 'Online' : 'Offline'}</p>
+            <h3 className="font-bold text-card-foreground">{getOtherName()}</h3>
+            <p className="text-xs text-muted-foreground">{otherOnline ? 'Online' : 'Offline'}</p>
           </div>
         </div>
         
@@ -235,13 +235,13 @@ export default function ChatWindow({
       </div>
 
       {/* Messages Area */}
-      <div className="flex-1 overflow-y-auto p-4 bg-[#F5F6FA]/50 space-y-4">
+      <div className="flex-1 overflow-y-auto p-4 bg-background/50 space-y-4">
         {loading ? (
           <div className="flex items-center justify-center h-full">
-            <Loader2 className="w-8 h-8 text-gray-400 animate-spin" />
+            <Loader2 className="w-8 h-8 text-muted-foreground animate-spin" />
           </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-center text-gray-400 space-y-2">
+          <div className="flex flex-col items-center justify-center h-full text-center text-muted-foreground space-y-2">
             <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-2">
               <Send size={24} className="text-gray-300 ml-1" />
             </div>
@@ -261,7 +261,7 @@ export default function ChatWindow({
                 >
                   <div className="flex items-end space-x-2 max-w-[80%]">
                     {!isMine && (
-                      <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mb-1 ${userRole === 'reporter' ? 'bg-[#5B8A6F]/10 text-[#5B8A6F]' : 'bg-[#4A90B8]/10 text-[#4A90B8]'}`}>
+                      <div className={`w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center mb-1 ${userRole === 'reporter' ? 'bg-primary/10 text-primary' : 'bg-primary/10 text-primary'}`}>
                         <UserIcon size={16} />
                       </div>
                     )}
@@ -269,8 +269,8 @@ export default function ChatWindow({
                     <div 
                       className={`relative px-4 py-3 rounded-2xl ${
                         isMine 
-                          ? 'bg-[#4A90B8] text-white rounded-br-sm' 
-                          : 'bg-white text-gray-800 border border-gray-100 shadow-sm rounded-bl-sm'
+                          ? 'bg-primary text-white rounded-br-sm' 
+                          : 'bg-card text-card-foreground border border-border shadow-sm rounded-bl-sm'
                       }`}
                     >
                       <p className="text-sm whitespace-pre-wrap break-words">{msg.content}</p>
@@ -278,11 +278,11 @@ export default function ChatWindow({
                   </div>
                   
                   <div className={`flex items-center mt-1 space-x-1 px-1 ${isMine ? 'mr-2' : 'ml-10'}`}>
-                    <span className="text-[10px] text-gray-400">{formatTime(msg.created_at)}</span>
+                    <span className="text-[10px] text-muted-foreground">{formatTime(msg.created_at)}</span>
                     {isMine && (
-                      <span className="text-gray-400">
+                      <span className="text-muted-foreground">
                         {msg.is_read ? (
-                          <CheckCheck size={14} className="text-[#4A90B8]" />
+                          <CheckCheck size={14} className="text-primary" />
                         ) : (
                           <Check size={14} />
                         )}
@@ -300,7 +300,7 @@ export default function ChatWindow({
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0 }}
-            className="flex items-center space-x-2 text-gray-400 ml-10"
+            className="flex items-center space-x-2 text-muted-foreground ml-10"
           >
             <span className="text-xs italic">{getOtherName()} sedang mengetik</span>
             <div className="flex space-x-1">
@@ -314,19 +314,19 @@ export default function ChatWindow({
       </div>
 
       {/* Input Area */}
-      <div className="p-4 bg-white border-t border-gray-100 z-10">
+      <div className="p-4 bg-card border-t border-border z-10">
         <form onSubmit={handleSendMessage} className="flex items-center space-x-3">
           <input
             type="text"
             value={newMessage}
             onChange={handleTyping}
             placeholder="Ketik pesan..."
-            className="flex-1 bg-gray-50 border border-gray-200 text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8] transition-all"
+            className="flex-1 bg-muted border border-border text-sm rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8] transition-all"
           />
           <button
             type="submit"
             disabled={!newMessage.trim()}
-            className="w-12 h-12 bg-[#4A90B8] hover:bg-[#3A7A9E] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors flex-shrink-0 shadow-sm hover:shadow"
+            className="w-12 h-12 bg-primary hover:bg-[#3A7A9E] disabled:bg-gray-300 disabled:cursor-not-allowed text-white rounded-xl flex items-center justify-center transition-colors flex-shrink-0 shadow-sm hover:shadow"
           >
             <Send size={18} className="ml-1" />
           </button>

@@ -35,7 +35,7 @@ export default function LogoutConfirmModal({
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden pointer-events-auto"
+              className="bg-card rounded-2xl shadow-xl w-full max-w-md overflow-hidden pointer-events-auto"
             >
               <div className="p-6">
                 <div className="flex items-start gap-4">
@@ -43,22 +43,22 @@ export default function LogoutConfirmModal({
                     <LogOut className="w-6 h-6 text-red-600" />
                   </div>
                   <div className="flex-1 pt-1">
-                    <h3 className="text-xl font-semibold text-[#2C3E6B] mb-2">
+                    <h3 className="text-xl font-semibold text-primary mb-2">
                       {t("logout_confirm_title")}
                     </h3>
-                    <p className="text-gray-500 text-sm leading-relaxed">
+                    <p className="text-muted-foreground text-sm leading-relaxed">
                       {t("logout_confirm_desc")}
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-gray-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-gray-100">
+              <div className="bg-muted px-6 py-4 flex items-center justify-end gap-3 border-t border-border">
                 <button
                   type="button"
                   onClick={onClose}
                   disabled={isLoggingOut}
-                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-gray-700 bg-white border border-gray-200 hover:bg-gray-50 hover:text-gray-900 transition-colors disabled:opacity-50"
+                  className="px-4 py-2.5 rounded-xl text-sm font-medium text-card-foreground bg-card border border-border hover:bg-muted hover:text-foreground transition-colors disabled:opacity-50"
                 >
                   {t("logout_cancel")}
                 </button>
@@ -69,7 +69,7 @@ export default function LogoutConfirmModal({
                   className="px-4 py-2.5 rounded-xl text-sm font-medium text-white bg-red-600 hover:bg-red-700 transition-colors flex items-center gap-2 disabled:opacity-50"
                 >
                   {isLoggingOut ? (
-                    <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                    <div className="w-4 h-4 border-2 border-border/30 border-t-white rounded-full animate-spin" />
                   ) : null}
                   {t("logout_confirm")}
                 </button>

@@ -196,7 +196,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
 
   if (isLoading) {
     return (
-      <div className="flex min-h-screen flex-col bg-[#FAFBFF]">
+      <div className="flex min-h-screen flex-col bg-background">
         <Navbar />
         <main className="flex-1 pt-32 pb-16 flex justify-center items-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1B4F72]"></div>
@@ -211,53 +211,53 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
   }
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFBFF]">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1 pt-28 pb-16">
         <div className="container mx-auto max-w-3xl px-4 sm:px-6 lg:px-8">
           
-          <Link href={`/${locale}/komunitas`} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-[#1B4F72] mb-6">
+          <Link href={`/${locale}/komunitas`} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary mb-6">
             <ArrowLeft className="h-4 w-4" />
             {t("back_to_feed")}
           </Link>
 
           {/* Post Detail */}
-          <div className="rounded-2xl bg-white p-6 md:p-8 shadow-sm border border-gray-100 mb-8">
+          <div className="rounded-2xl bg-card p-6 md:p-8 shadow-sm border border-border mb-8">
             <div className="mb-6 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <div className={`flex h-12 w-12 items-center justify-center rounded-full ${
-                  post.is_anonymous ? "bg-gray-100 text-gray-500" : "bg-[#1B4F72] text-white"
+                  post.is_anonymous ? "bg-gray-100 text-muted-foreground" : "bg-primary text-white"
                 }`}>
                   {post.is_anonymous ? <EyeOff className="h-6 w-6" /> : <User className="h-6 w-6" />}
                 </div>
                 <div>
-                  <p className="font-bold text-gray-900 text-lg">
+                  <p className="font-bold text-foreground text-lg">
                     {post.is_anonymous ? (post.display_name || t("anonymous_user")) : "User"}
                   </p>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-muted-foreground">
                     {new Date(post.created_at).toLocaleString()}
                   </p>
                 </div>
               </div>
             </div>
 
-            <h1 className="mb-4 text-2xl font-bold text-gray-900">{post.title}</h1>
+            <h1 className="mb-4 text-2xl font-bold text-foreground">{post.title}</h1>
 
             {/* Content Area with Trigger Warning Handling */}
             {post.has_trigger_warning ? (
               <TriggerWarning postId={post.id} triggerText={post.trigger_warning_text || ""}>
-                <div className="prose max-w-none text-gray-800 whitespace-pre-wrap leading-relaxed">
+                <div className="prose max-w-none text-card-foreground whitespace-pre-wrap leading-relaxed">
                   {post.content}
                 </div>
               </TriggerWarning>
             ) : (
-              <div className="prose max-w-none text-gray-800 whitespace-pre-wrap leading-relaxed">
+              <div className="prose max-w-none text-card-foreground whitespace-pre-wrap leading-relaxed">
                 {post.content}
               </div>
             )}
 
             {/* Empathetic Reactions */}
-            <div className="mt-8 border-t border-gray-100 pt-6">
+            <div className="mt-8 border-t border-border pt-6">
               <div className="flex flex-wrap gap-3">
                 {(Object.keys(reactionConfig) as Array<keyof typeof reactionConfig>).map((type) => {
                   const rType = type as "support" | "strong" | "hug" | "thanks";
@@ -269,14 +269,14 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
                       onClick={() => handleReaction(rType)}
                       className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
                         isReacted 
-                          ? "bg-[#1B4F72] text-white shadow-md shadow-[#1B4F72]/20" 
-                          : "bg-gray-50 text-gray-700 hover:bg-gray-100 border border-gray-200"
+                          ? "bg-primary text-white shadow-md shadow-[#1B4F72]/20" 
+                          : "bg-muted text-card-foreground hover:bg-gray-100 border border-border"
                       }`}
                     >
                       <span>{reactionConfig[rType].icon}</span>
                       <span>{reactionConfig[rType].label}</span>
                       {count > 0 && (
-                        <span className={`ml-1 rounded-full px-2 py-0.5 text-xs ${isReacted ? "bg-white/20" : "bg-gray-200"}`}>
+                        <span className={`ml-1 rounded-full px-2 py-0.5 text-xs ${isReacted ? "bg-card/20" : "bg-gray-200"}`}>
                           {count}
                         </span>
                       )}
@@ -288,16 +288,16 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
           </div>
 
           {/* Replies Section */}
-          <div className="rounded-2xl bg-white p-6 md:p-8 shadow-sm border border-gray-100">
-            <h3 className="mb-6 text-xl font-bold text-gray-900 flex items-center gap-2">
-              <MessageCircle className="h-5 w-5 text-[#1B4F72]" /> 
-              {t("replies_title")} <span className="text-gray-400 text-base font-normal">({replies.length})</span>
+          <div className="rounded-2xl bg-card p-6 md:p-8 shadow-sm border border-border">
+            <h3 className="mb-6 text-xl font-bold text-foreground flex items-center gap-2">
+              <MessageCircle className="h-5 w-5 text-primary" /> 
+              {t("replies_title")} <span className="text-muted-foreground text-base font-normal">({replies.length})</span>
             </h3>
 
             {/* Reply Form */}
             <form onSubmit={handleReplySubmit} className="mb-8">
               <div className="flex gap-4">
-                <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#1B4F72] text-white">
+                <div className="hidden sm:flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-primary text-white">
                   <User className="h-5 w-5" />
                 </div>
                 <div className="flex-1 space-y-3">
@@ -315,9 +315,9 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
                         type="checkbox"
                         checked={isAnonReply}
                         onChange={(e) => setIsAnonReply(e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300 text-[#1B4F72] focus:ring-[#1B4F72]"
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-[#1B4F72]"
                       />
-                      <span className="text-sm text-gray-600">{t("reply_anon_toggle")}</span>
+                      <span className="text-sm text-muted-foreground">{t("reply_anon_toggle")}</span>
                     </label>
                     
                     {isAnonReply && (
@@ -333,7 +333,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
                     <button
                       type="submit"
                       disabled={isSubmittingReply}
-                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#1B4F72] px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#133A54] disabled:opacity-50"
+                      className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#133A54] disabled:opacity-50"
                     >
                       <Send className="h-4 w-4" />
                       {isSubmittingReply ? "..." : t("reply_submit")}
@@ -346,25 +346,25 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
             {/* Replies List */}
             <div className="space-y-6">
               {replies.length === 0 ? (
-                <p className="text-center text-gray-500 py-4">Belum ada balasan. Jadilah yang pertama memberikan dukungan!</p>
+                <p className="text-center text-muted-foreground py-4">Belum ada balasan. Jadilah yang pertama memberikan dukungan!</p>
               ) : (
                 replies.map((reply) => (
                   <div key={reply.id} className="flex gap-4">
                     <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${
-                      reply.is_anonymous ? "bg-gray-100 text-gray-500" : "bg-[#1B4F72] text-white"
+                      reply.is_anonymous ? "bg-gray-100 text-muted-foreground" : "bg-primary text-white"
                     }`}>
                       {reply.is_anonymous ? <EyeOff className="h-5 w-5" /> : <User className="h-5 w-5" />}
                     </div>
-                    <div className="flex-1 rounded-2xl bg-gray-50 p-4 border border-gray-100">
+                    <div className="flex-1 rounded-2xl bg-muted p-4 border border-border">
                       <div className="mb-2 flex items-center justify-between">
-                        <p className="font-semibold text-gray-900 text-sm">
+                        <p className="font-semibold text-foreground text-sm">
                           {reply.is_anonymous ? (reply.display_name || t("anonymous_user")) : "User"}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-muted-foreground">
                           {new Date(reply.created_at).toLocaleDateString()}
                         </p>
                       </div>
-                      <p className="text-gray-800 text-sm whitespace-pre-wrap">{reply.content}</p>
+                      <p className="text-card-foreground text-sm whitespace-pre-wrap">{reply.content}</p>
                     </div>
                   </div>
                 ))

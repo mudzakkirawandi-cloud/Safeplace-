@@ -122,18 +122,18 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
   };
 
   return (
-    <div className="flex min-h-screen flex-col bg-[#FAFBFF]">
+    <div className="flex min-h-screen flex-col bg-background">
       <Navbar />
       <main className="flex-1 pt-28 pb-16">
         <div className="container mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
           
-          <Link href={`/${locale}/komunitas`} className="inline-flex items-center gap-2 text-sm font-medium text-gray-500 hover:text-[#1B4F72] mb-6">
+          <Link href={`/${locale}/komunitas`} className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-primary mb-6">
             <ArrowLeft className="h-4 w-4" />
             {t("back_to_community")}
           </Link>
 
           {/* Category Header */}
-          <div className={`mb-8 rounded-3xl bg-white p-8 shadow-sm border ${currentCategory.border} relative overflow-hidden`}>
+          <div className={`mb-8 rounded-3xl bg-card p-8 shadow-sm border ${currentCategory.border} relative overflow-hidden`}>
             <div className="absolute top-0 right-0 p-8 opacity-5">
               <currentCategory.icon className="h-32 w-32" />
             </div>
@@ -143,13 +143,13 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                   <currentCategory.icon className="h-8 w-8" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-bold text-gray-900 mb-2">{currentCategory.label}</h1>
-                  <p className="text-gray-600 max-w-lg">{currentCategory.desc}</p>
+                  <h1 className="text-3xl font-bold text-foreground mb-2">{currentCategory.label}</h1>
+                  <p className="text-muted-foreground max-w-lg">{currentCategory.desc}</p>
                 </div>
               </div>
               <button
                 onClick={() => setIsModalOpen(true)}
-                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-[#1B4F72] px-6 py-3 font-semibold text-white transition-colors hover:bg-[#133A54]"
+                className="flex shrink-0 items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition-colors hover:bg-[#133A54]"
               >
                 <Plus className="h-5 w-5" />
                 {t("create_post_here")}
@@ -159,13 +159,13 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
 
           <div className="space-y-6">
             {/* Tabs */}
-            <div className="flex gap-4 border-b border-gray-200">
+            <div className="flex gap-4 border-b border-border">
               <button
                 onClick={() => setActiveTab("latest")}
                 className={`pb-4 text-sm font-medium transition-colors ${
                   activeTab === "latest"
-                    ? "border-b-2 border-[#1B4F72] text-[#1B4F72]"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "border-b-2 border-[#1B4F72] text-primary"
+                    : "text-muted-foreground hover:text-card-foreground"
                 }`}
               >
                 {t("tab_latest")}
@@ -174,8 +174,8 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                 onClick={() => setActiveTab("popular")}
                 className={`pb-4 text-sm font-medium transition-colors ${
                   activeTab === "popular"
-                    ? "border-b-2 border-[#1B4F72] text-[#1B4F72]"
-                    : "text-gray-500 hover:text-gray-700"
+                    ? "border-b-2 border-[#1B4F72] text-primary"
+                    : "text-muted-foreground hover:text-card-foreground"
                 }`}
               >
                 {t("tab_popular")}
@@ -186,7 +186,7 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
             {isLoading ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
-                  <div key={i} className="animate-pulse rounded-2xl bg-white p-6 shadow-sm border border-gray-100">
+                  <div key={i} className="animate-pulse rounded-2xl bg-card p-6 shadow-sm border border-border">
                     <div className="mb-4 flex items-center gap-3">
                       <div className="h-10 w-10 rounded-full bg-gray-200"></div>
                       <div className="space-y-2">
@@ -200,29 +200,29 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                 ))}
               </div>
             ) : posts.length === 0 ? (
-              <div className="rounded-2xl bg-white p-12 text-center shadow-sm border border-gray-100">
-                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-50 text-gray-400">
+              <div className="rounded-2xl bg-card p-12 text-center shadow-sm border border-border">
+                <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted text-muted-foreground">
                   <MessageSquare className="h-8 w-8" />
                 </div>
-                <h3 className="text-lg font-medium text-gray-900">{t("empty_state")}</h3>
+                <h3 className="text-lg font-medium text-foreground">{t("empty_state")}</h3>
               </div>
             ) : (
               <div className="space-y-4">
                 {posts.map((post) => (
-                  <div key={post.id} className="rounded-2xl bg-white p-6 shadow-sm border border-gray-100 transition-shadow hover:shadow-md">
+                  <div key={post.id} className="rounded-2xl bg-card p-6 shadow-sm border border-border transition-shadow hover:shadow-md">
                     
                     <div className="mb-4 flex items-center justify-between">
                       <div className="flex items-center gap-3">
                         <div className={`flex h-10 w-10 items-center justify-center rounded-full ${
-                          post.is_anonymous ? "bg-gray-100 text-gray-500" : "bg-[#1B4F72] text-white"
+                          post.is_anonymous ? "bg-gray-100 text-muted-foreground" : "bg-primary text-white"
                         }`}>
                           {post.is_anonymous ? <EyeOff className="h-5 w-5" /> : <User className="h-5 w-5" />}
                         </div>
                         <div>
-                          <p className="font-semibold text-gray-900">
+                          <p className="font-semibold text-foreground">
                             {post.is_anonymous ? (post.display_name || t("anonymous_user")) : "User"}
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-xs text-muted-foreground">
                             {new Date(post.created_at).toLocaleDateString()}
                           </p>
                         </div>
@@ -239,15 +239,15 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                     )}
 
                     <Link href={`/${locale}/komunitas/post/${post.id}`}>
-                      <h3 className="mb-2 text-lg font-bold text-gray-900 hover:text-[#1B4F72] transition-colors">{post.title}</h3>
+                      <h3 className="mb-2 text-lg font-bold text-foreground hover:text-primary transition-colors">{post.title}</h3>
                     </Link>
-                    <p className="mb-4 text-gray-600 line-clamp-3">{post.content}</p>
+                    <p className="mb-4 text-muted-foreground line-clamp-3">{post.content}</p>
 
-                    <div className="flex items-center gap-4 border-t border-gray-100 pt-4">
-                      <button className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
+                    <div className="flex items-center gap-4 border-t border-border pt-4">
+                      <button className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary">
                         <Heart className="h-4 w-4" /> 0
                       </button>
-                      <Link href={`/${locale}/komunitas/post/${post.id}`} className="flex items-center gap-1.5 text-sm font-medium text-gray-500 hover:text-[#1B4F72]">
+                      <Link href={`/${locale}/komunitas/post/${post.id}`} className="flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-primary">
                         <MessageCircle className="h-4 w-4" /> {t("comments")}
                       </Link>
                     </div>
@@ -275,13 +275,13 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-white shadow-xl"
+              className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-card shadow-xl"
             >
-              <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
-                <h3 className="text-xl font-bold text-gray-900">{t("create_post_here")}</h3>
+              <div className="flex items-center justify-between border-b border-border px-6 py-4">
+                <h3 className="text-xl font-bold text-foreground">{t("create_post_here")}</h3>
                 <button
                   onClick={() => setIsModalOpen(false)}
-                  className="rounded-full p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-600"
+                  className="rounded-full p-2 text-muted-foreground hover:bg-gray-100 hover:text-muted-foreground"
                 >
                   <X className="h-5 w-5" />
                 </button>
@@ -290,7 +290,7 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
               <form onSubmit={handleCreatePost} className="p-6">
                 <div className="space-y-5">
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">Judul Post</label>
+                    <label className="mb-1.5 block text-sm font-medium text-card-foreground">Judul Post</label>
                     <input
                       required
                       type="text"
@@ -302,7 +302,7 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                   </div>
 
                   <div>
-                    <label className="mb-1.5 block text-sm font-medium text-gray-700">Isi Post</label>
+                    <label className="mb-1.5 block text-sm font-medium text-card-foreground">Isi Post</label>
                     <textarea
                       required
                       rows={5}
@@ -313,15 +313,15 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                     />
                   </div>
 
-                  <div className="rounded-xl border border-gray-200 bg-gray-50 p-4 space-y-4">
+                  <div className="rounded-xl border border-border bg-muted p-4 space-y-4">
                     <label className="flex items-center gap-3 cursor-pointer">
                       <input
                         type="checkbox"
                         checked={isAnon}
                         onChange={e => setIsAnon(e.target.checked)}
-                        className="h-4 w-4 rounded border-gray-300 text-[#1B4F72] focus:ring-[#1B4F72]"
+                        className="h-4 w-4 rounded border-gray-300 text-primary focus:ring-[#1B4F72]"
                       />
-                      <span className="text-sm font-medium text-gray-700">Post sebagai Anonim</span>
+                      <span className="text-sm font-medium text-card-foreground">Post sebagai Anonim</span>
                     </label>
                     
                     {isAnon && (
@@ -367,13 +367,13 @@ export default function CategoryPage({ params }: { params: { kategori: string } 
                   <button
                     type="button"
                     onClick={() => setIsModalOpen(false)}
-                    className="rounded-xl px-5 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-100"
+                    className="rounded-xl px-5 py-2.5 text-sm font-medium text-card-foreground hover:bg-gray-100"
                   >
                     Batal
                   </button>
                   <button
                     type="submit"
-                    className="rounded-xl bg-[#1B4F72] px-6 py-2.5 text-sm font-medium text-white hover:bg-[#133A54]"
+                    className="rounded-xl bg-primary px-6 py-2.5 text-sm font-medium text-white hover:bg-[#133A54]"
                   >
                     Kirim Post
                   </button>

@@ -151,8 +151,8 @@ export default function ReportDashboardPage() {
       case "diterima": return "bg-yellow-100 text-yellow-700 border-yellow-200";
       case "diproses": return "bg-blue-100 text-blue-700 border-blue-200";
       case "selesai": return "bg-green-100 text-green-700 border-green-200";
-      case "ditutup": return "bg-gray-100 text-gray-700 border-gray-200";
-      default: return "bg-gray-100 text-gray-700 border-gray-200";
+      case "ditutup": return "bg-gray-100 text-card-foreground border-border";
+      default: return "bg-gray-100 text-card-foreground border-border";
     }
   };
 
@@ -181,16 +181,16 @@ export default function ReportDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FAFBFF]">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-30">
+      <header className="bg-card border-b border-border sticky top-0 z-30">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between max-w-6xl">
           <SafePlaceLogo role="reporter" iconSize={20} textSize="text-xl" />
           <div className="flex items-center gap-4">
             <div className="relative">
               <button 
                 onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 text-gray-500 hover:text-[#1B4F72] hover:bg-gray-50 rounded-full transition-colors relative"
+                className="p-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors relative"
               >
                 <Bell size={20} />
                 {unreadNotifs > 0 && (
@@ -204,14 +204,14 @@ export default function ReportDashboardPage() {
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-lg border border-gray-100 overflow-hidden"
+                    className="absolute right-0 mt-2 w-80 bg-card rounded-xl shadow-lg border border-border overflow-hidden"
                   >
-                    <div className="p-4 border-b border-gray-100 font-semibold text-gray-800">
+                    <div className="p-4 border-b border-border font-semibold text-card-foreground">
                       {t("notifications_title")}
                     </div>
                     <div className="max-h-80 overflow-y-auto">
                       {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-gray-500 text-sm">
+                        <div className="p-4 text-center text-muted-foreground text-sm">
                           {t("notifications_empty")}
                         </div>
                       ) : (
@@ -219,11 +219,11 @@ export default function ReportDashboardPage() {
                           <div 
                             key={notif.id} 
                             onClick={() => !notif.is_read && markAsRead(notif.id)}
-                            className={`p-4 border-b border-gray-50 text-sm transition-colors ${notif.is_read ? 'bg-white' : 'bg-blue-50/50 hover:bg-blue-50 cursor-pointer'}`}
+                            className={`p-4 border-b border-border text-sm transition-colors ${notif.is_read ? 'bg-card' : 'bg-blue-50/50 hover:bg-blue-50 cursor-pointer'}`}
                           >
-                            <p className="font-semibold text-gray-800 mb-1">{notif.title}</p>
-                            <p className="text-gray-600 mb-2">{notif.message}</p>
-                            <p className="text-xs text-gray-400">
+                            <p className="font-semibold text-card-foreground mb-1">{notif.title}</p>
+                            <p className="text-muted-foreground mb-2">{notif.message}</p>
+                            <p className="text-xs text-muted-foreground">
                               {new Date(notif.created_at).toLocaleDateString()}
                             </p>
                           </div>
@@ -252,50 +252,50 @@ export default function ReportDashboardPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h2 className="text-3xl font-bold text-[#1B4F72] mb-2">
+          <h2 className="text-3xl font-bold text-primary mb-2">
             {t("title", { name: user?.full_name?.split(' ')[0] || 'User' })}
           </h2>
-          <p className="text-gray-600">{t("subtitle")}</p>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </motion.div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
               <AlertCircle size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">{t("stat_total")}</p>
-              <p className="text-2xl font-bold text-gray-800">{reports.length}</p>
+              <p className="text-sm text-muted-foreground mb-1">{t("stat_total")}</p>
+              <p className="text-2xl font-bold text-card-foreground">{reports.length}</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600">
               <Clock size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">{t("stat_active")}</p>
-              <p className="text-2xl font-bold text-gray-800">{activeReports.length}</p>
+              <p className="text-sm text-muted-foreground mb-1">{t("stat_active")}</p>
+              <p className="text-2xl font-bold text-card-foreground">{activeReports.length}</p>
             </div>
           </div>
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex items-center gap-4">
             <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
               <CheckCircle size={24} />
             </div>
             <div>
-              <p className="text-sm text-gray-500 mb-1">{t("stat_done")}</p>
-              <p className="text-2xl font-bold text-gray-800">{reports.length - activeReports.length}</p>
+              <p className="text-sm text-muted-foreground mb-1">{t("stat_done")}</p>
+              <p className="text-2xl font-bold text-card-foreground">{reports.length - activeReports.length}</p>
             </div>
           </div>
         </div>
 
         {/* Quick Actions */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-          <Link href="/report/start" className="flex items-center justify-center gap-2 bg-[#1B4F72] text-white py-4 px-6 rounded-xl hover:bg-[#123650] transition-colors shadow-md hover:shadow-lg font-medium">
+          <Link href="/report/start" className="flex items-center justify-center gap-2 bg-primary text-white py-4 px-6 rounded-xl hover:bg-[#123650] transition-colors shadow-md hover:shadow-lg font-medium">
             <PlusCircle size={20} />
             {t("btn_new_report")}
           </Link>
-          <Link href="/report/track" className="flex items-center justify-center gap-2 bg-white border border-gray-200 text-[#1B4F72] py-4 px-6 rounded-xl hover:bg-gray-50 transition-colors font-medium">
+          <Link href="/report/track" className="flex items-center justify-center gap-2 bg-card border border-border text-primary py-4 px-6 rounded-xl hover:bg-muted transition-colors font-medium">
             <Search size={20} />
             {t("btn_track_anon")}
           </Link>
@@ -305,25 +305,25 @@ export default function ReportDashboardPage() {
         <div className="space-y-10">
           {activeReports.length > 0 && (
             <section>
-              <h3 className="text-xl font-bold text-gray-800 mb-4">{t("active_reports_title")}</h3>
+              <h3 className="text-xl font-bold text-card-foreground mb-4">{t("active_reports_title")}</h3>
               <div className="grid gap-4 md:grid-cols-2">
                 {activeReports.map(report => (
-                  <div key={report.id} className="bg-white p-6 rounded-2xl border-2 border-[#EBF5FB] shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-[#4A90B8]"></div>
+                  <div key={report.id} className="bg-card p-6 rounded-2xl border-2 border-[#EBF5FB] shadow-sm relative overflow-hidden group">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
                     <div className="flex justify-between items-start mb-4">
                       <div>
-                        <p className="text-sm text-gray-500 mb-1">ID: {report.tracking_code}</p>
-                        <h4 className="font-semibold text-gray-800">{report.incident_type}</h4>
+                        <p className="text-sm text-muted-foreground mb-1">ID: {report.tracking_code}</p>
+                        <h4 className="font-semibold text-card-foreground">{report.incident_type}</h4>
                       </div>
                       <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
                         {getStatusText(report.status)}
                       </span>
                     </div>
-                    <p className="text-xs text-gray-400 mb-6">
+                    <p className="text-xs text-muted-foreground mb-6">
                       Dilaporkan pada: {new Date(report.created_at).toLocaleDateString()}
                     </p>
                     {report.consultant_id && (
-                      <Link href={`/report/chat/${report.id}`} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#EBF5FB] text-[#1B4F72] rounded-lg text-sm font-semibold hover:bg-[#D6EAF8] transition-colors">
+                      <Link href={`/report/chat/${report.id}`} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-background text-primary rounded-lg text-sm font-semibold hover:bg-[#D6EAF8] transition-colors">
                         <MessageCircle size={16} />
                         {t("continue_chat")}
                       </Link>
@@ -335,19 +335,19 @@ export default function ReportDashboardPage() {
           )}
 
           <section>
-            <h3 className="text-xl font-bold text-gray-800 mb-4">{t("history_title")}</h3>
+            <h3 className="text-xl font-bold text-card-foreground mb-4">{t("history_title")}</h3>
             {reports.length === 0 ? (
-              <div className="bg-white p-12 rounded-3xl border border-gray-100 text-center">
-                <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-4 text-gray-400">
+              <div className="bg-card p-12 rounded-3xl border border-border text-center">
+                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
                   <AlertCircle size={32} />
                 </div>
-                <p className="text-gray-500">{t("empty_state")}</p>
+                <p className="text-muted-foreground">{t("empty_state")}</p>
               </div>
             ) : (
-              <div className="bg-white rounded-2xl border border-gray-100 overflow-hidden shadow-sm">
+              <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm text-gray-600">
-                    <thead className="bg-gray-50 text-gray-700 uppercase text-xs">
+                  <table className="w-full text-left text-sm text-muted-foreground">
+                    <thead className="bg-muted text-card-foreground uppercase text-xs">
                       <tr>
                         <th className="px-6 py-4 font-semibold">Tracking Code</th>
                         <th className="px-6 py-4 font-semibold">Jenis</th>
@@ -357,8 +357,8 @@ export default function ReportDashboardPage() {
                     </thead>
                     <tbody className="divide-y divide-gray-100">
                       {reports.map((report) => (
-                        <tr key={report.id} className="hover:bg-gray-50 transition-colors">
-                          <td className="px-6 py-4 font-medium text-gray-800">{report.tracking_code}</td>
+                        <tr key={report.id} className="hover:bg-muted transition-colors">
+                          <td className="px-6 py-4 font-medium text-card-foreground">{report.tracking_code}</td>
                           <td className="px-6 py-4 capitalize">{report.incident_type}</td>
                           <td className="px-6 py-4">{new Date(report.created_at).toLocaleDateString()}</td>
                           <td className="px-6 py-4">

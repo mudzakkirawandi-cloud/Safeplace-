@@ -6,16 +6,72 @@
   --font-sans: var(--font-inter);
   --font-display: var(--font-plus-jakarta-sans);
   
-  --bg-primary: #FAFBFF;
-  --text-primary: #333333;
+  --background: #FAFBFF;
+  --foreground: #333333;
+  --card: #FFFFFF;
+  --card-foreground: #333333;
+  --primary: #1B4F72;
+  --primary-foreground: #FFFFFF;
+  --muted: #F5F6FA;
+  --muted-foreground: #6B7280;
+  --border: #E5E7EB;
 }
 
+/* Base Dark Theme (Homepage & Reporter) */
 .dark {
-  --bg-primary: #121212;
-  --text-primary: #E7E9EB;
+  --background: #0A1628;
+  --foreground: #E2E8F0;
+  --card: #112240;
+  --card-foreground: #E2E8F0;
+  --primary: #4A90B8;
+  --primary-foreground: #FFFFFF;
+  --muted: #1A365D;
+  --muted-foreground: #A0AEC0;
+  --border: #2D3748;
+}
+
+/* Consultant / Peer Consultant */
+.dark[data-role="konsultan"], .dark [data-role="konsultan"] {
+  --background: #0A1F14;
+  --card: #133323;
+  --primary: #5B8A6F;
+  --muted: #1B4731;
+  --border: #276749;
+}
+
+/* Admin */
+.dark[data-role="admin"], .dark [data-role="admin"] {
+  --background: #080D1A;
+  --card: #111C30;
+  --primary: #2C3E6B;
+  --muted: #1A294A;
+  --border: #2C3E6B;
+}
+
+/* Operator */
+.dark[data-role="operator"], .dark [data-role="operator"] {
+  --background: #130A1F;
+  --card: #201133;
+  --primary: #7B5EA7;
+  --muted: #301D4A;
+  --border: #4D3373;
+}
+
+/* Satgas */
+.dark[data-role="satgas"], .dark [data-role="satgas"] {
+  --background: #071018;
+  --card: #0C1D2B;
+  --primary: #1A5276;
+  --muted: #132C42;
+  --border: #1A5276;
 }
 
 body {
-  color: var(--text-primary);
-  background: var(--bg-primary);
+  color: var(--foreground);
+  background: var(--background);
+}
+
+/* Smooth transition for dark mode */
+* {
+  transition: background-color 300ms ease, border-color 300ms ease, color 300ms ease;
 }

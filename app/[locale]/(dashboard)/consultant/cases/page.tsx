@@ -32,7 +32,7 @@ const ALL_CASES: CaseItem[] = [
 
 const INTENT_CONFIG: Record<Intent, { label: string; className: string }> = {
   document: { label: "Dokumentasi", className: "bg-blue-100 text-blue-700" },
-  consult: { label: "Konsultasi", className: "bg-[#EAF3EE] text-[#5B8A6F]" },
+  consult: { label: "Konsultasi", className: "bg-[#EAF3EE] text-primary" },
   satgas: { label: "Satgas", className: "bg-purple-100 text-purple-700" },
 };
 
@@ -44,9 +44,9 @@ const PRIORITY_CONFIG: Record<Priority, { label: string; className: string }> = 
 
 const STATUS_CONFIG: Record<Status, { label: string; className: string }> = {
   in_review: { label: "Ditinjau", className: "bg-yellow-100 text-yellow-700" },
-  in_consultation: { label: "Konsultasi Aktif", className: "bg-[#EAF3EE] text-[#5B8A6F]" },
+  in_consultation: { label: "Konsultasi Aktif", className: "bg-[#EAF3EE] text-primary" },
   escalated_satgas: { label: "Diteruskan ke Satgas", className: "bg-purple-100 text-purple-700" },
-  done: { label: "Selesai", className: "bg-gray-100 text-gray-500" },
+  done: { label: "Selesai", className: "bg-gray-100 text-muted-foreground" },
 };
 
 const FILTER_TABS = [
@@ -73,21 +73,21 @@ export default function CasesPage() {
     <div className="p-6 space-y-6">
       {/* Header */}
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold text-[#1B4F72]">Kasus Saya</h1>
-        <p className="text-gray-500 text-sm mt-1">Semua kasus yang ditugaskan kepadamu</p>
+        <h1 className="text-2xl font-bold text-primary">Kasus Saya</h1>
+        <p className="text-muted-foreground text-sm mt-1">Semua kasus yang ditugaskan kepadamu</p>
       </motion.div>
 
       {/* Search + filter */}
       <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="space-y-3">
         {/* Search */}
         <div className="relative">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Cari kode atau jenis kasus..."
-            className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+            className="w-full pl-9 pr-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
           />
         </div>
 
@@ -99,8 +99,8 @@ export default function CasesPage() {
               onClick={() => setActiveFilter(tab.key)}
               className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                 activeFilter === tab.key
-                  ? "bg-[#5B8A6F] text-white"
-                  : "bg-gray-100 text-gray-500 hover:bg-gray-200"
+                  ? "bg-primary text-white"
+                  : "bg-gray-100 text-muted-foreground hover:bg-gray-200"
               }`}
             >
               {tab.label}
@@ -124,12 +124,12 @@ export default function CasesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.05 }}
             onClick={() => router.push(`/consultant/cases/${c.id}`)}
-            className="w-full bg-white border border-gray-100 rounded-2xl p-5 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition-all group"
+            className="w-full bg-card border border-border rounded-2xl p-5 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition-all group"
           >
             <div className="flex items-center justify-between gap-4">
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-3 mb-2 flex-wrap">
-                  <span className="font-mono font-bold text-[#1B4F72]">#{c.code}</span>
+                  <span className="font-mono font-bold text-primary">#{c.code}</span>
                   <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${PRIORITY_CONFIG[c.priority].className}`}>
                     {PRIORITY_CONFIG[c.priority].label}
                   </span>
@@ -137,15 +137,15 @@ export default function CasesPage() {
                     {INTENT_CONFIG[c.intent].label}
                   </span>
                 </div>
-                <p className="text-sm text-gray-600 mb-1">{c.type}</p>
+                <p className="text-sm text-muted-foreground mb-1">{c.type}</p>
                 <div className="flex items-center gap-3 flex-wrap">
                   <span className={`text-xs px-2.5 py-0.5 rounded-full font-medium ${STATUS_CONFIG[c.status].className}`}>
                     {STATUS_CONFIG[c.status].label}
                   </span>
-                  <span className="text-xs text-gray-400">{c.lastUpdate}</span>
+                  <span className="text-xs text-muted-foreground">{c.lastUpdate}</span>
                 </div>
               </div>
-              <ChevronRight size={18} className="text-gray-300 group-hover:text-[#5B8A6F] transition-colors flex-shrink-0" />
+              <ChevronRight size={18} className="text-gray-300 group-hover:text-primary transition-colors flex-shrink-0" />
             </div>
           </motion.button>
         ))}

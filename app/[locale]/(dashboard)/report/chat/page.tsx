@@ -38,8 +38,8 @@ function ChatContent() {
   if (!reportId) {
     return (
       <div className="flex flex-col items-center justify-center h-64">
-        <p className="text-gray-500">ID Laporan tidak ditemukan.</p>
-        <button onClick={() => router.back()} className="mt-4 text-[#4A90B8] hover:underline">
+        <p className="text-muted-foreground">ID Laporan tidak ditemukan.</p>
+        <button onClick={() => router.back()} className="mt-4 text-primary hover:underline">
           Kembali
         </button>
       </div>
@@ -49,7 +49,7 @@ function ChatContent() {
   if (loading) {
     return (
       <div className="flex items-center justify-center h-64">
-        <p className="text-gray-400">Memuat...</p>
+        <p className="text-muted-foreground">Memuat...</p>
       </div>
     );
   }
@@ -63,12 +63,12 @@ function ChatContent() {
       >
         <button
           onClick={() => router.back()}
-          className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-[#4A90B8] transition-colors"
+          className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-primary transition-colors"
         >
           <ArrowLeft size={16} />
           Kembali
         </button>
-        <h1 className="text-xl font-bold text-[#1B4F72] font-mono">
+        <h1 className="text-xl font-bold text-primary font-mono">
           #{reportId}
         </h1>
       </motion.div>

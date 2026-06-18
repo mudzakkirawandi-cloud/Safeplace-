@@ -51,7 +51,7 @@ export default function OperatorLayout({
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#7B5EA7] text-white">
+    <div className="flex flex-col h-full bg-primary text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#8c6ebf]">
         <SafePlaceLogo variant="white" role="operator" iconSize={20} textSize="text-base" />
@@ -99,7 +99,7 @@ export default function OperatorLayout({
   );
 
   return (
-    <div className="flex h-screen bg-[#F8F5FC] overflow-hidden">
+    <div data-role="operator" className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Sidebar desktop */}
       <aside className="hidden md:flex w-64 flex-shrink-0 flex-col">
         <SidebarContent />
@@ -132,7 +132,7 @@ export default function OperatorLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar mobile */}
-        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#7B5EA7] text-white">
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-primary text-white">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -150,10 +150,10 @@ export default function OperatorLayout({
         </div>
 
         {/* Topbar Desktop */}
-        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-white border-b border-gray-100 z-10 relative shadow-sm">
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-card border-b border-border z-10 relative shadow-sm">
           <div className="flex items-center gap-4">
             <NotificationBell />
-            <div className="h-8 w-8 rounded-full bg-[#7B5EA7] text-white flex items-center justify-center font-bold text-sm">
+            <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
               OP
             </div>
           </div>

@@ -28,7 +28,7 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-[#FAFBFF]">
+    <section className="relative pt-32 pb-20 lg:pt-48 lg:pb-32 overflow-hidden bg-background">
       {/* Background decoration */}
       <div className="absolute top-0 right-0 -translate-y-12 translate-x-1/3 opacity-20">
         <svg width="600" height="600" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
@@ -44,7 +44,7 @@ export default function HeroSection() {
               variants={container}
               initial="hidden"
               animate="visible"
-              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-[#1B4F72] mb-6 leading-tight"
+              className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary mb-6 leading-tight"
             >
               {titleWords.map((word, index) => (
                 <motion.span variants={child} key={index}>
@@ -57,7 +57,7 @@ export default function HeroSection() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6, duration: 0.8 }}
-              className="text-lg text-gray-600 mb-8 leading-relaxed max-w-lg"
+              className="text-lg text-muted-foreground mb-8 leading-relaxed max-w-lg"
             >
               {t("subtitle")}
             </motion.p>
@@ -80,7 +80,7 @@ export default function HeroSection() {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="#how-it-works"
-                  className="flex justify-center items-center px-8 py-4 bg-white text-[#1B4F72] font-medium rounded-xl hover:bg-gray-50 border border-gray-200 transition-all"
+                  className="flex justify-center items-center px-8 py-4 bg-card text-primary font-medium rounded-xl hover:bg-muted border border-border transition-all"
                 >
                   {t("secondary_cta")}
                 </Link>
@@ -94,8 +94,8 @@ export default function HeroSection() {
             transition={{ delay: 0.4, duration: 1 }}
             className="hidden lg:flex justify-center"
           >
-            <div className="relative w-full max-w-md aspect-square rounded-full bg-gradient-to-tr from-[#EBF5FB] to-white flex items-center justify-center shadow-[0_0_80px_rgba(74,144,184,0.15)] border border-white">
-              <HeartHandshake size={160} className="text-[#4A90B8] opacity-80" />
+            <div className="relative w-full max-w-md aspect-square rounded-full bg-gradient-to-tr from-[#EBF5FB] to-white flex items-center justify-center shadow-[0_0_80px_rgba(74,144,184,0.15)] border border-border">
+              <HeartHandshake size={160} className="text-primary opacity-80" />
             </div>
           </motion.div>
         </div>

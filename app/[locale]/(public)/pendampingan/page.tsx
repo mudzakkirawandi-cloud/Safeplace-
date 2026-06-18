@@ -74,15 +74,15 @@ export default function ConsultationPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFBFF]">
+    <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-display font-bold text-[#1B4F72] mb-4">
+            <h1 className="text-4xl font-display font-bold text-primary mb-4">
               {t("title")}
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               {t("subtitle")}
             </p>
           </div>
@@ -93,8 +93,8 @@ export default function ConsultationPage() {
               onClick={() => setActiveFilter("all")}
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
                 activeFilter === "all"
-                  ? "bg-[#1B4F72] text-white shadow-md"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-primary text-white shadow-md"
+                  : "bg-card text-muted-foreground hover:bg-muted border border-border"
               }`}
             >
               {t("filter_all")}
@@ -103,8 +103,8 @@ export default function ConsultationPage() {
               onClick={() => setActiveFilter("online")}
               className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
                 activeFilter === "online"
-                  ? "bg-[#1B4F72] text-white shadow-md"
-                  : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                  ? "bg-primary text-white shadow-md"
+                  : "bg-card text-muted-foreground hover:bg-muted border border-border"
               }`}
             >
               {t("filter_online")}
@@ -115,7 +115,7 @@ export default function ConsultationPage() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 animate-pulse">
+                <div key={i} className="bg-card rounded-2xl p-6 shadow-sm border border-border animate-pulse">
                   <div className="flex items-center gap-4 mb-6">
                     <div className="w-16 h-16 bg-gray-200 rounded-full"></div>
                     <div>
@@ -132,10 +132,10 @@ export default function ConsultationPage() {
           ) : filteredConsultants.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredConsultants.map((consultant) => (
-                <div key={consultant.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-gray-100 flex flex-col p-6 group">
+                <div key={consultant.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border flex flex-col p-6 group">
                   <div className="flex items-start gap-4 mb-4">
                     {consultant.metadata?.avatar_url ? (
-                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-gray-100 flex-shrink-0">
+                      <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-border flex-shrink-0">
                         <Image 
                           unoptimized 
                           src={consultant.metadata.avatar_url} 
@@ -145,17 +145,17 @@ export default function ConsultationPage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-[#5B8A6F] flex items-center justify-center text-white font-bold text-xl border-2 border-gray-100">
+                      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl border-2 border-border">
                         {getInitials(consultant.full_name)}
                       </div>
                     )}
                     
                     <div className="flex-1">
-                      <h3 className="text-lg font-bold text-[#1B4F72] flex items-center gap-1">
+                      <h3 className="text-lg font-bold text-primary flex items-center gap-1">
                         {consultant.full_name}
-                        <CheckCircle size={14} className="text-[#4A90B8]" />
+                        <CheckCircle size={14} className="text-primary" />
                       </h3>
-                      <p className="text-gray-500 text-sm font-medium mb-1">
+                      <p className="text-muted-foreground text-sm font-medium mb-1">
                         {consultant.metadata?.specialization || "Konsultan Pendamping"}
                       </p>
                       {consultant.metadata?.is_online ? (
@@ -163,7 +163,7 @@ export default function ConsultationPage() {
                           <Globe size={12} /> Tersedia Online
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 text-xs text-gray-500 bg-gray-50 px-2 py-1 rounded-md font-medium">
+                        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground bg-muted px-2 py-1 rounded-md font-medium">
                           <MapPin size={12} /> Offline Only
                         </span>
                       )}
@@ -171,14 +171,14 @@ export default function ConsultationPage() {
                   </div>
                   
                   <div className="flex-1 mb-6">
-                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3">
+                    <p className="text-muted-foreground text-sm leading-relaxed line-clamp-3">
                       {consultant.metadata?.bio || "Berpengalaman dalam memberikan pendampingan psikososial dan perlindungan hukum bagi korban kekerasan seksual."}
                     </p>
                   </div>
                   
                   <button 
                     onClick={() => handleRequest(consultant.id)}
-                    className="w-full py-3 px-4 bg-[#1B4F72] text-white hover:bg-[#1B4F72]/90 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group-hover:shadow-[0_0_15px_rgba(27,79,114,0.3)]"
+                    className="w-full py-3 px-4 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group-hover:shadow-[0_0_15px_rgba(27,79,114,0.3)]"
                   >
                     {t("request_btn")}
                   </button>
@@ -186,10 +186,10 @@ export default function ConsultationPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
               <Users size={64} className="mx-auto text-gray-300 mb-6" />
-              <h3 className="text-xl font-bold text-gray-700 mb-2">{t("empty_state")}</h3>
-              <p className="text-gray-500">{t("empty_state")}</p>
+              <h3 className="text-xl font-bold text-card-foreground mb-2">{t("empty_state")}</h3>
+              <p className="text-muted-foreground">{t("empty_state")}</p>
             </div>
           )}
         </div>

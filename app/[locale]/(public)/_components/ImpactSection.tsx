@@ -13,7 +13,7 @@ export default function ImpactSection() {
   ];
 
   return (
-    <section className="py-20 bg-[#1B4F72] text-white">
+    <section className="py-20 bg-primary text-white">
       <div className="container mx-auto px-6 max-w-6xl">
         <div className="text-center mb-12">
           <h2 className="text-3xl font-display font-bold mb-4">

@@ -80,39 +80,39 @@ export default function PeerConsultantLayout({
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-white border-r border-gray-100">
-      <div className="px-6 py-5 border-b border-gray-100">
+    <div className="flex flex-col h-full bg-card border-r border-border">
+      <div className="px-6 py-5 border-b border-border">
         <SafePlaceLogo variant="colored" role="consultant" iconSize={20} textSize="text-base" />
-        <span className="text-xs text-[#5B8A6F] font-medium mt-0.5 block">
+        <span className="text-xs text-primary font-medium mt-0.5 block">
           Portal Peer Consultant
         </span>
       </div>
 
-      <div className="px-4 py-4 border-b border-gray-100">
+      <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-[#EAF3EE] flex items-center justify-center font-bold text-[#5B8A6F] text-sm flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#EAF3EE] flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">
             PC
           </div>
           <div className="min-w-0">
-            <p className="font-semibold text-sm text-[#1B4F72] truncate">
+            <p className="font-semibold text-sm text-primary truncate">
               Peer Consultant
             </p>
-            <p className="text-xs text-gray-400">Konselor Sebaya</p>
+            <p className="text-xs text-muted-foreground">Konselor Sebaya</p>
           </div>
         </div>
 
         <div className="relative">
           <button
             onClick={() => setStatusDropdown(!statusDropdown)}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-gray-50 hover:bg-gray-100 transition-colors text-sm"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-lg bg-muted hover:bg-gray-100 transition-colors text-sm"
           >
             <span
               className={`w-2.5 h-2.5 rounded-full flex-shrink-0 ${STATUS_CONFIG[status].color}`}
             />
-            <span className="font-medium text-gray-700">
+            <span className="font-medium text-card-foreground">
               {STATUS_CONFIG[status].label}
             </span>
-            <span className="ml-auto text-gray-400 text-xs">▾</span>
+            <span className="ml-auto text-muted-foreground text-xs">▾</span>
           </button>
 
           <AnimatePresence>
@@ -121,14 +121,14 @@ export default function PeerConsultantLayout({
                 initial={{ opacity: 0, y: -4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
-                className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-100 rounded-lg shadow-lg z-10 overflow-hidden"
+                className="absolute top-full left-0 right-0 mt-1 bg-card border border-border rounded-lg shadow-lg z-10 overflow-hidden"
               >
                 {(Object.keys(STATUS_CONFIG) as OnlineStatus[]).map((s) => (
                   <button
                     key={s}
                     onClick={() => handleStatusChange(s)}
-                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-gray-50 transition-colors ${
-                      status === s ? "bg-gray-50 font-semibold" : ""
+                    className={`w-full flex items-center gap-2 px-3 py-2.5 text-sm hover:bg-muted transition-colors ${
+                      status === s ? "bg-muted font-semibold" : ""
                     }`}
                   >
                     <span
@@ -156,8 +156,8 @@ export default function PeerConsultantLayout({
               }}
               className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
                 isActive
-                  ? "bg-[#EAF3EE] text-[#5B8A6F]"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-800"
+                  ? "bg-[#EAF3EE] text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
               }`}
             >
               <Icon className="w-4.5 h-4.5 flex-shrink-0" size={18} />
@@ -167,10 +167,10 @@ export default function PeerConsultantLayout({
         })}
       </nav>
 
-      <div className="px-3 py-4 border-t border-gray-100">
+      <div className="px-3 py-4 border-t border-border">
         <button
           onClick={handleLogoutClick}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-500 hover:bg-red-50 hover:text-red-600 transition-all"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-all"
         >
           <LogOut size={18} />
           {t("nav_logout")}
@@ -180,7 +180,7 @@ export default function PeerConsultantLayout({
   );
 
   return (
-    <div className="flex h-screen bg-[#F4F9F6] overflow-hidden">
+    <div data-role="konsultan" className="flex h-screen bg-background text-foreground overflow-hidden">
       <aside className="hidden md:flex w-60 flex-shrink-0 flex-col">
         <SidebarContent />
       </aside>
@@ -209,27 +209,27 @@ export default function PeerConsultantLayout({
       </AnimatePresence>
 
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-white border-b border-gray-100">
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-card border-b border-border">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
               className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
             >
-              <Menu size={20} className="text-gray-600" />
+              <Menu size={20} className="text-muted-foreground" />
             </button>
             <div className="flex items-center gap-2">
               <SafePlaceLogo variant="colored" role="consultant" iconSize={16} textSize="text-sm" />
             </div>
           </div>
-          <div className="md:hidden text-gray-800">
+          <div className="md:hidden text-card-foreground">
             <NotificationBell />
           </div>
         </div>
 
-        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-white border-b border-gray-100 z-10 relative shadow-sm">
-          <div className="flex items-center gap-4 text-gray-800">
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-card border-b border-border z-10 relative shadow-sm">
+          <div className="flex items-center gap-4 text-card-foreground">
             <NotificationBell />
-            <div className="h-8 w-8 rounded-full bg-[#EAF3EE] text-[#5B8A6F] flex items-center justify-center font-bold text-sm">
+            <div className="h-8 w-8 rounded-full bg-[#EAF3EE] text-primary flex items-center justify-center font-bold text-sm">
               PC
             </div>
           </div>

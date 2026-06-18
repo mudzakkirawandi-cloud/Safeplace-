@@ -26,23 +26,23 @@ export default function ReportIntentPage() {
       icon: <ClipboardList className="w-8 h-8" />,
       title: t("document_title"),
       desc: t("document_desc"),
-      color: "text-[#4A90B8]",
-      bg: "bg-[#EBF5FB]"
+      color: "text-primary",
+      bg: "bg-background"
     },
     {
       id: "consult" as const,
       icon: <MessageCircle className="w-8 h-8" />,
       title: t("consult_title"),
       desc: t("consult_desc"),
-      color: "text-[#5B8A6F]",
-      bg: "bg-[#F4F9F6]"
+      color: "text-primary",
+      bg: "bg-background"
     },
     {
       id: "satgas" as const,
       icon: <Building2 className="w-8 h-8" />,
       title: t("satgas_title"),
       desc: t("satgas_desc"),
-      color: "text-[#1A5276]",
+      color: "text-primary",
       bg: "bg-[#EAECEE]"
     }
   ];
@@ -54,7 +54,7 @@ export default function ReportIntentPage() {
         animate={{ opacity: 1, y: 0 }}
         className="text-center mb-10"
       >
-        <h1 className="text-3xl md:text-4xl font-bold text-[#1B4F72] mb-4">{t("title")}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">{t("title")}</h1>
       </motion.div>
 
       <div className="grid gap-6 w-full max-w-2xl mb-10">
@@ -70,8 +70,8 @@ export default function ReportIntentPage() {
               onClick={() => setSelectedIntent(item.id)}
               className={`relative p-6 rounded-2xl shadow-sm border-2 transition-all text-left flex items-start gap-5 group
                 ${isSelected 
-                  ? "border-[#4A90B8] bg-white ring-4 ring-[#EBF5FB]" 
-                  : "border-gray-100 bg-white hover:border-gray-300 hover:shadow-md"
+                  ? "border-[#4A90B8] bg-card ring-4 ring-[#EBF5FB]" 
+                  : "border-border bg-card hover:border-gray-300 hover:shadow-md"
                 }
               `}
             >
@@ -80,15 +80,15 @@ export default function ReportIntentPage() {
               </div>
               
               <div className="flex-1 pt-2">
-                <h2 className="text-xl font-bold text-[#1B4F72] mb-2">{item.title}</h2>
-                <p className="text-gray-600 leading-relaxed">{item.desc}</p>
+                <h2 className="text-xl font-bold text-primary mb-2">{item.title}</h2>
+                <p className="text-muted-foreground leading-relaxed">{item.desc}</p>
               </div>
 
               {isSelected && (
                 <motion.div
                   initial={{ scale: 0 }}
                   animate={{ scale: 1 }}
-                  className="absolute top-4 right-4 text-[#4A90B8]"
+                  className="absolute top-4 right-4 text-primary"
                 >
                   <CheckCircle2 className="w-8 h-8 fill-blue-50" />
                 </motion.div>
@@ -110,7 +110,7 @@ export default function ReportIntentPage() {
           className={`w-full py-4 rounded-xl font-bold text-lg flex justify-center items-center gap-2 transition-all
             ${selectedIntent 
               ? "bg-[#E74C3C] hover:bg-[#c0392b] text-white shadow-lg hover:shadow-xl" 
-              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+              : "bg-gray-200 text-muted-foreground cursor-not-allowed"
             }
           `}
         >
@@ -118,7 +118,7 @@ export default function ReportIntentPage() {
           <ArrowRight className="w-5 h-5" />
         </button>
         
-        <p className="mt-4 text-sm text-gray-500">{t("change_later_note")}</p>
+        <p className="mt-4 text-sm text-muted-foreground">{t("change_later_note")}</p>
       </motion.div>
     </main>
   );

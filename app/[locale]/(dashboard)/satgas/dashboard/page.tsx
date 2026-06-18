@@ -21,7 +21,7 @@ export default function SatgasDashboardPage() {
 
   const STATS = [
     { key: "pending", labelKey: "stat_pending_cases", value: 3, icon: Bell, color: "text-[#D4AC0D]", bg: "bg-[#D4AC0D]/20" },
-    { key: "active", labelKey: "stat_active_cases", value: 12, icon: Activity, color: "text-[#1A5276]", bg: "bg-[#1A5276]/10" },
+    { key: "active", labelKey: "stat_active_cases", value: 12, icon: Activity, color: "text-primary", bg: "bg-primary/10" },
     { key: "resolved", labelKey: "stat_resolved_cases", value: 45, icon: CheckCircle2, color: "text-green-600", bg: "bg-green-100" },
   ];
 
@@ -68,7 +68,7 @@ export default function SatgasDashboardPage() {
     <div className="p-6 space-y-6 max-w-5xl mx-auto">
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
         <h1 className="text-2xl font-bold text-[#154360]">{t("dashboard_title")}</h1>
-        <p className="text-[#1A5276]/80 text-sm mt-1">{t("dashboard_subtitle")}</p>
+        <p className="text-primary/80 text-sm mt-1">{t("dashboard_subtitle")}</p>
       </motion.div>
 
       {/* Stats */}
@@ -81,7 +81,7 @@ export default function SatgasDashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="bg-white rounded-2xl p-5 border border-blue-100 shadow-sm"
+              className="bg-card rounded-2xl p-5 border border-blue-100 shadow-sm"
             >
               <div className="flex items-start gap-4">
                 <div className={`w-12 h-12 rounded-xl ${stat.bg} flex items-center justify-center flex-shrink-0`}>
@@ -89,7 +89,7 @@ export default function SatgasDashboardPage() {
                 </div>
                 <div>
                   <p className="text-3xl font-bold text-[#154360]">{stat.value}</p>
-                  <p className="text-sm text-[#1A5276]/80 font-medium mt-1">{t(stat.labelKey)}</p>
+                  <p className="text-sm text-primary/80 font-medium mt-1">{t(stat.labelKey)}</p>
                 </div>
               </div>
             </motion.div>
@@ -102,9 +102,9 @@ export default function SatgasDashboardPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
-        className="bg-white rounded-2xl border border-blue-100 shadow-sm overflow-hidden"
+        className="bg-card rounded-2xl border border-blue-100 shadow-sm overflow-hidden"
       >
-        <div className="px-6 py-4 border-b border-blue-50 flex justify-between items-center bg-[#EBF5FB]/50">
+        <div className="px-6 py-4 border-b border-blue-50 flex justify-between items-center bg-background/50">
           <h2 className="font-bold text-[#154360]">{t("recent_cases_title")}</h2>
           <button 
             onClick={() => router.push('/satgas/cases')}
@@ -118,22 +118,22 @@ export default function SatgasDashboardPage() {
             <div key={report.id} className="p-4 flex items-center justify-between hover:bg-blue-50/50 transition-colors">
               <div>
                 <div className="flex items-center gap-3">
-                  <span className="font-mono font-semibold text-[#1A5276]">{report.code}</span>
+                  <span className="font-mono font-semibold text-primary">{report.code}</span>
                   <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                    report.status === 'Laporan Baru' ? 'bg-[#D4AC0D]/20 text-[#9c7d04]' : 'bg-blue-100 text-[#1A5276]'
+                    report.status === 'Laporan Baru' ? 'bg-[#D4AC0D]/20 text-[#9c7d04]' : 'bg-blue-100 text-primary'
                   }`}>
                     {report.status}
                   </span>
                 </div>
-                <div className="text-sm text-gray-600 mt-1 flex items-center gap-2">
+                <div className="text-sm text-muted-foreground mt-1 flex items-center gap-2">
                   <span className="bg-gray-100 px-2 py-0.5 rounded text-xs">{report.type}</span>
-                  <span className="text-gray-400">&bull;</span>
+                  <span className="text-muted-foreground">&bull;</span>
                   <span>{report.date}</span>
                 </div>
               </div>
               <button 
                 onClick={() => openUpdateModal(report.id)}
-                className="px-3 py-1.5 bg-white border border-[#2471A3] text-[#2471A3] hover:bg-[#2471A3] hover:text-white rounded-lg text-sm font-medium transition-colors"
+                className="px-3 py-1.5 bg-card border border-[#2471A3] text-[#2471A3] hover:bg-[#2471A3] hover:text-white rounded-lg text-sm font-medium transition-colors"
               >
                 {t("btn_update_status")}
               </button>
@@ -157,21 +157,21 @@ export default function SatgasDashboardPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-xl z-50 overflow-hidden"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-card rounded-2xl shadow-xl z-50 overflow-hidden"
             >
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                 <h2 className="font-bold text-lg text-[#154360]">{t("btn_update_status")}</h2>
-                <button onClick={() => setIsUpdateModalOpen(false)} className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                <button onClick={() => setIsUpdateModalOpen(false)} className="p-1 text-muted-foreground hover:text-muted-foreground hover:bg-gray-100 rounded-lg">
                   <X size={20} />
                 </button>
               </div>
               <div className="px-6 py-4 space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[#1A5276] mb-1">Status Penanganan</label>
+                  <label className="block text-sm font-semibold text-primary mb-1">Status Penanganan</label>
                   <select 
                     value={updateStatus}
                     onChange={(e) => setUpdateStatus(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50 bg-white"
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50 bg-card"
                   >
                     <option value="Diterima">Diterima</option>
                     <option value="Sedang Diinvestigasi">Sedang Diinvestigasi</option>
@@ -180,28 +180,28 @@ export default function SatgasDashboardPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#1A5276] mb-1">Catatan Resmi</label>
+                  <label className="block text-sm font-semibold text-primary mb-1">Catatan Resmi</label>
                   <textarea 
                     rows={4} 
                     value={updateNotes}
                     onChange={(e) => setUpdateNotes(e.target.value)}
                     placeholder="Masukkan catatan perkembangan kasus..."
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50"
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50"
                   />
                 </div>
               </div>
-              <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-[#EBF5FB]/30">
+              <div className="px-6 py-4 border-t border-border flex justify-end gap-3 bg-background/30">
                 <button 
                   onClick={() => setIsUpdateModalOpen(false)} 
                   disabled={isSubmitting}
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-card-foreground"
                 >
                   Batal
                 </button>
                 <button 
                   onClick={handleUpdateSubmit}
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-[#1A5276] hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all"
+                  className="px-4 py-2 bg-primary hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan Update"}
                 </button>

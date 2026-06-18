@@ -240,11 +240,11 @@ export default function SatgasCaseDetailPage() {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-gray-500">Memuat detail kasus...</div>;
+    return <div className="p-8 text-center text-muted-foreground">Memuat detail kasus...</div>;
   }
 
   if (!report) {
-    return <div className="p-8 text-center text-gray-500">Kasus tidak ditemukan.</div>;
+    return <div className="p-8 text-center text-muted-foreground">Kasus tidak ditemukan.</div>;
   }
 
   return (
@@ -254,7 +254,7 @@ export default function SatgasCaseDetailPage() {
         <div className="flex items-center gap-4">
           <button 
             onClick={() => router.push(`/${params.locale}/satgas/cases`)}
-            className="p-2 hover:bg-gray-100 rounded-lg text-gray-600 transition-colors"
+            className="p-2 hover:bg-gray-100 rounded-lg text-muted-foreground transition-colors"
           >
             <ArrowLeft size={20} />
           </button>
@@ -269,13 +269,13 @@ export default function SatgasCaseDetailPage() {
                 {report.status.replace("_", " ").toUpperCase()}
               </span>
             </h1>
-            <p className="text-sm text-[#1A5276]/80 mt-1">Jenis Laporan: {report.incident_type.replace("_", " ")}</p>
+            <p className="text-sm text-primary/80 mt-1">Jenis Laporan: {report.incident_type.replace("_", " ")}</p>
           </div>
         </div>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-200 shrink-0">
+      <div className="flex gap-2 border-b border-border shrink-0">
         {[
           { id: "detail", label: "Detail Kasus", icon: FileText },
           { id: "chat", label: "Chat Pelapor", icon: MessageCircle },
@@ -287,8 +287,8 @@ export default function SatgasCaseDetailPage() {
             onClick={() => setActiveTab(tab.id)}
             className={`flex items-center gap-2 px-4 py-3 text-sm font-medium border-b-2 transition-colors ${
               activeTab === tab.id 
-                ? "border-[#1A5276] text-[#1A5276]" 
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                ? "border-[#1A5276] text-primary" 
+                : "border-transparent text-muted-foreground hover:text-card-foreground hover:border-gray-300"
             }`}
           >
             <tab.icon size={16} />
@@ -302,38 +302,38 @@ export default function SatgasCaseDetailPage() {
         <AnimatePresence mode="wait">
           {activeTab === "detail" && (
             <motion.div key="detail" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
-              <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+              <div className="bg-card rounded-2xl border border-border p-6 space-y-4">
                 <h3 className="font-semibold text-lg text-[#154360]">Deskripsi Laporan</h3>
-                <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{report.description || "Tidak ada deskripsi."}</p>
+                <p className="text-card-foreground whitespace-pre-wrap leading-relaxed">{report.description || "Tidak ada deskripsi."}</p>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-2">
-                  <h3 className="font-semibold text-sm text-gray-500 uppercase tracking-wider">Informasi Pelapor</h3>
-                  <p className="font-medium text-[#1A5276]">{report.reporter?.full_name || "Anonim"}</p>
+                <div className="bg-card rounded-2xl border border-border p-6 space-y-2">
+                  <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Informasi Pelapor</h3>
+                  <p className="font-medium text-primary">{report.reporter?.full_name || "Anonim"}</p>
                 </div>
-                <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-2">
-                  <h3 className="font-semibold text-sm text-gray-500 uppercase tracking-wider">Konsultan Pendamping</h3>
-                  <p className="font-medium text-[#1A5276]">{report.consultant?.full_name || "Belum Ditugaskan"}</p>
+                <div className="bg-card rounded-2xl border border-border p-6 space-y-2">
+                  <h3 className="font-semibold text-sm text-muted-foreground uppercase tracking-wider">Konsultan Pendamping</h3>
+                  <p className="font-medium text-primary">{report.consultant?.full_name || "Belum Ditugaskan"}</p>
                 </div>
               </div>
             </motion.div>
           )}
 
           {activeTab === "chat" && (
-            <motion.div key="chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col h-full bg-white rounded-2xl border border-gray-200 overflow-hidden">
+            <motion.div key="chat" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex flex-col h-full bg-card rounded-2xl border border-border overflow-hidden">
               <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {messages.length === 0 ? (
-                  <div className="text-center text-gray-400 py-10">Belum ada percakapan.</div>
+                  <div className="text-center text-muted-foreground py-10">Belum ada percakapan.</div>
                 ) : (
                   messages.map(msg => {
                     const isMe = msg.sender_id === userId;
                     return (
                       <div key={msg.id} className={`flex ${isMe ? "justify-end" : "justify-start"}`}>
                         <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm ${
-                          isMe ? "bg-[#1A5276] text-white rounded-tr-none" : "bg-gray-100 text-gray-800 rounded-tl-none"
+                          isMe ? "bg-primary text-white rounded-tr-none" : "bg-gray-100 text-card-foreground rounded-tl-none"
                         }`}>
                           <p>{msg.content}</p>
-                          <span className={`text-[10px] mt-1 block ${isMe ? "text-blue-200" : "text-gray-400"}`}>
+                          <span className={`text-[10px] mt-1 block ${isMe ? "text-blue-200" : "text-muted-foreground"}`}>
                             {new Date(msg.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
@@ -343,16 +343,16 @@ export default function SatgasCaseDetailPage() {
                 )}
                 <div ref={messagesEndRef} />
               </div>
-              <div className="p-3 border-t border-gray-100 bg-gray-50 shrink-0">
+              <div className="p-3 border-t border-border bg-muted shrink-0">
                 <form onSubmit={handleSendMessage} className="flex gap-2">
                   <input
                     type="text"
                     value={newMessage}
                     onChange={(e) => setNewMessage(e.target.value)}
                     placeholder="Ketik pesan..."
-                    className="flex-1 border border-gray-200 rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30 bg-white"
+                    className="flex-1 border border-border rounded-xl px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30 bg-card"
                   />
-                  <button type="submit" disabled={!newMessage.trim()} className="bg-[#1A5276] text-white p-2.5 rounded-xl hover:bg-[#154360] disabled:opacity-50 transition-colors">
+                  <button type="submit" disabled={!newMessage.trim()} className="bg-primary text-white p-2.5 rounded-xl hover:bg-[#154360] disabled:opacity-50 transition-colors">
                     <Send size={18} />
                   </button>
                 </form>
@@ -362,24 +362,24 @@ export default function SatgasCaseDetailPage() {
 
           {activeTab === "investigasi" && (
             <motion.div key="investigasi" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
-              <div className="bg-white rounded-2xl border border-gray-200 p-6 space-y-4">
+              <div className="bg-card rounded-2xl border border-border p-6 space-y-4">
                 <h3 className="font-semibold text-lg text-[#154360]">Catatan Investigasi Baru</h3>
                 <form onSubmit={handleAddInvestigation} className="space-y-4">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-semibold text-gray-700 mb-1">Status Investigasi</label>
-                      <select value={invStatus} onChange={(e) => setInvStatus(e.target.value)} className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30">
+                      <label className="block text-sm font-semibold text-card-foreground mb-1">Status Investigasi</label>
+                      <select value={invStatus} onChange={(e) => setInvStatus(e.target.value)} className="w-full border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30">
                         <option value="ongoing">Sedang Berjalan (Ongoing)</option>
                         <option value="concluded">Selesai (Concluded)</option>
                       </select>
                     </div>
                   </div>
                   <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-1">Temuan / Catatan</label>
-                    <textarea rows={3} value={invFindings} onChange={(e) => setInvFindings(e.target.value)} placeholder="Tuliskan temuan investigasi..." className="w-full border border-gray-200 rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30" />
+                    <label className="block text-sm font-semibold text-card-foreground mb-1">Temuan / Catatan</label>
+                    <textarea rows={3} value={invFindings} onChange={(e) => setInvFindings(e.target.value)} placeholder="Tuliskan temuan investigasi..." className="w-full border border-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30" />
                   </div>
                   <div className="flex justify-end">
-                    <button type="submit" disabled={isSubmittingInv} className="px-4 py-2 bg-[#1A5276] text-white font-medium text-sm rounded-xl hover:bg-[#154360] disabled:opacity-50">
+                    <button type="submit" disabled={isSubmittingInv} className="px-4 py-2 bg-primary text-white font-medium text-sm rounded-xl hover:bg-[#154360] disabled:opacity-50">
                       {isSubmittingInv ? "Menyimpan..." : "Simpan Investigasi"}
                     </button>
                   </div>
@@ -389,22 +389,22 @@ export default function SatgasCaseDetailPage() {
               <div className="space-y-4">
                 <h3 className="font-semibold text-[#154360]">Riwayat Investigasi</h3>
                 {investigations.length === 0 ? (
-                  <div className="text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-gray-200">Belum ada catatan investigasi.</div>
+                  <div className="text-center py-8 text-muted-foreground bg-muted rounded-xl border border-border">Belum ada catatan investigasi.</div>
                 ) : (
                   investigations.map(inv => (
-                    <div key={inv.id} className="bg-white rounded-2xl border border-gray-200 p-5 flex gap-4">
-                      <div className="mt-1 text-[#1A5276]">
+                    <div key={inv.id} className="bg-card rounded-2xl border border-border p-5 flex gap-4">
+                      <div className="mt-1 text-primary">
                         {inv.status === 'concluded' ? <CheckCircle size={20} className="text-green-600" /> : <Clock size={20} />}
                       </div>
                       <div className="flex-1">
                         <div className="flex justify-between items-start">
-                          <p className="font-semibold text-[#1A5276] text-sm">{inv.investigator?.full_name || "Investigator"}</p>
-                          <span className="text-xs text-gray-400">{new Date(inv.created_at).toLocaleString()}</span>
+                          <p className="font-semibold text-primary text-sm">{inv.investigator?.full_name || "Investigator"}</p>
+                          <span className="text-xs text-muted-foreground">{new Date(inv.created_at).toLocaleString()}</span>
                         </div>
                         <span className={`inline-block mt-1 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider ${inv.status === 'concluded' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>
                           {inv.status}
                         </span>
-                        <p className="text-sm text-gray-700 mt-2 whitespace-pre-wrap">{inv.findings}</p>
+                        <p className="text-sm text-card-foreground mt-2 whitespace-pre-wrap">{inv.findings}</p>
                       </div>
                     </div>
                   ))
@@ -415,14 +415,14 @@ export default function SatgasCaseDetailPage() {
 
           {activeTab === "dokumen" && (
             <motion.div key="dokumen" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
-              <div className="bg-white rounded-2xl border border-gray-200 p-6 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="bg-card rounded-2xl border border-border p-6 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div>
                   <h3 className="font-semibold text-lg text-[#154360]">Dokumen Resmi & Bukti</h3>
-                  <p className="text-sm text-gray-500">Upload BAP, surat pernyataan, atau bukti tambahan.</p>
+                  <p className="text-sm text-muted-foreground">Upload BAP, surat pernyataan, atau bukti tambahan.</p>
                 </div>
                 <div>
                   <input type="file" ref={fileInputRef} onChange={handleFileUpload} className="hidden" />
-                  <button onClick={() => fileInputRef.current?.click()} disabled={uploadingDoc} className="flex items-center gap-2 px-4 py-2 bg-[#1A5276] text-white font-medium text-sm rounded-xl hover:bg-[#154360] disabled:opacity-50">
+                  <button onClick={() => fileInputRef.current?.click()} disabled={uploadingDoc} className="flex items-center gap-2 px-4 py-2 bg-primary text-white font-medium text-sm rounded-xl hover:bg-[#154360] disabled:opacity-50">
                     <Upload size={16} />
                     {uploadingDoc ? "Mengunggah..." : "Unggah Dokumen"}
                   </button>
@@ -431,21 +431,21 @@ export default function SatgasCaseDetailPage() {
 
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                 {documents.length === 0 ? (
-                  <div className="col-span-full text-center py-8 text-gray-500 bg-gray-50 rounded-xl border border-gray-200">Belum ada dokumen yang diunggah.</div>
+                  <div className="col-span-full text-center py-8 text-muted-foreground bg-muted rounded-xl border border-border">Belum ada dokumen yang diunggah.</div>
                 ) : (
                   documents.map(doc => (
-                    <div key={doc.id} className="bg-white rounded-2xl border border-gray-200 p-4 flex flex-col gap-3">
+                    <div key={doc.id} className="bg-card rounded-2xl border border-border p-4 flex flex-col gap-3">
                       <div className="flex items-start gap-3">
                         <div className="p-2 bg-blue-50 text-blue-600 rounded-lg">
                           <FileText size={20} />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-semibold text-gray-800 truncate" title={doc.file_name}>{doc.file_name}</p>
-                          <p className="text-xs text-gray-500">{new Date(doc.created_at).toLocaleDateString()}</p>
+                          <p className="text-sm font-semibold text-card-foreground truncate" title={doc.file_name}>{doc.file_name}</p>
+                          <p className="text-xs text-muted-foreground">{new Date(doc.created_at).toLocaleDateString()}</p>
                         </div>
                       </div>
-                      <div className="flex gap-2 mt-auto pt-2 border-t border-gray-100">
-                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-gray-50 hover:bg-gray-100 text-gray-600 rounded-lg text-xs font-medium transition-colors">
+                      <div className="flex gap-2 mt-auto pt-2 border-t border-border">
+                        <a href={doc.file_url} target="_blank" rel="noopener noreferrer" className="flex-1 flex items-center justify-center gap-1 py-1.5 bg-muted hover:bg-gray-100 text-muted-foreground rounded-lg text-xs font-medium transition-colors">
                           <Download size={14} /> Unduh
                         </a>
                         {doc.uploaded_by === userId && (

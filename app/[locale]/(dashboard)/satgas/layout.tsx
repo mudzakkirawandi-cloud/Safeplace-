@@ -49,7 +49,7 @@ export default function SatgasLayout({
   ];
 
   const SidebarContent = () => (
-    <div className="flex flex-col h-full bg-[#1A5276] text-white">
+    <div className="flex flex-col h-full bg-primary text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#2471A3]">
         <SafePlaceLogo variant="white" role="satgas" iconSize={20} textSize="text-base" />
@@ -97,7 +97,7 @@ export default function SatgasLayout({
   );
 
   return (
-    <div className="flex h-screen bg-[#EBF5FB] overflow-hidden">
+    <div data-role="satgas" className="flex h-screen bg-background text-foreground overflow-hidden">
       {/* Sidebar desktop */}
       <aside className="hidden md:flex w-64 flex-shrink-0 flex-col">
         <SidebarContent />
@@ -130,7 +130,7 @@ export default function SatgasLayout({
       {/* Main content */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Topbar mobile */}
-        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-[#1A5276] text-white">
+        <div className="md:hidden flex items-center justify-between px-4 py-3 bg-primary text-white">
           <div className="flex items-center gap-3">
             <button
               onClick={() => setSidebarOpen(true)}
@@ -148,10 +148,10 @@ export default function SatgasLayout({
         </div>
 
         {/* Topbar Desktop */}
-        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-white border-b border-gray-100 z-10 relative shadow-sm">
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-card border-b border-border z-10 relative shadow-sm">
           <div className="flex items-center gap-4">
             <NotificationBell />
-            <div className="h-8 w-8 rounded-full bg-[#1A5276] text-white flex items-center justify-center font-bold text-sm">
+            <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">
               SG
             </div>
           </div>

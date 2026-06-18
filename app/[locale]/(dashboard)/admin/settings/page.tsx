@@ -8,11 +8,11 @@ export default function AdminSettingsPage() {
   return (
     <div className="p-6 space-y-6">
       <div>
-        <h1 className="text-2xl font-bold text-[#2C3E6B]">{t("nav_settings")}</h1>
-        <p className="text-sm text-gray-500 mt-1">System-wide configurations and preferences.</p>
+        <h1 className="text-2xl font-bold text-primary">{t("nav_settings")}</h1>
+        <p className="text-sm text-muted-foreground mt-1">System-wide configurations and preferences.</p>
       </div>
       
-      <div className="bg-white border border-gray-100 rounded-xl p-8 text-center text-gray-500">
+      <div className="bg-card border border-border rounded-xl p-8 text-center text-muted-foreground">
         Settings forms will be implemented here.
       </div>
     </div>

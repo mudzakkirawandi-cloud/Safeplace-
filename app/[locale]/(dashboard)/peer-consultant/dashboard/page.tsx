@@ -18,7 +18,7 @@ const STATS = [
     labelKey: "stat_active",
     value: 2,
     icon: FolderOpen,
-    color: "text-[#5B8A6F]",
+    color: "text-primary",
     bg: "bg-[#EAF3EE]",
   },
   {
@@ -105,10 +105,10 @@ export default function PeerConsultantDashboardPage() {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-2xl font-bold text-[#1B4F72]">
+        <h1 className="text-2xl font-bold text-primary">
           Halo, Peer Consultant 👋
         </h1>
-        <p className="text-gray-500 text-sm mt-1">Ini adalah ringkasan kasus yang Anda dampingi hari ini.</p>
+        <p className="text-muted-foreground text-sm mt-1">Ini adalah ringkasan kasus yang Anda dampingi hari ini.</p>
       </motion.div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -120,15 +120,15 @@ export default function PeerConsultantDashboardPage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.08 }}
-              className="bg-white rounded-2xl p-5 border border-gray-100 shadow-sm"
+              className="bg-card rounded-2xl p-5 border border-border shadow-sm"
             >
               <div
                 className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}
               >
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </div>
-              <p className="text-3xl font-bold text-[#1B4F72]">{stat.value}</p>
-              <p className="text-xs text-gray-400 mt-1">{t(stat.labelKey)}</p>
+              <p className="text-3xl font-bold text-primary">{stat.value}</p>
+              <p className="text-xs text-muted-foreground mt-1">{t(stat.labelKey)}</p>
             </motion.div>
           );
         })}
@@ -138,13 +138,13 @@ export default function PeerConsultantDashboardPage() {
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.35 }}
-        className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden"
+        className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-100">
-          <h2 className="font-semibold text-[#1B4F72]">{t("cases_title")}</h2>
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+          <h2 className="font-semibold text-primary">{t("cases_title")}</h2>
           <button
             onClick={() => router.push("/peer-consultant/cases")}
-            className="text-sm text-[#5B8A6F] hover:underline font-medium"
+            className="text-sm text-primary hover:underline font-medium"
           >
             {t("cases_view_all")} →
           </button>
@@ -153,7 +153,7 @@ export default function PeerConsultantDashboardPage() {
         <div className="hidden md:block overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="bg-gray-50 text-left text-xs font-semibold text-gray-400 uppercase tracking-wider">
+              <tr className="bg-muted text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                 <th className="px-6 py-3">{t("table_code")}</th>
                 <th className="px-6 py-3">{t("table_type")}</th>
                 <th className="px-6 py-3">{t("table_priority")}</th>
@@ -166,12 +166,12 @@ export default function PeerConsultantDashboardPage() {
               {CASES.map((c) => (
                 <tr
                   key={c.id}
-                  className="hover:bg-gray-50/50 transition-colors"
+                  className="hover:bg-muted/50 transition-colors"
                 >
-                  <td className="px-6 py-4 font-mono font-semibold text-[#1B4F72]">
+                  <td className="px-6 py-4 font-mono font-semibold text-primary">
                     #{c.code}
                   </td>
-                  <td className="px-6 py-4 text-gray-600">{c.type}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{c.type}</td>
                   <td className="px-6 py-4">
                     <span
                       className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium ${
@@ -184,8 +184,8 @@ export default function PeerConsultantDashboardPage() {
                       {PRIORITY_CONFIG[c.priority].label}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-gray-500">{c.status}</td>
-                  <td className="px-6 py-4 text-gray-400 text-xs">
+                  <td className="px-6 py-4 text-muted-foreground">{c.status}</td>
+                  <td className="px-6 py-4 text-muted-foreground text-xs">
                     {c.lastUpdate}
                   </td>
                   <td className="px-6 py-4">
@@ -193,7 +193,7 @@ export default function PeerConsultantDashboardPage() {
                       onClick={() =>
                         router.push(`/peer-consultant/cases/${c.id}`)
                       }
-                      className="flex items-center gap-1 text-[#5B8A6F] hover:text-[#3d6b52] font-medium text-xs transition-colors"
+                      className="flex items-center gap-1 text-primary hover:text-[#3d6b52] font-medium text-xs transition-colors"
                     >
                       {t("table_open")}
                       <ChevronRight size={14} />
@@ -210,10 +210,10 @@ export default function PeerConsultantDashboardPage() {
             <button
               key={c.id}
               onClick={() => router.push(`/peer-consultant/cases/${c.id}`)}
-              className="w-full px-4 py-4 text-left hover:bg-gray-50 transition-colors"
+              className="w-full px-4 py-4 text-left hover:bg-muted transition-colors"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="font-mono font-semibold text-[#1B4F72] text-sm">
+                <span className="font-mono font-semibold text-primary text-sm">
                   #{c.code}
                 </span>
                 <div className="flex items-center gap-2">
@@ -224,11 +224,11 @@ export default function PeerConsultantDashboardPage() {
                   >
                     {PRIORITY_CONFIG[c.priority].label}
                   </span>
-                  <ChevronRight size={14} className="text-gray-400" />
+                  <ChevronRight size={14} className="text-muted-foreground" />
                 </div>
               </div>
-              <p className="text-sm text-gray-600">{c.type}</p>
-              <p className="text-xs text-gray-400 mt-1">{c.lastUpdate}</p>
+              <p className="text-sm text-muted-foreground">{c.type}</p>
+              <p className="text-xs text-muted-foreground mt-1">{c.lastUpdate}</p>
             </button>
           ))}
         </div>

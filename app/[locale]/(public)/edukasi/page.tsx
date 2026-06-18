@@ -68,15 +68,15 @@ export default function EducationPage() {
   };
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#FAFBFF]">
+    <div className="flex flex-col min-h-screen bg-background">
       <Navbar />
       <main className="flex-1 pt-32 pb-24">
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-12">
-            <h1 className="text-4xl font-display font-bold text-[#1B4F72] mb-4">
+            <h1 className="text-4xl font-display font-bold text-primary mb-4">
               {t("title")}
             </h1>
-            <p className="text-gray-600 max-w-2xl mx-auto">
+            <p className="text-muted-foreground max-w-2xl mx-auto">
               {t("subtitle")}
             </p>
           </div>
@@ -89,8 +89,8 @@ export default function EducationPage() {
                 onClick={() => setActiveCategory(cat.id)}
                 className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
                   activeCategory === cat.id
-                    ? "bg-[#1B4F72] text-white shadow-md"
-                    : "bg-white text-gray-600 hover:bg-gray-50 border border-gray-200"
+                    ? "bg-primary text-white shadow-md"
+                    : "bg-card text-muted-foreground hover:bg-muted border border-border"
                 }`}
               >
                 {cat.label}
@@ -102,7 +102,7 @@ export default function EducationPage() {
           {loading ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {[1, 2, 3, 4, 5, 6].map((i) => (
-                <div key={i} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 animate-pulse">
+                <div key={i} className="bg-card rounded-2xl p-4 shadow-sm border border-border animate-pulse">
                   <div className="w-full h-48 bg-gray-200 rounded-xl mb-4"></div>
                   <div className="h-6 bg-gray-200 rounded w-3/4 mb-3"></div>
                   <div className="h-4 bg-gray-200 rounded w-full mb-2"></div>
@@ -114,7 +114,7 @@ export default function EducationPage() {
           ) : filteredMaterials.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredMaterials.map((item) => (
-                <div key={item.id} className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100 flex flex-col">
+                <div key={item.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-border flex flex-col">
                   {item.content_type === "video" && (
                     <div className="aspect-video w-full bg-gray-900">
                       <iframe 
@@ -133,13 +133,13 @@ export default function EducationPage() {
                   )}
                   
                   <div className="p-6 flex-1 flex flex-col">
-                    <div className="inline-block px-3 py-1 bg-gray-100 text-gray-600 text-xs font-semibold rounded-full w-fit mb-3">
+                    <div className="inline-block px-3 py-1 bg-gray-100 text-muted-foreground text-xs font-semibold rounded-full w-fit mb-3">
                       {categories.find(c => c.id === item.category)?.label || item.category}
                     </div>
-                    <h3 className="text-xl font-bold text-[#1B4F72] mb-2 line-clamp-2">
+                    <h3 className="text-xl font-bold text-primary mb-2 line-clamp-2">
                       {item.title}
                     </h3>
-                    <p className="text-gray-500 text-sm mb-6 flex-1 line-clamp-3">
+                    <p className="text-muted-foreground text-sm mb-6 flex-1 line-clamp-3">
                       {item.description}
                     </p>
                     
@@ -158,7 +158,7 @@ export default function EducationPage() {
                         href={item.file_path} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="w-full py-2.5 px-4 bg-blue-50 text-[#4A90B8] hover:bg-blue-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                        className="w-full py-2.5 px-4 bg-blue-50 text-primary hover:bg-blue-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                       >
                         <Download size={18} /> {t("download_pdf")}
                       </a>
@@ -168,7 +168,7 @@ export default function EducationPage() {
                         href={item.url} 
                         target="_blank" 
                         rel="noopener noreferrer"
-                        className="w-full py-2.5 px-4 bg-gray-50 text-gray-700 hover:bg-gray-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
+                        className="w-full py-2.5 px-4 bg-muted text-card-foreground hover:bg-gray-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                       >
                         <ExternalLink size={18} /> {t("read_article")}
                       </a>
@@ -178,10 +178,10 @@ export default function EducationPage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 bg-white rounded-3xl border border-gray-100 shadow-sm">
+            <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
               <FileText size={64} className="mx-auto text-gray-300 mb-6" />
-              <h3 className="text-xl font-bold text-gray-700 mb-2">{t("empty_state")}</h3>
-              <p className="text-gray-500">{t("empty_state")}</p>
+              <h3 className="text-xl font-bold text-card-foreground mb-2">{t("empty_state")}</h3>
+              <p className="text-muted-foreground">{t("empty_state")}</p>
             </div>
           )}
         </div>

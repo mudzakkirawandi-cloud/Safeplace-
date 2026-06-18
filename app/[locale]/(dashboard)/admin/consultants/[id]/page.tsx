@@ -79,7 +79,7 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
   };
 
   if (loading || !consultant) {
-    return <div className="p-6 flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-[#2C3E6B]" /></div>;
+    return <div className="p-6 flex justify-center items-center h-64"><Loader2 className="w-8 h-8 animate-spin text-primary" /></div>;
   }
 
   const isArchived = consultant.status === "Diarsipkan";
@@ -88,7 +88,7 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
     <div className="p-6 max-w-4xl mx-auto">
       <button 
         onClick={() => router.back()}
-        className="flex items-center gap-2 text-sm text-gray-500 hover:text-[#2C3E6B] mb-6 transition-colors"
+        className="flex items-center gap-2 text-sm text-muted-foreground hover:text-primary mb-6 transition-colors"
       >
         <ArrowLeft size={16} />
         Kembali ke Daftar Konsultan
@@ -96,19 +96,19 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
 
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 bg-[#2C3E6B]/10 text-[#2C3E6B] rounded-2xl flex items-center justify-center">
+          <div className="w-16 h-16 bg-primary/10 text-primary rounded-2xl flex items-center justify-center">
             <User size={32} />
           </div>
           <div>
-            <h1 className="text-2xl font-bold text-[#2C3E6B] flex items-center gap-3">
+            <h1 className="text-2xl font-bold text-primary flex items-center gap-3">
               {consultant.full_name}
               {isArchived ? (
-                <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">Diarsipkan</span>
+                <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-gray-100 text-muted-foreground">Diarsipkan</span>
               ) : (
                 <span className="px-2.5 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-700">Aktif</span>
               )}
             </h1>
-            <p className="text-sm text-gray-500 mt-1">{consultant.type} • {consultant.campus || "Tidak terafiliasi kampus"}</p>
+            <p className="text-sm text-muted-foreground mt-1">{consultant.type} • {consultant.campus || "Tidak terafiliasi kampus"}</p>
           </div>
         </div>
         
@@ -125,44 +125,44 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm space-y-4">
-            <h3 className="font-semibold text-gray-800 text-sm border-b border-gray-100 pb-3">Informasi Kontak & Pendidikan</h3>
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm space-y-4">
+            <h3 className="font-semibold text-card-foreground text-sm border-b border-border pb-3">Informasi Kontak & Pendidikan</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div className="space-y-1">
-                <span className="text-xs text-gray-400 flex items-center gap-1.5"><Mail size={12} /> Email</span>
-                <p className="text-sm font-medium text-gray-800">{consultant.email}</p>
+                <span className="text-xs text-muted-foreground flex items-center gap-1.5"><Mail size={12} /> Email</span>
+                <p className="text-sm font-medium text-card-foreground">{consultant.email}</p>
               </div>
               <div className="space-y-1">
-                <span className="text-xs text-gray-400 flex items-center gap-1.5"><Phone size={12} /> WhatsApp</span>
-                <p className="text-sm font-medium text-gray-800">{consultant.whatsapp}</p>
+                <span className="text-xs text-muted-foreground flex items-center gap-1.5"><Phone size={12} /> WhatsApp</span>
+                <p className="text-sm font-medium text-card-foreground">{consultant.whatsapp}</p>
               </div>
               <div className="space-y-1 sm:col-span-2">
-                <span className="text-xs text-gray-400 flex items-center gap-1.5"><BookOpen size={12} /> Latar Belakang Pendidikan</span>
-                <p className="text-sm font-medium text-gray-800">{consultant.education}</p>
+                <span className="text-xs text-muted-foreground flex items-center gap-1.5"><BookOpen size={12} /> Latar Belakang Pendidikan</span>
+                <p className="text-sm font-medium text-card-foreground">{consultant.education}</p>
               </div>
               <div className="space-y-1 sm:col-span-2">
-                <span className="text-xs text-gray-400 flex items-center gap-1.5"><Briefcase size={12} /> Pengalaman Relevan</span>
-                <p className="text-sm font-medium text-gray-800">{consultant.experience}</p>
+                <span className="text-xs text-muted-foreground flex items-center gap-1.5"><Briefcase size={12} /> Pengalaman Relevan</span>
+                <p className="text-sm font-medium text-card-foreground">{consultant.experience}</p>
               </div>
             </div>
           </div>
         </div>
 
         <div className="space-y-6">
-          <div className="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm">
-            <h3 className="font-semibold text-gray-800 text-sm border-b border-gray-100 pb-3 mb-4">Statistik Kasus</h3>
+          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm">
+            <h3 className="font-semibold text-card-foreground text-sm border-b border-border pb-3 mb-4">Statistik Kasus</h3>
             <div className="flex justify-between items-center mb-2">
-              <span className="text-sm text-gray-500">Kasus Aktif</span>
-              <span className="text-lg font-bold text-[#2C3E6B]">{consultant.active_cases}</span>
+              <span className="text-sm text-muted-foreground">Kasus Aktif</span>
+              <span className="text-lg font-bold text-primary">{consultant.active_cases}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-sm text-gray-500">Kapasitas Maksimal</span>
-              <span className="text-sm font-medium text-gray-800">{consultant.max_cases}</span>
+              <span className="text-sm text-muted-foreground">Kapasitas Maksimal</span>
+              <span className="text-sm font-medium text-card-foreground">{consultant.max_cases}</span>
             </div>
             <div className="mt-4 w-full bg-gray-100 rounded-full h-2 overflow-hidden">
               <div 
-                className={`h-full rounded-full ${consultant.active_cases >= consultant.max_cases ? 'bg-red-500' : 'bg-[#2C3E6B]'}`} 
+                className={`h-full rounded-full ${consultant.active_cases >= consultant.max_cases ? 'bg-red-500' : 'bg-primary'}`} 
                 style={{ width: `${Math.min((consultant.active_cases / consultant.max_cases) * 100, 100)}%` }}
               ></div>
             </div>
@@ -174,7 +174,7 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
         {isArchiveModalOpen && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsArchiveModalOpen(false)} />
-            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-white rounded-2xl shadow-xl w-full max-w-md relative z-10 flex flex-col overflow-hidden">
+            <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-card rounded-2xl shadow-xl w-full max-w-md relative z-10 flex flex-col overflow-hidden">
               <div className="p-6 bg-red-50 border-b border-red-100 flex items-start gap-4">
                 <div className="w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center flex-shrink-0">
                   <Archive size={20} />
@@ -196,11 +196,11 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
                     </div>
                     
                     <div className="space-y-2">
-                      <label className="text-sm font-semibold text-gray-700">Pilih Konsultan Pengganti</label>
+                      <label className="text-sm font-semibold text-card-foreground">Pilih Konsultan Pengganti</label>
                       <select 
                         value={replacementId} 
                         onChange={(e) => setReplacementId(e.target.value)}
-                        className="w-full border border-gray-200 rounded-xl px-4 py-3 text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
+                        className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:border-red-500 focus:ring-1 focus:ring-red-500 outline-none"
                       >
                         <option value="">-- Pilih Konsultan --</option>
                         {MOCK_REPLACEMENT_CONSULTANTS.map(c => (
@@ -211,22 +211,22 @@ export default function ConsultantDetailPage({ params }: { params: { id: string 
                       </select>
                     </div>
                     
-                    <p className="text-xs text-gray-500 flex items-start gap-1">
+                    <p className="text-xs text-muted-foreground flex items-start gap-1">
                       <CheckCircle2 size={14} className="text-green-500 flex-shrink-0" />
                       Sistem akan otomatis mengabari pelapor terkait pergantian konsultan ini.
                     </p>
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-600">
+                  <p className="text-sm text-muted-foreground">
                     Tidak ada kasus aktif yang ditangani. Anda dapat langsung mengarsipkan konsultan ini.
                   </p>
                 )}
               </div>
 
-              <div className="p-4 border-t border-gray-100 flex justify-end gap-3 bg-gray-50">
+              <div className="p-4 border-t border-border flex justify-end gap-3 bg-muted">
                 <button 
                   onClick={() => setIsArchiveModalOpen(false)} 
-                  className="px-4 py-2 text-sm font-semibold text-gray-600 hover:bg-gray-200 rounded-xl transition-colors"
+                  className="px-4 py-2 text-sm font-semibold text-muted-foreground hover:bg-gray-200 rounded-xl transition-colors"
                 >
                   Batal
                 </button>

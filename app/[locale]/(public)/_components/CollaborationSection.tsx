@@ -16,7 +16,7 @@ export default function CollaborationSection() {
   const repeatedLogos = [...logos, ...logos, ...logos, ...logos, ...logos, ...logos];
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-[#FAFBFF] border-t border-gray-100 overflow-hidden">
+    <section className="py-16 bg-gradient-to-b from-white to-[#FAFBFF] border-t border-border overflow-hidden">
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes slide {
           0% { transform: translateX(0); }
@@ -30,7 +30,7 @@ export default function CollaborationSection() {
         }
       `}} />
       <div className="container mx-auto px-6 max-w-6xl text-center mb-10">
-        <h2 className="text-2xl font-bold text-[#1B4F72]">{t("title")}</h2>
+        <h2 className="text-2xl font-bold text-primary">{t("title")}</h2>
       </div>
 
       <div className="relative w-full flex overflow-x-hidden">

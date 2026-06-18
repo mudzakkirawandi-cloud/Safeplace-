@@ -43,7 +43,7 @@ export default function LanguageSwitcher() {
         aria-label="Change language"
         aria-haspopup="menu"
         aria-expanded={isOpen}
-        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-[#1B4F72] hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#1B4F72] focus:ring-offset-2 rounded-lg transition-colors"
+        className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-primary hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-[#1B4F72] focus:ring-offset-2 rounded-lg transition-colors"
       >
         <Globe size={18} />
         <span>{locale === "en" ? "🇬🇧 EN" : "🇮🇩 ID"}</span>
@@ -58,19 +58,19 @@ export default function LanguageSwitcher() {
             exit={{ opacity: 0, y: -10 }}
             role="menu"
             aria-orientation="vertical"
-            className="absolute right-0 mt-2 w-32 bg-white rounded-lg shadow-lg overflow-hidden z-50 border border-gray-100"
+            className="absolute right-0 mt-2 w-32 bg-card rounded-lg shadow-lg overflow-hidden z-50 border border-border"
           >
             <button
               role="menuitem"
               onClick={() => changeLanguage("id")}
-              className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-colors ${locale === "id" ? "bg-gray-50 font-semibold" : ""}`}
+              className={`w-full text-left px-4 py-2 text-sm hover:bg-muted focus:outline-none focus:bg-muted transition-colors ${locale === "id" ? "bg-muted font-semibold" : ""}`}
             >
               🇮🇩 Indonesia
             </button>
             <button
               role="menuitem"
               onClick={() => changeLanguage("en")}
-              className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 focus:outline-none focus:bg-gray-50 transition-colors ${locale === "en" ? "bg-gray-50 font-semibold" : ""}`}
+              className={`w-full text-left px-4 py-2 text-sm hover:bg-muted focus:outline-none focus:bg-muted transition-colors ${locale === "en" ? "bg-muted font-semibold" : ""}`}
             >
               🇬🇧 English
             </button>

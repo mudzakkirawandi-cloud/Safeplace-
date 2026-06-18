@@ -14,6 +14,17 @@ const config: Config = {
         display: ['var(--font-plus-jakarta-sans)'],
       },
       colors: {
+        background: 'var(--background)',
+        foreground: 'var(--foreground)',
+        card: 'var(--card)',
+        'card-foreground': 'var(--card-foreground)',
+        primary: 'var(--primary)',
+        'primary-foreground': 'var(--primary-foreground)',
+        muted: 'var(--muted)',
+        'muted-foreground': 'var(--muted-foreground)',
+        border: 'var(--border)',
+        
+        // Keep these if any components still use them explicitly
         homepage: {
           primary: '#1B4F72',
           background: '#FAFBFF',

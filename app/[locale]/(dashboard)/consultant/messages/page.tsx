@@ -33,19 +33,19 @@ export default function MessagesPage() {
   return (
     <div className="p-6 space-y-6">
       <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
-        <h1 className="text-2xl font-bold text-[#1B4F72]">Pesan</h1>
-        <p className="text-gray-500 text-sm mt-1">Chat dengan pelapor yang sedang kamu dampingi</p>
+        <h1 className="text-2xl font-bold text-primary">Pesan</h1>
+        <p className="text-muted-foreground text-sm mt-1">Chat dengan pelapor yang sedang kamu dampingi</p>
       </motion.div>
 
       {/* Search */}
       <div className="relative">
-        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Cari percakapan..."
-          className="w-full pl-9 pr-4 py-2.5 border border-gray-200 rounded-xl text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+          className="w-full pl-9 pr-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
         />
       </div>
 
@@ -58,26 +58,26 @@ export default function MessagesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06 }}
             onClick={() => router.push(`/consultant/cases/${chat.id}?tab=chat`)}
-            className="w-full bg-white border border-gray-100 rounded-2xl p-4 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition-all flex items-center gap-4"
+            className="w-full bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition-all flex items-center gap-4"
           >
             {/* Avatar */}
             <div className="w-11 h-11 rounded-full bg-[#EAF3EE] flex items-center justify-center flex-shrink-0">
-              <MessageCircle size={18} className="text-[#5B8A6F]" />
+              <MessageCircle size={18} className="text-primary" />
             </div>
 
             {/* Info */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-0.5">
-                <span className="font-semibold text-sm text-[#1B4F72] font-mono">#{chat.code}</span>
-                <span className="text-xs text-gray-400">{chat.time}</span>
+                <span className="font-semibold text-sm text-primary font-mono">#{chat.code}</span>
+                <span className="text-xs text-muted-foreground">{chat.time}</span>
               </div>
-              <p className="text-xs text-gray-400 mb-1">{chat.type}</p>
-              <p className="text-sm text-gray-500 truncate">{chat.lastMessage}</p>
+              <p className="text-xs text-muted-foreground mb-1">{chat.type}</p>
+              <p className="text-sm text-muted-foreground truncate">{chat.lastMessage}</p>
             </div>
 
             {/* Unread badge */}
             {chat.unread > 0 && (
-              <span className="w-5 h-5 rounded-full bg-[#5B8A6F] text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
+              <span className="w-5 h-5 rounded-full bg-primary text-white text-xs font-bold flex items-center justify-center flex-shrink-0">
                 {chat.unread}
               </span>
             )}

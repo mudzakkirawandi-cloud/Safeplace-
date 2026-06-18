@@ -89,26 +89,26 @@ export default function IdleTimer({ children }: { children: React.ReactNode }) {
               initial={{ scale: 0.9, opacity: 0, y: 20 }}
               animate={{ scale: 1, opacity: 1, y: 0 }}
               exit={{ scale: 0.9, opacity: 0, y: 20 }}
-              className="relative bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full text-center"
+              className="relative bg-card rounded-2xl shadow-2xl p-6 md:p-8 max-w-sm w-full text-center"
             >
               <div className="w-16 h-16 bg-yellow-100 text-yellow-600 rounded-full flex items-center justify-center mx-auto mb-4">
                 <AlertTriangle size={32} />
               </div>
-              <h2 className="text-xl font-bold text-gray-900 mb-2">Sesi Tidak Aktif</h2>
-              <p className="text-sm text-gray-500 mb-6">
+              <h2 className="text-xl font-bold text-foreground mb-2">Sesi Tidak Aktif</h2>
+              <p className="text-sm text-muted-foreground mb-6">
                 Demi keamanan, sesi Anda akan otomatis keluar dalam <strong className="text-red-500">{countdown} detik</strong> jika tidak ada aktivitas.
               </p>
               
               <div className="flex flex-col gap-3">
                 <button
                   onClick={resetTimer}
-                  className="w-full py-3 bg-[#2C3E6B] hover:bg-[#1f2b4a] text-white rounded-xl font-semibold transition-colors"
+                  className="w-full py-3 bg-primary hover:bg-[#1f2b4a] text-white rounded-xl font-semibold transition-colors"
                 >
                   Tetap Masuk
                 </button>
                 <button
                   onClick={handleLogout}
-                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-xl font-semibold transition-colors"
+                  className="w-full py-3 bg-gray-100 hover:bg-gray-200 text-card-foreground rounded-xl font-semibold transition-colors"
                 >
                   Keluar Sekarang
                 </button>

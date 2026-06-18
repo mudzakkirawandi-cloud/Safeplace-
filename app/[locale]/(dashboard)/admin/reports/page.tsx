@@ -21,7 +21,7 @@ export default function AdminReportsPage() {
     <div className="p-6 space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-[#2C3E6B]">{t("reports_title")}</h1>
+          <h1 className="text-2xl font-bold text-primary">{t("reports_title")}</h1>
         </div>
         <div className="flex gap-2">
           {/* Action buttons show up if selected > 0 */}
@@ -39,34 +39,34 @@ export default function AdminReportsPage() {
       </div>
 
       {/* Filter Bar */}
-      <div className="flex flex-wrap items-center gap-3 p-4 bg-white rounded-xl border border-gray-100 shadow-sm">
+      <div className="flex flex-wrap items-center gap-3 p-4 bg-card rounded-xl border border-border shadow-sm">
         <div className="flex-1 min-w-[200px] relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={16} />
           <input 
             type="text" 
             placeholder={t("search_placeholder")}
-            className="w-full pl-9 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
+            className="w-full pl-9 pr-4 py-2 bg-muted border border-border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-[#4ECDC4]/50"
           />
         </div>
-        <select className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none">
+        <select className="px-3 py-2 bg-muted border border-border rounded-lg text-sm outline-none">
           <option>{t("filter_status")}</option>
         </select>
-        <select className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none">
+        <select className="px-3 py-2 bg-muted border border-border rounded-lg text-sm outline-none">
           <option>{t("filter_intent")}</option>
         </select>
-        <select className="px-3 py-2 bg-gray-50 border border-gray-200 rounded-lg text-sm outline-none">
+        <select className="px-3 py-2 bg-muted border border-border rounded-lg text-sm outline-none">
           <option>{t("filter_priority")}</option>
         </select>
-        <button className="p-2 border border-gray-200 rounded-lg hover:bg-gray-50 text-gray-500">
+        <button className="p-2 border border-border rounded-lg hover:bg-muted text-muted-foreground">
           <Filter size={18} />
         </button>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-semibold">
+            <thead className="bg-muted text-muted-foreground text-xs uppercase font-semibold">
               <tr>
                 <th className="px-6 py-4 w-12">
                   <button onClick={() => setSelected(selected.length === DUMMY_REPORTS.length ? [] : DUMMY_REPORTS.map(r => r.id))}>
@@ -84,24 +84,24 @@ export default function AdminReportsPage() {
             </thead>
             <tbody className="divide-y divide-gray-100">
               {DUMMY_REPORTS.map(report => (
-                <tr key={report.id} className="hover:bg-gray-50 transition-colors">
+                <tr key={report.id} className="hover:bg-muted transition-colors">
                   <td className="px-6 py-4">
                     <button onClick={() => toggleSelect(report.id)}>
                       {selected.includes(report.id) ? <CheckSquare size={16} className="text-[#4ECDC4]" /> : <Square size={16} className="text-gray-300" />}
                     </button>
                   </td>
-                  <td className="px-6 py-4 font-mono font-medium text-[#2C3E6B]">{report.code}</td>
-                  <td className="px-6 py-4 text-gray-500">{report.date}</td>
-                  <td className="px-6 py-4 text-gray-700">{report.type}</td>
-                  <td className="px-6 py-4 text-gray-500">{report.intent}</td>
+                  <td className="px-6 py-4 font-mono font-medium text-primary">{report.code}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{report.date}</td>
+                  <td className="px-6 py-4 text-card-foreground">{report.type}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{report.intent}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${report.priority === 'Urgent' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>
                       {report.priority}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-gray-500">{report.status}</td>
+                  <td className="px-6 py-4 text-muted-foreground">{report.status}</td>
                   <td className="px-6 py-4 text-right">
-                    <button className="p-1 hover:bg-gray-200 rounded text-gray-400">
+                    <button className="p-1 hover:bg-gray-200 rounded text-muted-foreground">
                       <MoreHorizontal size={16} />
                     </button>
                   </td>

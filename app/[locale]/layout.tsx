@@ -65,7 +65,7 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-white dark:bg-[#1a1a1a] text-gray-900 dark:text-gray-100`}>
+      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-card dark:bg-[#1a1a1a] text-foreground dark:text-gray-100`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <IdleTimer>

@@ -67,13 +67,13 @@ export default function ReportFormPage() {
   return (
     <main className="flex-1 flex flex-col items-center p-6 container mx-auto max-w-3xl py-10">
       <div className="w-full mb-8">
-        <div className="flex justify-between text-sm font-medium text-[#1B4F72] mb-2">
+        <div className="flex justify-between text-sm font-medium text-primary mb-2">
           <span>Langkah {currentStep} dari {totalSteps}</span>
           <span>{Math.round((currentStep / totalSteps) * 100)}%</span>
         </div>
         <div className="w-full bg-gray-200 rounded-full h-2.5">
           <motion.div 
-            className="bg-[#4A90B8] h-2.5 rounded-full"
+            className="bg-primary h-2.5 rounded-full"
             initial={{ width: `${((currentStep - 1) / totalSteps) * 100}%` }}
             animate={{ width: `${(currentStep / totalSteps) * 100}%` }}
             transition={{ duration: 0.3 }}
@@ -81,34 +81,34 @@ export default function ReportFormPage() {
         </div>
       </div>
 
-      <div className="w-full bg-white rounded-2xl shadow-sm border border-gray-100 p-8 relative overflow-hidden">
+      <div className="w-full bg-card rounded-2xl shadow-sm border border-border p-8 relative overflow-hidden">
         <form onSubmit={handleSubmit(onSubmit)}>
           <AnimatePresence mode="wait">
             {currentStep === 1 && (
               <motion.div key="step1" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="min-h-[300px]">
-                <h2 className="text-2xl font-bold text-[#1B4F72] mb-6">{t("step1.title")}</h2>
+                <h2 className="text-2xl font-bold text-primary mb-6">{t("step1.title")}</h2>
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("step1.incident_type")}</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">{t("step1.incident_type")}</label>
                     <div className="grid sm:grid-cols-2 gap-3">
                       {(['verbal', 'physical', 'sexual', 'digital', 'other'] as const).map(type => (
                         <label key={type} className="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-blue-50 hover:border-[#4A90B8] transition-colors has-[:checked]:border-[#4A90B8] has-[:checked]:bg-blue-50">
-                          <input type="radio" value={type} {...register("incidentType")} className="w-4 h-4 text-[#4A90B8] focus:ring-[#4A90B8]" />
-                          <span className="ml-3 text-gray-700">{t(`step1.types.${type}`)}</span>
+                          <input type="radio" value={type} {...register("incidentType")} className="w-4 h-4 text-primary focus:ring-[#4A90B8]" />
+                          <span className="ml-3 text-card-foreground">{t(`step1.types.${type}`)}</span>
                         </label>
                       ))}
                     </div>
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("step1.date")}</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">{t("step1.date")}</label>
                     <input type="date" {...register("incidentDate")} className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent outline-none" />
                   </div>
 
                   <label className="flex items-center p-4 border rounded-xl cursor-pointer hover:bg-blue-50 transition-colors has-[:checked]:border-[#4A90B8] has-[:checked]:bg-blue-50">
-                    <input type="checkbox" {...register("isOngoing")} className="w-5 h-5 text-[#4A90B8] rounded focus:ring-[#4A90B8]" />
-                    <span className="ml-3 font-medium text-gray-700">{t("step1.is_ongoing")}</span>
+                    <input type="checkbox" {...register("isOngoing")} className="w-5 h-5 text-primary rounded focus:ring-[#4A90B8]" />
+                    <span className="ml-3 font-medium text-card-foreground">{t("step1.is_ongoing")}</span>
                   </label>
                 </div>
               </motion.div>
@@ -116,12 +116,12 @@ export default function ReportFormPage() {
 
             {currentStep === 2 && (
               <motion.div key="step2" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="min-h-[300px]">
-                <h2 className="text-2xl font-bold text-[#1B4F72] mb-6">{t("step2.title")}</h2>
+                <h2 className="text-2xl font-bold text-primary mb-6">{t("step2.title")}</h2>
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("step2.campus")}</label>
-                    <select {...register("campus")} className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent bg-white outline-none">
+                    <label className="block text-sm font-medium text-card-foreground mb-2">{t("step2.campus")}</label>
+                    <select {...register("campus")} className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent bg-card outline-none">
                       <option value="">-- Pilih Kampus --</option>
                       <option value="kampus_a">Universitas A</option>
                       <option value="kampus_b">Universitas B</option>
@@ -130,7 +130,7 @@ export default function ReportFormPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("step2.location_detail")}</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">{t("step2.location_detail")}</label>
                     <input type="text" {...register("locationDetail")} placeholder="Contoh: Gedung Rektorat Lantai 2" className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent outline-none" />
                   </div>
                 </div>
@@ -139,12 +139,12 @@ export default function ReportFormPage() {
 
             {currentStep === 3 && (
               <motion.div key="step3" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="min-h-[300px]">
-                <h2 className="text-2xl font-bold text-[#1B4F72] mb-6">{t("step3.title")}</h2>
+                <h2 className="text-2xl font-bold text-primary mb-6">{t("step3.title")}</h2>
                 
                 <div className="space-y-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("step3.relationship")}</label>
-                    <select {...register("relationship")} className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent bg-white outline-none">
+                    <label className="block text-sm font-medium text-card-foreground mb-2">{t("step3.relationship")}</label>
+                    <select {...register("relationship")} className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent bg-card outline-none">
                       <option value="">-- Pilih Hubungan --</option>
                       <option value="dosen">Dosen/Staf Kampus</option>
                       <option value="mahasiswa">Sesama Mahasiswa</option>
@@ -155,12 +155,12 @@ export default function ReportFormPage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">{t("step3.safety")}</label>
+                    <label className="block text-sm font-medium text-card-foreground mb-2">{t("step3.safety")}</label>
                     <div className="grid sm:grid-cols-3 gap-3">
                       {(['yes', 'no', 'unknown'] as const).map(opt => (
                         <label key={opt} className="flex items-center justify-center p-4 border rounded-xl cursor-pointer hover:bg-blue-50 transition-colors has-[:checked]:border-[#4A90B8] has-[:checked]:bg-blue-50">
-                          <input type="radio" value={opt} {...register("safety")} className="w-4 h-4 text-[#4A90B8] focus:ring-[#4A90B8] mr-2" />
-                          <span className="font-medium text-gray-700">{t(`step3.safety_${opt}`)}</span>
+                          <input type="radio" value={opt} {...register("safety")} className="w-4 h-4 text-primary focus:ring-[#4A90B8] mr-2" />
+                          <span className="font-medium text-card-foreground">{t(`step3.safety_${opt}`)}</span>
                         </label>
                       ))}
                     </div>
@@ -178,12 +178,12 @@ export default function ReportFormPage() {
 
             {currentStep === 4 && (
               <motion.div key="step4" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="min-h-[300px]">
-                <h2 className="text-2xl font-bold text-[#1B4F72] mb-6">{t("step4.title")}</h2>
+                <h2 className="text-2xl font-bold text-primary mb-6">{t("step4.title")}</h2>
                 
                 <div>
                   <div className="flex justify-between items-end mb-2">
-                    <label className="block text-sm font-medium text-gray-700">{t("step4.description")}</label>
-                    <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">{t("step4.optional_label")}</span>
+                    <label className="block text-sm font-medium text-card-foreground">{t("step4.description")}</label>
+                    <span className="text-xs text-muted-foreground bg-gray-100 px-2 py-1 rounded-md">{t("step4.optional_label")}</span>
                   </div>
                   <textarea 
                     {...register("description")} 
@@ -191,7 +191,7 @@ export default function ReportFormPage() {
                     placeholder={t("step4.desc_placeholder")}
                     className="w-full p-4 border rounded-xl focus:ring-2 focus:ring-[#4A90B8] focus:border-transparent outline-none resize-none" 
                   />
-                  <div className="text-right text-sm text-gray-500 mt-1">
+                  <div className="text-right text-sm text-muted-foreground mt-1">
                     {watch("description")?.length || 0} karakter
                   </div>
                 </div>
@@ -200,21 +200,21 @@ export default function ReportFormPage() {
 
             {currentStep === 5 && (
               <motion.div key="step5" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="min-h-[300px]">
-                <h2 className="text-2xl font-bold text-[#1B4F72] mb-6">{t("step5.title")}</h2>
+                <h2 className="text-2xl font-bold text-primary mb-6">{t("step5.title")}</h2>
                 
                 <div className="space-y-4">
                   <div className="flex justify-between items-end mb-2">
-                    <label className="block text-sm font-medium text-gray-700">{t("step5.upload_label")}</label>
+                    <label className="block text-sm font-medium text-card-foreground">{t("step5.upload_label")}</label>
                   </div>
                   
-                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors">
-                    <UploadCloud className="w-12 h-12 text-gray-400 mb-4" />
-                    <p className="text-gray-600 font-medium mb-1">Pilih file atau tarik ke sini</p>
-                    <p className="text-sm text-gray-500 mb-4">{t("step5.upload_desc")}</p>
-                    <input type="file" multiple {...register("attachments")} className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-[#4A90B8] hover:file:bg-blue-100" />
+                  <div className="border-2 border-dashed border-gray-300 rounded-2xl p-10 flex flex-col items-center justify-center text-center hover:bg-muted transition-colors">
+                    <UploadCloud className="w-12 h-12 text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground font-medium mb-1">Pilih file atau tarik ke sini</p>
+                    <p className="text-sm text-muted-foreground mb-4">{t("step5.upload_desc")}</p>
+                    <input type="file" multiple {...register("attachments")} className="block w-full text-sm text-muted-foreground file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-primary hover:file:bg-blue-100" />
                   </div>
 
-                  <p className="text-sm text-gray-500 flex items-center gap-2 mt-4">
+                  <p className="text-sm text-muted-foreground flex items-center gap-2 mt-4">
                     <ShieldAlert className="w-4 h-4 text-green-600" />
                     {t("step5.encryption_note")}
                   </p>
@@ -224,41 +224,41 @@ export default function ReportFormPage() {
 
             {currentStep === 6 && (
               <motion.div key="step6" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="min-h-[300px]">
-                <h2 className="text-2xl font-bold text-[#1B4F72] mb-2">{t("step6.title")}</h2>
-                <p className="text-gray-600 mb-6">{t("step6.review_desc")}</p>
+                <h2 className="text-2xl font-bold text-primary mb-2">{t("step6.title")}</h2>
+                <p className="text-muted-foreground mb-6">{t("step6.review_desc")}</p>
                 
-                <div className="bg-gray-50 p-6 rounded-xl border mb-6 space-y-4 text-sm">
+                <div className="bg-muted p-6 rounded-xl border mb-6 space-y-4 text-sm">
                   <div className="grid grid-cols-3">
-                    <span className="text-gray-500 font-medium">Jenis Kejadian</span>
-                    <span className="col-span-2 text-gray-900">{watch("incidentType") || "-"}</span>
+                    <span className="text-muted-foreground font-medium">Jenis Kejadian</span>
+                    <span className="col-span-2 text-foreground">{watch("incidentType") || "-"}</span>
                   </div>
                   <div className="grid grid-cols-3">
-                    <span className="text-gray-500 font-medium">Tanggal</span>
-                    <span className="col-span-2 text-gray-900">{watch("incidentDate") || "-"}</span>
+                    <span className="text-muted-foreground font-medium">Tanggal</span>
+                    <span className="col-span-2 text-foreground">{watch("incidentDate") || "-"}</span>
                   </div>
                   <div className="grid grid-cols-3">
-                    <span className="text-gray-500 font-medium">Kampus</span>
-                    <span className="col-span-2 text-gray-900">{watch("campus") || "-"}</span>
+                    <span className="text-muted-foreground font-medium">Kampus</span>
+                    <span className="col-span-2 text-foreground">{watch("campus") || "-"}</span>
                   </div>
                   <div className="grid grid-cols-3">
-                    <span className="text-gray-500 font-medium">Kondisi Keamanan</span>
-                    <span className="col-span-2 text-gray-900">{watch("safety") === 'no' ? 'Tidak Aman' : (watch("safety") === 'yes' ? 'Aman' : 'Tidak Tahu')}</span>
+                    <span className="text-muted-foreground font-medium">Kondisi Keamanan</span>
+                    <span className="col-span-2 text-foreground">{watch("safety") === 'no' ? 'Tidak Aman' : (watch("safety") === 'yes' ? 'Aman' : 'Tidak Tahu')}</span>
                   </div>
                 </div>
 
-                <label className="flex items-start p-4 bg-[#EBF5FB] border border-[#4A90B8] rounded-xl cursor-pointer">
-                  <input type="checkbox" {...register("consent")} className="w-5 h-5 text-[#4A90B8] rounded mt-0.5 focus:ring-[#4A90B8]" />
-                  <span className="ml-3 text-[#1B4F72] text-sm font-medium">{t("step6.consent")}</span>
+                <label className="flex items-start p-4 bg-background border border-[#4A90B8] rounded-xl cursor-pointer">
+                  <input type="checkbox" {...register("consent")} className="w-5 h-5 text-primary rounded mt-0.5 focus:ring-[#4A90B8]" />
+                  <span className="ml-3 text-primary text-sm font-medium">{t("step6.consent")}</span>
                 </label>
               </motion.div>
             )}
           </AnimatePresence>
 
-          <div className="flex flex-col sm:flex-row justify-between items-center mt-10 pt-6 border-t border-gray-100 gap-4">
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-10 pt-6 border-t border-border gap-4">
             <button
               type="button"
               onClick={prevStep}
-              className="flex items-center justify-center gap-2 px-6 py-3 text-gray-600 font-medium hover:bg-gray-100 rounded-xl transition-colors w-full sm:w-auto"
+              className="flex items-center justify-center gap-2 px-6 py-3 text-muted-foreground font-medium hover:bg-gray-100 rounded-xl transition-colors w-full sm:w-auto"
             >
               <ArrowLeft className="w-5 h-5" />
               {t("prev_btn")}
@@ -268,7 +268,7 @@ export default function ReportFormPage() {
               <button
                 type="button"
                 onClick={handleSaveDraft}
-                className="flex items-center justify-center gap-2 px-6 py-3 text-[#4A90B8] font-medium bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors w-full sm:w-auto"
+                className="flex items-center justify-center gap-2 px-6 py-3 text-primary font-medium bg-blue-50 hover:bg-blue-100 rounded-xl transition-colors w-full sm:w-auto"
               >
                 <Save className="w-5 h-5" />
                 <span className="hidden sm:inline">{t("save_draft_btn")}</span>
@@ -278,7 +278,7 @@ export default function ReportFormPage() {
                 <button
                   type="button"
                   onClick={nextStep}
-                  className="flex items-center justify-center gap-2 px-8 py-3 bg-[#1B4F72] hover:bg-[#123650] text-white font-medium rounded-xl transition-colors shadow-md w-full sm:w-auto"
+                  className="flex items-center justify-center gap-2 px-8 py-3 bg-primary hover:bg-[#123650] text-white font-medium rounded-xl transition-colors shadow-md w-full sm:w-auto"
                 >
                   {t("next_btn")}
                   <ArrowRight className="w-5 h-5" />

@@ -48,13 +48,13 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F6FA] p-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden"
+        className="max-w-md w-full bg-card rounded-3xl shadow-xl border border-border overflow-hidden"
       >
-        <div className="bg-[#2C3E6B] p-8 text-center relative overflow-hidden">
+        <div className="bg-primary p-8 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#4ECDC4] opacity-20 rounded-full -translate-y-16 translate-x-16 blur-2xl"></div>
             <div className="flex justify-center mb-6">
               <SafePlaceLogo variant="white" iconSize={32} textSize="text-2xl" />
@@ -71,21 +71,21 @@ export default function LoginPage() {
             )}
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Akses</label>
+              <label className="block text-sm font-semibold text-card-foreground mb-1.5">Email Akses</label>
               <input 
                 type="email" 
                 value={email}
                 onChange={e => setEmail(e.target.value)}
                 placeholder="nama@institusi.ac.id"
                 required
-                className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
+                className="w-full px-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
               />
             </div>
 
             <div>
               <div className="flex items-center justify-between mb-1.5">
-                <label className="block text-sm font-semibold text-gray-700">Kata Sandi</label>
-                <button type="button" className="text-xs font-semibold text-[#2C3E6B] hover:text-[#4ECDC4] transition-colors">Lupa sandi?</button>
+                <label className="block text-sm font-semibold text-card-foreground">Kata Sandi</label>
+                <button type="button" className="text-xs font-semibold text-primary hover:text-[#4ECDC4] transition-colors">Lupa sandi?</button>
               </div>
               <div className="relative">
                 <input 
@@ -94,12 +94,12 @@ export default function LoginPage() {
                   onChange={e => setPassword(e.target.value)}
                   placeholder="••••••••"
                   required
-                  className="w-full pl-4 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
+                  className="w-full pl-4 pr-12 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
                 />
                 <button 
                   type="button" 
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-muted-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -109,17 +109,17 @@ export default function LoginPage() {
             <button 
               type="submit" 
               disabled={loading}
-              className="w-full py-3.5 bg-[#2C3E6B] hover:bg-[#1f2b4a] disabled:bg-gray-400 text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg mt-2"
+              className="w-full py-3.5 bg-primary hover:bg-[#1f2b4a] disabled:bg-gray-400 text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg mt-2"
             >
               {loading ? "Memverifikasi..." : "Akses Sistem"}
             </button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              Belum punya akun? <Link href="/register" className="font-bold text-[#2C3E6B] hover:text-[#4ECDC4] transition-colors">Daftar</Link>
+          <div className="mt-8 pt-6 border-t border-border text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              Belum punya akun? <Link href="/register" className="font-bold text-primary hover:text-[#4ECDC4] transition-colors">Daftar</Link>
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Dengan masuk, Anda menyetujui Kebijakan Privasi dan Perlindungan Data SafePlace. Segala akses dicatat dalam Audit Log.
             </p>
           </div>

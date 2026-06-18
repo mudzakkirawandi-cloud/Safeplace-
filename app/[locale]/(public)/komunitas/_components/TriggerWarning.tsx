@@ -32,8 +32,8 @@ export default function TriggerWarning({ postId, triggerText, children }: Trigge
   // Prevent hydration mismatch
   if (!isMounted) {
     return (
-      <div className="relative overflow-hidden rounded-xl bg-gray-50 border border-gray-100 min-h-[300px]">
-        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/80 backdrop-blur-xl">
+      <div className="relative overflow-hidden rounded-xl bg-muted border border-border min-h-[300px]">
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/80 backdrop-blur-xl">
           <div className="animate-pulse flex flex-col items-center">
             <div className="h-14 w-14 bg-red-50 rounded-full mb-4"></div>
             <div className="h-6 w-48 bg-gray-200 rounded mb-4"></div>
@@ -45,21 +45,21 @@ export default function TriggerWarning({ postId, triggerText, children }: Trigge
   }
 
   return (
-    <div className="relative rounded-xl bg-white overflow-hidden border border-gray-100">
+    <div className="relative rounded-xl bg-card overflow-hidden border border-border">
       <AnimatePresence>
         {!isReady && (
           <motion.div
             initial={{ opacity: 1, backdropFilter: "blur(16px)" }}
             exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-white/40 backdrop-blur-xl p-6 text-center"
+            className="absolute inset-0 z-10 flex flex-col items-center justify-center bg-card/40 backdrop-blur-xl p-6 text-center"
           >
-            <div className="max-w-md rounded-2xl bg-white/95 p-8 shadow-2xl border border-red-50 flex flex-col items-center">
+            <div className="max-w-md rounded-2xl bg-card/95 p-8 shadow-2xl border border-red-50 flex flex-col items-center">
               <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-red-50 text-red-500">
                 <AlertTriangle className="h-7 w-7" />
               </div>
-              <h3 className="mb-2 text-xl font-bold text-gray-900">Trigger Warning</h3>
-              <p className="mb-6 text-sm text-gray-600 leading-relaxed">
+              <h3 className="mb-2 text-xl font-bold text-foreground">Trigger Warning</h3>
+              <p className="mb-6 text-sm text-muted-foreground leading-relaxed">
                 {t("trigger_warning_hidden")} <br />
                 <span className="font-semibold text-red-600 mt-1.5 inline-block px-3 py-1 bg-red-50 rounded-lg">&quot;{triggerText}&quot;</span>
               </p>

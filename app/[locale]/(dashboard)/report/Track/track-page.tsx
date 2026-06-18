@@ -112,7 +112,7 @@ export default function TrackPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F0F7FC] p-6">
+    <main className="min-h-screen bg-background p-6">
       <div className="max-w-xl mx-auto">
 
         {/* Header */}
@@ -121,10 +121,10 @@ export default function TrackPage() {
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <h1 className="text-2xl md:text-3xl font-bold text-[#1B4F72] mb-2">
+          <h1 className="text-2xl md:text-3xl font-bold text-primary mb-2">
             {t("title")}
           </h1>
-          <p className="text-gray-500 leading-relaxed">{t("subtitle")}</p>
+          <p className="text-muted-foreground leading-relaxed">{t("subtitle")}</p>
         </motion.div>
 
         {/* Input kode — hanya tampil jika anonim & belum ada data */}
@@ -133,9 +133,9 @@ export default function TrackPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6"
+            className="bg-card rounded-2xl shadow-sm border border-border p-6 mb-6"
           >
-            <label className="block text-sm font-semibold text-[#1B4F72] mb-2">
+            <label className="block text-sm font-semibold text-primary mb-2">
               {t("input_label")}
             </label>
             <div className="flex gap-2">
@@ -148,18 +148,18 @@ export default function TrackPage() {
                 onKeyDown={handleKeyDown}
                 placeholder={t("input_placeholder")}
                 maxLength={8}
-                className="flex-1 border border-gray-200 rounded-xl px-4 py-3 text-center font-mono text-lg tracking-widest focus:outline-none focus:border-[#4A90B8] focus:ring-2 focus:ring-[#4A90B8]/20 transition-all uppercase placeholder:normal-case placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-gray-400"
+                className="flex-1 border border-border rounded-xl px-4 py-3 text-center font-mono text-lg tracking-widest focus:outline-none focus:border-[#4A90B8] focus:ring-2 focus:ring-[#4A90B8]/20 transition-all uppercase placeholder:normal-case placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-muted-foreground"
               />
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="bg-[#4A90B8] hover:bg-[#3a7da8] disabled:opacity-60 text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-95"
+                className="bg-primary hover:bg-[#3a7da8] disabled:opacity-60 text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-95"
               >
                 {loading ? (
                   <motion.div
                     animate={{ rotate: 360 }}
                     transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-                    className="w-5 h-5 border-2 border-white border-t-transparent rounded-full"
+                    className="w-5 h-5 border-2 border-border border-t-transparent rounded-full"
                   />
                 ) : (
                   <Search className="w-5 h-5" />
@@ -195,8 +195,8 @@ export default function TrackPage() {
               transition={{ type: "spring", stiffness: 180, damping: 20 }}
             >
               {/* Header card */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-4">
-                <div className="bg-[#4A90B8] px-6 py-4">
+              <div className="bg-card rounded-2xl shadow-sm border border-border overflow-hidden mb-4">
+                <div className="bg-primary px-6 py-4">
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-[#BDE0F5] text-xs font-semibold uppercase tracking-wider mb-1">
@@ -212,7 +212,7 @@ export default function TrackPage() {
 
                 {/* Timeline */}
                 <div className="px-6 py-6">
-                  <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-5">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-5">
                     {t("timeline_label")}
                   </p>
 
@@ -241,10 +241,10 @@ export default function TrackPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.3 }}
                   onClick={() => router.push("/report/chat")}
-                  className="w-full bg-[#4A90B8] hover:bg-[#3a7da8] text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-between shadow-md hover:shadow-lg transition-all active:scale-[0.98] mb-4"
+                  className="w-full bg-primary hover:bg-[#3a7da8] text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-between shadow-md hover:shadow-lg transition-all active:scale-[0.98] mb-4"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-full bg-white/20 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-full bg-card/20 flex items-center justify-center">
                       <MessageCircle className="w-5 h-5" />
                     </div>
                     <div className="text-left">
@@ -265,7 +265,7 @@ export default function TrackPage() {
                     setReport(null);
                     setInputCode("");
                   }}
-                  className="w-full text-center text-sm text-[#4A90B8] hover:underline py-2"
+                  className="w-full text-center text-sm text-primary hover:underline py-2"
                 >
                   {t("search_another")}
                 </button>
@@ -309,18 +309,18 @@ function MilestoneItem({
       {/* Ikon milestone */}
       <div className="flex-shrink-0 z-10">
         {isDone && (
-          <CheckCircle2 className="w-9 h-9 text-[#4A90B8] bg-white rounded-full" />
+          <CheckCircle2 className="w-9 h-9 text-primary bg-card rounded-full" />
         )}
         {isActive && (
           <motion.div
             animate={{ scale: [1, 1.12, 1] }}
             transition={{ duration: 1.5, repeat: Infinity }}
           >
-            <Clock className="w-9 h-9 text-[#F4A261] bg-white rounded-full" />
+            <Clock className="w-9 h-9 text-[#F4A261] bg-card rounded-full" />
           </motion.div>
         )}
         {isPending && (
-          <Circle className="w-9 h-9 text-gray-200 bg-white rounded-full" />
+          <Circle className="w-9 h-9 text-gray-200 bg-card rounded-full" />
         )}
       </div>
 
@@ -329,7 +329,7 @@ function MilestoneItem({
         <p
           className={`font-semibold leading-tight ${
             isDone
-              ? "text-[#1B4F72]"
+              ? "text-primary"
               : isActive
               ? "text-[#F4A261]"
               : "text-gray-300"
@@ -338,10 +338,10 @@ function MilestoneItem({
           {t(milestone.labelKey)}
         </p>
         {milestone.timestamp && (
-          <p className="text-xs text-gray-400 mt-0.5">{milestone.timestamp}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{milestone.timestamp}</p>
         )}
         {milestone.note && (
-          <p className="text-sm text-gray-500 mt-1 leading-relaxed">
+          <p className="text-sm text-muted-foreground mt-1 leading-relaxed">
             {milestone.note}
           </p>
         )}
@@ -369,11 +369,11 @@ function StatusBadge({
     },
     in_consultation: {
       label: t("status_in_consultation"),
-      className: "bg-white/20 text-white border border-white/40",
+      className: "bg-card/20 text-white border border-border/40",
     },
     escalated_satgas: {
       label: t("status_escalated_satgas"),
-      className: "bg-white/20 text-white border border-white/40",
+      className: "bg-card/20 text-white border border-border/40",
     },
     done: {
       label: t("status_done"),

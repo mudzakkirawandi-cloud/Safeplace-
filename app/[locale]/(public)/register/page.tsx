@@ -79,16 +79,16 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#F5F6FA] p-4 py-12">
+    <div className="min-h-screen flex items-center justify-center bg-background p-4 py-12">
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="max-w-md w-full bg-white rounded-3xl shadow-xl border border-gray-100 overflow-hidden"
+        className="max-w-md w-full bg-card rounded-3xl shadow-xl border border-border overflow-hidden"
       >
-        <div className="bg-[#2C3E6B] p-8 text-center relative overflow-hidden">
+        <div className="bg-primary p-8 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#4ECDC4] opacity-20 rounded-full -translate-y-16 translate-x-16 blur-2xl"></div>
           <div className="relative z-10">
-            <div className="w-16 h-16 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-white/20">
+            <div className="w-16 h-16 bg-card/10 backdrop-blur-md rounded-2xl flex items-center justify-center mx-auto mb-4 border border-border/20">
               <Shield className="text-white" size={32} />
             </div>
             <h1 className="text-2xl font-bold text-white mb-1">Daftar Akun Baru</h1>
@@ -110,7 +110,7 @@ export default function RegisterPage() {
             )}
             
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Nama Lengkap</label>
+              <label className="block text-sm font-semibold text-card-foreground mb-1.5">Nama Lengkap</label>
               <div className="relative">
                 <input 
                   type="text" 
@@ -118,14 +118,14 @@ export default function RegisterPage() {
                   onChange={e => setFullName(e.target.value)}
                   placeholder="Nama Lengkap Anda"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
                 />
-                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <User size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email Akses</label>
+              <label className="block text-sm font-semibold text-card-foreground mb-1.5">Email Akses</label>
               <div className="relative">
                 <input 
                   type="email" 
@@ -133,14 +133,14 @@ export default function RegisterPage() {
                   onChange={e => setEmail(e.target.value)}
                   placeholder="nama@email.com"
                   required
-                  className="w-full pl-10 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
+                  className="w-full pl-10 pr-4 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
                 />
-                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Mail size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Kata Sandi</label>
+              <label className="block text-sm font-semibold text-card-foreground mb-1.5">Kata Sandi</label>
               <div className="relative">
                 <input 
                   type={showPassword ? "text" : "password"} 
@@ -149,13 +149,13 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
                 />
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <button 
                   type="button" 
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-muted-foreground transition-colors"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -163,7 +163,7 @@ export default function RegisterPage() {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Konfirmasi Kata Sandi</label>
+              <label className="block text-sm font-semibold text-card-foreground mb-1.5">Konfirmasi Kata Sandi</label>
               <div className="relative">
                 <input 
                   type={showConfirmPassword ? "text" : "password"} 
@@ -172,13 +172,13 @@ export default function RegisterPage() {
                   placeholder="••••••••"
                   required
                   minLength={6}
-                  className="w-full pl-10 pr-12 py-3 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
+                  className="w-full pl-10 pr-12 py-3 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#2C3E6B]/20 focus:border-[#2C3E6B] transition-all"
                 />
-                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Lock size={18} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                 <button 
                   type="button" 
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-gray-400 hover:text-gray-600 transition-colors"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 text-muted-foreground hover:text-muted-foreground transition-colors"
                 >
                   {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -189,17 +189,17 @@ export default function RegisterPage() {
               whileTap={{ scale: 0.95 }}
               type="submit" 
               disabled={loading}
-              className="w-full py-3.5 bg-[#2C3E6B] hover:bg-[#1f2b4a] disabled:bg-gray-400 text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg mt-4"
+              className="w-full py-3.5 bg-primary hover:bg-[#1f2b4a] disabled:bg-gray-400 text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg mt-4"
             >
               {loading ? "Mendaftar..." : "Daftar Akun"}
             </motion.button>
           </form>
 
-          <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-            <p className="text-sm text-gray-600 mb-4">
-              Sudah punya akun? <Link href="/login" className="font-bold text-[#2C3E6B] hover:text-[#4ECDC4] transition-colors">Masuk</Link>
+          <div className="mt-8 pt-6 border-t border-border text-center">
+            <p className="text-sm text-muted-foreground mb-4">
+              Sudah punya akun? <Link href="/login" className="font-bold text-primary hover:text-[#4ECDC4] transition-colors">Masuk</Link>
             </p>
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Dengan mendaftar, Anda menyetujui Kebijakan Privasi dan Perlindungan Data SafePlace.
             </p>
           </div>

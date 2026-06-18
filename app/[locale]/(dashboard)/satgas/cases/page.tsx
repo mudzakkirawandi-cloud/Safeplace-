@@ -104,33 +104,33 @@ export default function SatgasCasesPage() {
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#154360]">{t("cases_title")}</h1>
-          <p className="text-sm text-[#1A5276]/80 mt-1">Daftar kasus yang diteruskan dan ditangani oleh Satgas Anda.</p>
+          <p className="text-sm text-primary/80 mt-1">Daftar kasus yang diteruskan dan ditangani oleh Satgas Anda.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-blue-100 shadow-sm p-4">
+      <div className="bg-card rounded-2xl border border-blue-100 shadow-sm p-4">
         <div className="flex flex-wrap gap-3">
           <div className="flex-1 relative min-w-[250px]">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" size={18} />
             <input 
               type="text" 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Cari kode kasus atau jenis..."
-              className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30 focus:border-[#1A5276]"
+              className="w-full pl-10 pr-4 py-2 bg-muted border border-border rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30 focus:border-[#1A5276]"
             />
           </div>
-          <button className="flex items-center gap-2 px-4 py-2 border border-gray-200 rounded-xl hover:bg-gray-50 text-[#1A5276] text-sm font-medium">
+          <button className="flex items-center gap-2 px-4 py-2 border border-border rounded-xl hover:bg-muted text-primary text-sm font-medium">
             <Filter size={16} />
             Filter
           </button>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-blue-100 shadow-sm overflow-hidden">
+      <div className="bg-card rounded-2xl border border-blue-100 shadow-sm overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="bg-[#EBF5FB] text-[#154360] text-xs uppercase font-bold border-b border-blue-100">
+            <thead className="bg-background text-[#154360] text-xs uppercase font-bold border-b border-blue-100">
               <tr>
                 <th className="px-6 py-4">{t("table_col_code")}</th>
                 <th className="px-6 py-4">{t("table_col_date")}</th>
@@ -143,11 +143,11 @@ export default function SatgasCasesPage() {
             <tbody className="divide-y divide-blue-50">
               {loading ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-gray-500">Memuat data...</td>
+                  <td colSpan={6} className="text-center py-8 text-muted-foreground">Memuat data...</td>
                 </tr>
               ) : filtered.length === 0 ? (
                 <tr>
-                  <td colSpan={6} className="text-center py-8 text-gray-500">Tidak ada laporan ditemukan.</td>
+                  <td colSpan={6} className="text-center py-8 text-muted-foreground">Tidak ada laporan ditemukan.</td>
                 </tr>
               ) : (
                 filtered.map((report, i) => (
@@ -158,10 +158,10 @@ export default function SatgasCasesPage() {
                     key={report.id} 
                     className="hover:bg-blue-50/50 transition-colors"
                   >
-                    <td className="px-6 py-4 font-mono font-semibold text-[#1A5276]">{report.tracking_code || report.id.substring(0,8)}</td>
-                    <td className="px-6 py-4 text-gray-500">{new Date(report.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 font-mono font-semibold text-primary">{report.tracking_code || report.id.substring(0,8)}</td>
+                    <td className="px-6 py-4 text-muted-foreground">{new Date(report.created_at).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
-                      <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md text-xs font-medium uppercase">
+                      <span className="bg-gray-100 text-card-foreground px-2.5 py-1 rounded-md text-xs font-medium uppercase">
                         {report.incident_type?.replace("_", " ") || "-"}
                       </span>
                     </td>
@@ -193,7 +193,7 @@ export default function SatgasCasesPage() {
                       </button>
                       <button 
                         onClick={() => router.push(`/${params.locale}/satgas/cases/${report.id}`)}
-                        className="p-2 text-[#1A5276] hover:bg-[#1A5276]/10 rounded-lg transition-colors" 
+                        className="p-2 text-primary hover:bg-primary/10 rounded-lg transition-colors" 
                         title={t("btn_view_details")}
                       >
                         <Eye size={18} />
@@ -222,21 +222,21 @@ export default function SatgasCasesPage() {
               initial={{ opacity: 0, scale: 0.95 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-white rounded-2xl shadow-xl z-50 overflow-hidden"
+              className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-card rounded-2xl shadow-xl z-50 overflow-hidden"
             >
-              <div className="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+              <div className="px-6 py-4 border-b border-border flex items-center justify-between">
                 <h2 className="font-bold text-lg text-[#154360]">{t("btn_update_status")}</h2>
-                <button onClick={() => setIsUpdateModalOpen(false)} className="p-1 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg">
+                <button onClick={() => setIsUpdateModalOpen(false)} className="p-1 text-muted-foreground hover:text-muted-foreground hover:bg-gray-100 rounded-lg">
                   <X size={20} />
                 </button>
               </div>
               <div className="px-6 py-4 space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-[#1A5276] mb-1">Status Penanganan</label>
+                  <label className="block text-sm font-semibold text-primary mb-1">Status Penanganan</label>
                   <select 
                     value={updateStatus}
                     onChange={(e) => setUpdateStatus(e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50 bg-white"
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50 bg-card"
                   >
                     <option value="received">Diterima (Received)</option>
                     <option value="under_review">Sedang Diinvestigasi (Under Review)</option>
@@ -246,28 +246,28 @@ export default function SatgasCasesPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-sm font-semibold text-[#1A5276] mb-1">Catatan Resmi</label>
+                  <label className="block text-sm font-semibold text-primary mb-1">Catatan Resmi</label>
                   <textarea 
                     rows={4} 
                     value={updateNotes}
                     onChange={(e) => setUpdateNotes(e.target.value)}
                     placeholder="Masukkan catatan perkembangan kasus..."
-                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50"
+                    className="w-full border border-border rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50"
                   />
                 </div>
               </div>
-              <div className="px-6 py-4 border-t border-gray-100 flex justify-end gap-3 bg-[#EBF5FB]/30">
+              <div className="px-6 py-4 border-t border-border flex justify-end gap-3 bg-background/30">
                 <button 
                   onClick={() => setIsUpdateModalOpen(false)} 
                   disabled={isSubmitting}
-                  className="px-4 py-2 text-sm font-medium text-gray-600 hover:text-gray-800"
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-card-foreground"
                 >
                   Batal
                 </button>
                 <button 
                   onClick={handleUpdateSubmit}
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-[#1A5276] hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all"
+                  className="px-4 py-2 bg-primary hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan Update"}
                 </button>

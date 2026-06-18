@@ -14,7 +14,6 @@ import {
   AlertCircle,
 } from "lucide-react";
 import { useReportContext } from "../../../_contexts/ReportContext";
-import PanicButton from "../../../_components/PanicButton";
 
 // Tipe milestone timeline
 type MilestoneStatus = "done" | "active" | "pending";
@@ -275,8 +274,6 @@ export default function TrackPage() {
         </AnimatePresence>
 
       </div>
-
-      <PanicButton />
     </main>
   );
 }

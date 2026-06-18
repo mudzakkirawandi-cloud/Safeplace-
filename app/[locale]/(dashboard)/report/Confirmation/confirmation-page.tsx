@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Copy, Check, ArrowRight, BookOpen, Mail } from "lucide-react";
 import { useReportContext } from "../../../_contexts/ReportContext";
-import PanicButton from "../../../_components/PanicButton";
 
 export default function ConfirmationPage() {
   const t = useTranslations("report.confirmation");
@@ -246,8 +245,6 @@ export default function ConfirmationPage() {
         </motion.p>
 
       </div>
-
-      <PanicButton />
     </main>
   );
 }

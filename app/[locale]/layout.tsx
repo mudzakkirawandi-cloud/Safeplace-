@@ -3,7 +3,6 @@ import { getMessages } from 'next-intl/server';
 import { Inter, Plus_Jakarta_Sans } from 'next/font/google';
 import '../globals.css';
 import IdleTimer from './_components/IdleTimer';
-import PanicButton from './_components/PanicButton';
 import AIAgentWidget from '@/components/ai/AIAgentWidget';
 import PageTransition from './_components/PageTransition';
 
@@ -74,7 +73,6 @@ export default async function LocaleLayout({
                 {children}
               </PageTransition>
               <AIAgentWidget />
-            <PanicButton />
           </IdleTimer>
         </NextIntlClientProvider>
       </body>

@@ -11,6 +11,7 @@ import {
   MessageCircle, X, EyeOff, User
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
+import Link from "next/link";
 
 
 type Post = {
@@ -146,9 +147,9 @@ export default function CommunityPage() {
                 <h2 className="mb-4 font-semibold text-gray-900">{t("tab_categories")}</h2>
                 <nav className="space-y-1">
                   {categories.map((cat) => (
-                    <button
+                    <Link
                       key={cat.id}
-                      onClick={() => setActiveCategory(cat.id)}
+                      href={cat.id === "all" ? `/${locale}/komunitas` : `/${locale}/komunitas/${cat.id}`}
                       className={`flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
                         activeCategory === cat.id
                           ? "bg-[#1B4F72]/10 text-[#1B4F72]"
@@ -159,7 +160,7 @@ export default function CommunityPage() {
                         <cat.icon className="h-4 w-4" />
                       </div>
                       {cat.label}
-                    </button>
+                    </Link>
                   ))}
                 </nav>
               </div>

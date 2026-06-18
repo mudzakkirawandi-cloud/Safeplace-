@@ -6,6 +6,7 @@ import IdleTimer from './_components/IdleTimer';
 import PanicButton from './_components/PanicButton';
 import AIAgentWidget from '@/components/ai/AIAgentWidget';
 import { ThemeProvider } from './_components/ThemeProvider';
+import PageTransition from './_components/PageTransition';
 
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
@@ -65,12 +66,14 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-card dark:bg-[#1a1a1a] text-foreground dark:text-gray-100`}>
+      <body className={`${inter.variable} ${plusJakartaSans.variable} font-sans antialiased bg-background text-foreground`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
             <IdleTimer>
-            {children}
-            <AIAgentWidget />
+              <PageTransition>
+                {children}
+              </PageTransition>
+              <AIAgentWidget />
             <PanicButton />
           </IdleTimer>
           </ThemeProvider>

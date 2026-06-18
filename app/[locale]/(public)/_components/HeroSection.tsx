@@ -68,19 +68,23 @@ export default function HeroSection() {
               transition={{ delay: 0.8, duration: 0.8 }}
               className="flex flex-col sm:flex-row gap-4"
             >
-              <Link
-                href="/report/start"
-                className="inline-flex justify-center items-center gap-2 px-8 py-4 bg-[#E74C3C] text-white font-medium rounded-xl hover:bg-[#c0392b] hover:shadow-lg transition-all"
-              >
-                {t("primary_cta")}
-                <ArrowRight size={20} />
-              </Link>
-              <Link
-                href="#how-it-works"
-                className="inline-flex justify-center items-center px-8 py-4 bg-white text-[#1B4F72] font-medium rounded-xl hover:bg-gray-50 border border-gray-200 transition-all"
-              >
-                {t("secondary_cta")}
-              </Link>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="/report/start"
+                  className="flex justify-center items-center gap-2 px-8 py-4 bg-[#E74C3C] text-white font-medium rounded-xl hover:bg-[#c0392b] hover:shadow-lg transition-all"
+                >
+                  {t("primary_cta")}
+                  <ArrowRight size={20} />
+                </Link>
+              </motion.div>
+              <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
+                <Link
+                  href="#how-it-works"
+                  className="flex justify-center items-center px-8 py-4 bg-white text-[#1B4F72] font-medium rounded-xl hover:bg-gray-50 border border-gray-200 transition-all"
+                >
+                  {t("secondary_cta")}
+                </Link>
+              </motion.div>
             </motion.div>
           </div>
 

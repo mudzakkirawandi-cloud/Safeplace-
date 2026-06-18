@@ -31,6 +31,7 @@ export default function ReportStartPage() {
         <motion.button
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
+          whileTap={{ scale: 0.95 }}
           transition={{ delay: 0.1 }}
           onClick={() => handleSelectPath("anonymous")}
           className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-[#4A90B8] transition-all text-left group"
@@ -45,6 +46,7 @@ export default function ReportStartPage() {
         <motion.button
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
+          whileTap={{ scale: 0.95 }}
           transition={{ delay: 0.2 }}
           onClick={() => handleSelectPath("identified")}
           className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-[#4A90B8] transition-all text-left group"

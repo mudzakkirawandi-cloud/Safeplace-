@@ -99,9 +99,14 @@ export default function RegisterPage() {
         <div className="p-8">
           <form onSubmit={handleRegister} className="space-y-4">
             {error && (
-              <div className="p-3 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-medium">
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0, x: [-10, 10, -10, 10, 0] }}
+                transition={{ duration: 0.4 }}
+                className="p-3 bg-red-50 text-red-600 border border-red-100 rounded-xl text-sm font-medium"
+              >
                 {error}
-              </div>
+              </motion.div>
             )}
             
             <div>
@@ -180,13 +185,14 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <button 
+            <motion.button 
+              whileTap={{ scale: 0.95 }}
               type="submit" 
               disabled={loading}
               className="w-full py-3.5 bg-[#2C3E6B] hover:bg-[#1f2b4a] disabled:bg-gray-400 text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg mt-4"
             >
               {loading ? "Mendaftar..." : "Daftar Akun"}
-            </button>
+            </motion.button>
           </form>
 
           <div className="mt-8 pt-6 border-t border-gray-100 text-center">

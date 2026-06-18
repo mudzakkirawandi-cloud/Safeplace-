@@ -1,36 +1,54 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { Search, Filter, Edit3, Eye, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { createClient } from "../../../../../lib/supabase/client";
+import { useRouter, useParams } from "next/navigation";
 
 export default function SatgasCasesPage() {
   const t = useTranslations("satgas");
+  const router = useRouter();
+  const params = useParams();
   const supabase = createClient();
 
   const [search, setSearch] = useState("");
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false);
   const [selectedReportId, setSelectedReportId] = useState<string | null>(null);
   
-  const [updateStatus, setUpdateStatus] = useState("Diterima");
+  const [updateStatus, setUpdateStatus] = useState("under_review");
   const [updateNotes, setUpdateNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const CASES = [
-    { id: "1", code: "RPT-UI-0128", date: "2024-06-18", type: "Pelecehan Fisik", priority: "Urgent", status: "Laporan Baru" },
-    { id: "2", code: "RPT-UI-0122", date: "2024-06-17", type: "Kekerasan Seksual", priority: "Urgent", status: "Investigasi" },
-    { id: "3", code: "RPT-UI-0115", date: "2024-06-15", type: "Kekerasan Seksual", priority: "Tinggi", status: "Penyusunan BAP" },
-    { id: "4", code: "RPT-UI-0105", date: "2024-06-10", type: "Pelecehan Verbal", priority: "Sedang", status: "Mediasi" },
-    { id: "5", code: "RPT-UI-0098", date: "2024-06-01", type: "Kekerasan Fisik", priority: "Urgent", status: "Selesai" },
-  ];
+  const [cases, setCases] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const filtered = CASES.filter(c => c.code.toLowerCase().includes(search.toLowerCase()) || c.type.toLowerCase().includes(search.toLowerCase()));
+  useEffect(() => {
+    fetchCases();
+  }, []);
 
-  const openUpdateModal = (reportId: string) => {
+  const fetchCases = async () => {
+    setLoading(true);
+    // RLS handles the filtering by assigned_satgas_campus_id
+    const { data, error } = await supabase
+      .from("reports")
+      .select("*")
+      .not("assigned_satgas_campus_id", "is", null)
+      .order("created_at", { ascending: false });
+    
+    if (data) setCases(data);
+    setLoading(false);
+  };
+
+  const filtered = cases.filter(c => 
+    (c.tracking_code?.toLowerCase().includes(search.toLowerCase()) || "") || 
+    (c.incident_type?.toLowerCase().includes(search.toLowerCase()) || "")
+  );
+
+  const openUpdateModal = (reportId: string, currentStatus: string) => {
     setSelectedReportId(reportId);
-    setUpdateStatus("Diterima");
+    setUpdateStatus(currentStatus || "under_review");
     setUpdateNotes("");
     setIsUpdateModalOpen(true);
   };
@@ -40,22 +58,31 @@ export default function SatgasCasesPage() {
     setIsSubmitting(true);
     
     try {
-      const { error } = await supabase.from('satgas_case_updates').insert({
+      const { error: updateError } = await supabase
+        .from('reports')
+        .update({ status: updateStatus, updated_at: new Date().toISOString() })
+        .eq('id', selectedReportId);
+
+      if (updateError) throw updateError;
+
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      const { error: notesError } = await supabase.from('satgas_case_updates').insert({
         report_id: selectedReportId,
+        satgas_id: session?.user.id,
         status: updateStatus,
         notes: updateNotes,
-        updated_at: new Date().toISOString()
+        created_at: new Date().toISOString()
       });
 
-      if (error) {
-        console.error("Error saving update:", error);
-        alert("Gagal menyimpan update ke database.");
-      } else {
-        alert("Status berhasil diperbarui!");
-        setIsUpdateModalOpen(false);
-      }
+      if (notesError) throw notesError;
+
+      alert("Status berhasil diperbarui!");
+      setIsUpdateModalOpen(false);
+      fetchCases();
     } catch (err) {
-      console.error(err);
+      console.error("Error saving update:", err);
+      alert("Gagal menyimpan update ke database.");
     } finally {
       setIsSubmitting(false);
     }
@@ -78,7 +105,7 @@ export default function SatgasCasesPage() {
               type="text" 
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Cari kode kasus..."
+              placeholder="Cari kode kasus atau jenis..."
               className="w-full pl-10 pr-4 py-2 bg-gray-50 border border-gray-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-[#1A5276]/30 focus:border-[#1A5276]"
             />
           </div>
@@ -103,53 +130,67 @@ export default function SatgasCasesPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-blue-50">
-              {filtered.map((report, i) => (
-                <motion.tr 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  key={report.id} 
-                  className="hover:bg-blue-50/50 transition-colors"
-                >
-                  <td className="px-6 py-4 font-mono font-semibold text-[#1A5276]">{report.code}</td>
-                  <td className="px-6 py-4 text-gray-500">{report.date}</td>
-                  <td className="px-6 py-4">
-                    <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md text-xs font-medium">
-                      {report.type}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2 py-0.5 rounded-full text-xs font-medium ${
-                      report.priority === 'Urgent' ? 'bg-red-100 text-red-700' :
-                      report.priority === 'Tinggi' ? 'bg-orange-100 text-orange-700' :
-                      'bg-green-100 text-green-700'
-                    }`}>
-                      {report.priority}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${
-                      report.status === 'Laporan Baru' ? 'bg-[#D4AC0D]/20 text-[#9c7d04]' : 
-                      report.status === 'Selesai' ? 'bg-green-100 text-green-700' :
-                      'bg-blue-100 text-blue-700'
-                    }`}>
-                      {report.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right space-x-2">
-                    <button 
-                      onClick={() => openUpdateModal(report.id)}
-                      className="p-2 text-[#D4AC0D] hover:bg-[#D4AC0D]/10 rounded-lg transition-colors" 
-                      title={t("btn_update_status")}
-                    >
-                      <Edit3 size={18} />
-                    </button>
-                    <button className="p-2 text-[#1A5276] hover:bg-[#1A5276]/10 rounded-lg transition-colors" title={t("btn_view_details")}>
-                      <Eye size={18} />
-                    </button>
-                  </td>
-                </motion.tr>
-              ))}
+              {loading ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-gray-500">Memuat data...</td>
+                </tr>
+              ) : filtered.length === 0 ? (
+                <tr>
+                  <td colSpan={6} className="text-center py-8 text-gray-500">Tidak ada laporan ditemukan.</td>
+                </tr>
+              ) : (
+                filtered.map((report, i) => (
+                  <motion.tr 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    key={report.id} 
+                    className="hover:bg-blue-50/50 transition-colors"
+                  >
+                    <td className="px-6 py-4 font-mono font-semibold text-[#1A5276]">{report.tracking_code || report.id.substring(0,8)}</td>
+                    <td className="px-6 py-4 text-gray-500">{new Date(report.created_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4">
+                      <span className="bg-gray-100 text-gray-700 px-2.5 py-1 rounded-md text-xs font-medium uppercase">
+                        {report.incident_type?.replace("_", " ") || "-"}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2 py-0.5 rounded-full text-xs font-medium uppercase ${
+                        report.priority === 'urgent' ? 'bg-red-100 text-red-700' :
+                        report.priority === 'high' ? 'bg-orange-100 text-orange-700' :
+                        'bg-green-100 text-green-700'
+                      }`}>
+                        {report.priority}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`px-2.5 py-1 rounded-full text-xs font-medium uppercase ${
+                        report.status === 'received' ? 'bg-[#D4AC0D]/20 text-[#9c7d04]' : 
+                        report.status === 'resolved' ? 'bg-green-100 text-green-700' :
+                        'bg-blue-100 text-blue-700'
+                      }`}>
+                        {report.status?.replace("_", " ")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right space-x-2">
+                      <button 
+                        onClick={() => openUpdateModal(report.id, report.status)}
+                        className="p-2 text-[#D4AC0D] hover:bg-[#D4AC0D]/10 rounded-lg transition-colors" 
+                        title={t("btn_update_status")}
+                      >
+                        <Edit3 size={18} />
+                      </button>
+                      <button 
+                        onClick={() => router.push(`/${params.locale}/satgas/cases/${report.id}`)}
+                        className="p-2 text-[#1A5276] hover:bg-[#1A5276]/10 rounded-lg transition-colors" 
+                        title={t("btn_view_details")}
+                      >
+                        <Eye size={18} />
+                      </button>
+                    </td>
+                  </motion.tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
@@ -186,10 +227,11 @@ export default function SatgasCasesPage() {
                     onChange={(e) => setUpdateStatus(e.target.value)}
                     className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-[#D4AC0D]/50 bg-white"
                   >
-                    <option value="Diterima">Diterima</option>
-                    <option value="Sedang Diinvestigasi">Sedang Diinvestigasi</option>
-                    <option value="Mediasi">Mediasi</option>
-                    <option value="Selesai">Selesai</option>
+                    <option value="received">Diterima (Received)</option>
+                    <option value="under_review">Sedang Diinvestigasi (Under Review)</option>
+                    <option value="escalated">Eskalasi (Escalated)</option>
+                    <option value="resolved">Selesai (Resolved)</option>
+                    <option value="closed">Ditutup (Closed)</option>
                   </select>
                 </div>
                 <div>

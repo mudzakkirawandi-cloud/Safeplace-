@@ -5,8 +5,23 @@ import Groq from 'groq-sdk';
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GROQ_API_KEY = process.env.GROQ_API_KEY || '';
 
+if (process.env.NODE_ENV !== 'production') {
+  console.log('[AI Agent] GEMINI_API_KEY exists:', !!GEMINI_API_KEY);
+  console.log('[AI Agent] GROQ_API_KEY exists:', !!GROQ_API_KEY);
+}
+
 const genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
 const groq = new Groq({ apiKey: GROQ_API_KEY });
+
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
+  'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+};
+
+export async function OPTIONS() {
+  return NextResponse.json({}, { headers: corsHeaders });
+}
 
 const SYSTEM_PROMPT_ID = `Kamu adalah AI Assistant SafePlace — platform pelaporan dan pendampingan kekerasan seksual di Indonesia.
 
@@ -64,7 +79,7 @@ export async function POST(req: NextRequest) {
     const { messages, locale } = body;
 
     if (!messages || !Array.isArray(messages)) {
-      return NextResponse.json({ error: 'Invalid messages array' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid messages array' }, { status: 400, headers: corsHeaders });
     }
 
     const isEnglish = locale === 'en';
@@ -91,10 +106,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         response: responseText,
         provider: 'gemini'
-      });
+      }, { headers: corsHeaders });
 
-    } catch (geminiError) {
-      console.error('Gemini API Error, falling back to Groq:', geminiError);
+    } catch (geminiError: any) {
+      console.error('[AI Agent] Gemini API Error Details:', geminiError?.message || geminiError);
 
       // 2. Fallback to Groq
       const groqMessages = [
@@ -117,14 +132,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         response: responseText,
         provider: 'groq'
-      });
+      }, { headers: corsHeaders });
     }
 
-  } catch (error) {
-    console.error('AI Agent Error:', error);
+  } catch (error: any) {
+    console.error('[AI Agent] Fatal Error Details:', error?.message || error, error?.stack);
     return NextResponse.json(
-      { error: 'AI sedang tidak tersedia, coba beberapa saat lagi' },
-      { status: 500 }
+      { 
+        error: 'AI sedang tidak tersedia, coba beberapa saat lagi',
+        details: process.env.NODE_ENV !== 'production' ? (error?.message || String(error)) : undefined
+      },
+      { status: 500, headers: corsHeaders }
     );
   }
 }

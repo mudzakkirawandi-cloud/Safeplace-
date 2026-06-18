@@ -500,5 +500,32 @@
     "page_subtitle": "Ceritakan keluhan Anda pada asisten kami untuk mendapatkan panduan cepat.",
     "limit_exceeded": "Maaf, sesi ini telah mencapai batas maksimum pesan. Silakan hubungi konsultan manusia untuk bantuan lebih lanjut.",
     "disclaimer": "AI Assistant dapat memberikan informasi yang tidak akurat. Harap verifikasi informasi penting dengan konsultan manusia."
+  },
+  "community_page": {
+    "title": "Komunitas SafePlace",
+    "subtitle": "Ruang diskusi yang aman dan terstruktur untukmu.",
+    "create_post": "Buat Post",
+    "tab_latest": "Terbaru",
+    "tab_popular": "Terpopuler",
+    "tab_categories": "Kategori",
+    "stats_title": "Statistik Komunitas",
+    "stats_members": "Anggota",
+    "stats_posts": "Postingan",
+    "stats_online": "Sedang Online",
+    "trending_title": "Sedang Tren",
+    "guidelines_title": "Panduan Komunitas",
+    "guidelines_1": "Saling menghargai dan berempati pada cerita orang lain.",
+    "guidelines_2": "Dilarang membagikan identitas pribadi atau kontak.",
+    "guidelines_3": "Gunakan trigger warning untuk konten sensitif.",
+    "guidelines_4": "Laporkan post yang melanggar ke moderator.",
+    "empty_state": "Belum ada postingan.",
+    "cat_share_story": "Berbagi Cerita",
+    "cat_recovery": "Trauma & Pemulihan",
+    "cat_legal": "Info Hukum",
+    "cat_qna": "Tanya Jawab",
+    "cat_support": "Dukungan Sesama",
+    "anonymous_user": "Anonim",
+    "read_more": "Baca selengkapnya",
+    "comments": "Komentar"
   }
 }

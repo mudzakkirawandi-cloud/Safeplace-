@@ -461,5 +461,32 @@
     "page_subtitle": "Tell our assistant about your concerns to get quick guidance.",
     "limit_exceeded": "Sorry, this session has reached the maximum message limit. Please contact a human consultant for further assistance.",
     "disclaimer": "AI Assistant may provide inaccurate information. Please verify important information with a human consultant."
+  },
+  "community_page": {
+    "title": "SafePlace Community",
+    "subtitle": "A safe and structured discussion space for you.",
+    "create_post": "Create Post",
+    "tab_latest": "Latest",
+    "tab_popular": "Popular",
+    "tab_categories": "Categories",
+    "stats_title": "Community Stats",
+    "stats_members": "Members",
+    "stats_posts": "Posts",
+    "stats_online": "Online",
+    "trending_title": "Trending Now",
+    "guidelines_title": "Community Guidelines",
+    "guidelines_1": "Be respectful and empathetic to others' stories.",
+    "guidelines_2": "Do not share personal identities or contact info.",
+    "guidelines_3": "Use trigger warnings for sensitive content.",
+    "guidelines_4": "Report inappropriate posts to moderators.",
+    "empty_state": "No posts found.",
+    "cat_share_story": "Share Stories",
+    "cat_recovery": "Trauma & Recovery",
+    "cat_legal": "Legal Info",
+    "cat_qna": "Q&A",
+    "cat_support": "Peer Support",
+    "anonymous_user": "Anonymous",
+    "read_more": "Read more",
+    "comments": "Comments"
   }
 }

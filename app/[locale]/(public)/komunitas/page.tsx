@@ -11,7 +11,7 @@ import {
   MessageCircle, X, EyeOff, User
 } from "lucide-react";
 import { createClient } from "@/lib/supabase/client";
-import Link from "next/link";
+
 
 type Post = {
   id: string;

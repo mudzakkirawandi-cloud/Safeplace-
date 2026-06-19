@@ -67,9 +67,7 @@ export default function EducationPage() {
     ? materials 
     : materials.filter(m => m.category === activeCategory);
 
-  const getEmbedUrl = (url: string) => {
-    return url;
-  };
+
 
   return (
     <div className="flex flex-col min-h-screen bg-background">

@@ -138,9 +138,10 @@ export default function AdminEducationPage() {
       alert("Konten edukasi berhasil disimpan!");
       setIsModalOpen(false);
       fetchContents();
-    } catch (err: any) {
+    } catch (err) {
       console.error("Unexpected Save Error:", err);
-      alert(`Terjadi kesalahan tidak terduga: ${err.message || 'Unknown error'}`);
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error';
+      alert(`Terjadi kesalahan tidak terduga: ${errorMessage}`);
     }
   };
 

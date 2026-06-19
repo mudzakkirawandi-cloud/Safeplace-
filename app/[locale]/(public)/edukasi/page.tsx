@@ -141,7 +141,20 @@ export default function EducationPage() {
                     <div className="aspect-video w-full bg-gray-900 flex items-center justify-center">
                       <PlayCircle size={48} className="text-gray-600" />
                     </div>
-                  ) : null}
+                  ) : item.content_type === "article" && item.file_path ? (
+                    <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={item.file_path} alt={item.title} className="w-full h-full object-cover" />
+                    </div>
+                  ) : item.content_type === "pdf" ? (
+                    <div className="aspect-video w-full bg-blue-50 flex flex-col items-center justify-center text-primary">
+                      <FileText size={48} className="mb-2" />
+                    </div>
+                  ) : (
+                    <div className="aspect-video w-full bg-gray-100 flex items-center justify-center">
+                      <FileText size={48} className="text-gray-300" />
+                    </div>
+                  )}
                   
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="inline-block px-3 py-1 bg-gray-100 text-muted-foreground text-xs font-semibold rounded-full w-fit mb-3">
@@ -164,14 +177,14 @@ export default function EducationPage() {
                         <PlayCircle size={18} /> {t("watch_video")}
                       </a>
                     )}
-                    {item.content_type === "pdf" && item.file_path && (
+                    {item.content_type === "pdf" && item.url && (
                       <a 
-                        href={item.file_path} 
+                        href={item.url} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="w-full py-2.5 px-4 bg-blue-50 text-primary hover:bg-blue-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                       >
-                        <Download size={18} /> {t("download_pdf")}
+                        <Download size={18} /> Buka PDF
                       </a>
                     )}
                     {(item.content_type === "article" || item.content_type === "link") && item.url && (
@@ -181,7 +194,7 @@ export default function EducationPage() {
                         rel="noopener noreferrer"
                         className="w-full py-2.5 px-4 bg-muted text-card-foreground hover:bg-gray-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                       >
-                        <ExternalLink size={18} /> {t("read_article")}
+                        <ExternalLink size={18} /> {item.content_type === "article" ? "Baca Artikel" : "Buka Tautan"}
                       </a>
                     )}
                   </div>

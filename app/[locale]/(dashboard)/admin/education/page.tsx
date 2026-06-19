@@ -41,7 +41,6 @@ export default function AdminEducationPage() {
     category: "pencegahan",
     content_type: "video",
     url: "",
-    thumbnail_url: "",
     file_path: "",
     display_order: 0,
     status: "draft"
@@ -82,7 +81,6 @@ export default function AdminEducationPage() {
         category: content.category,
         content_type: content.content_type,
         url: content.url || "",
-        thumbnail_url: content.thumbnail_url || "",
         file_path: content.file_path || "",
         display_order: content.display_order,
         status: content.status
@@ -95,7 +93,6 @@ export default function AdminEducationPage() {
         category: "pencegahan",
         content_type: "video",
         url: "",
-        thumbnail_url: "",
         file_path: "",
         display_order: 0,
         status: "draft"
@@ -163,16 +160,7 @@ export default function AdminEducationPage() {
 
   const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const newUrl = e.target.value;
-    setFormData((prev) => {
-      const updated = { ...prev, url: newUrl };
-      if (prev.content_type === 'video') {
-        const videoId = newUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/)?.[1];
-        if (videoId) {
-          updated.thumbnail_url = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
-        }
-      }
-      return updated;
-    });
+    setFormData((prev) => ({ ...prev, url: newUrl }));
   };
 
   const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -181,17 +169,20 @@ export default function AdminEducationPage() {
     
     setUploadingPdf(true);
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
-      const filePath = `${fileName}`;
-
       const { error: uploadError, data } = await supabase.storage
         .from('education-content')
-        .upload(filePath, file);
+        .upload(`pdfs/${Date.now()}_${file.name}`, file, {
+          contentType: 'application/pdf',
+          upsert: false
+        });
 
       if (uploadError) throw uploadError;
 
-      setFormData(prev => ({ ...prev, file_path: data.path }));
+      const publicUrl = supabase.storage
+        .from('education-content')
+        .getPublicUrl(data.path).data.publicUrl;
+
+      setFormData(prev => ({ ...prev, url: publicUrl, file_path: data.path }));
       setUploadedFileName(file.name);
       setUploadedFileSize((file.size / 1024 / 1024).toFixed(2) + " MB");
     } catch (error) {
@@ -388,19 +379,31 @@ export default function AdminEducationPage() {
                       )}
                     </div>
                   ) : formData.content_type === 'article' ? (
-                    <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-1">Konten Artikel</label>
-                      <textarea 
-                        rows={6}
-                        value={formData.url}
-                        onChange={handleUrlChange}
-                        placeholder="Tulis konten artikel di sini..."
-                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
-                      ></textarea>
+                    <div className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium text-card-foreground mb-1">Link Artikel</label>
+                        <input 
+                          type="url" 
+                          value={formData.url}
+                          onChange={handleUrlChange}
+                          placeholder="https://"
+                          className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-card-foreground mb-1">URL Gambar Cover (Opsional)</label>
+                        <input 
+                          type="url" 
+                          value={formData.file_path}
+                          onChange={(e) => setFormData({...formData, file_path: e.target.value})}
+                          placeholder="https://"
+                          className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                        />
+                      </div>
                     </div>
-                  ) : (
+                  ) : formData.content_type === 'link' ? (
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-1">URL / Link</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">URL Tautan</label>
                       <input 
                         type="url" 
                         value={formData.url}
@@ -409,29 +412,18 @@ export default function AdminEducationPage() {
                         className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       />
                     </div>
-                  )}
-
-                  {formData.content_type === 'video' && formData.thumbnail_url && (
-                    <div className="mt-2 rounded-xl overflow-hidden bg-gray-100 aspect-video flex items-center justify-center">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img 
-                        src={formData.thumbnail_url} 
-                        alt="YouTube Thumbnail Preview" 
-                        className="w-full h-full object-cover"
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">URL / Link YouTube</label>
+                      <input 
+                        type="url" 
+                        value={formData.url}
+                        onChange={handleUrlChange}
+                        placeholder="https://youtube.com/..."
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       />
                     </div>
                   )}
-
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-1">Thumbnail URL (Opsional)</label>
-                    <input 
-                      type="url" 
-                      value={formData.thumbnail_url}
-                      onChange={(e) => setFormData({...formData, thumbnail_url: e.target.value})}
-                      placeholder="https://"
-                      className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
-                    />
-                  </div>
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>

@@ -54,7 +54,7 @@ export default function OperatorLayout({
     <div className="flex flex-col h-full bg-primary text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#8c6ebf]">
-        <SafePlaceLogo variant="white" role="operator" iconSize={20} textSize="text-base" />
+        <SafePlaceLogo variant="white" role="operator" width={150} height={44} />
         <span className="text-xs text-[#F4A261] font-medium mt-0.5 block">
           Portal Operator Komunitas
         </span>
@@ -141,7 +141,7 @@ export default function OperatorLayout({
               <Menu size={20} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <SafePlaceLogo variant="white" role="operator" iconSize={16} textSize="text-sm" />
+              <SafePlaceLogo variant="white" role="operator" width={120} height={35} />
             </div>
           </div>
           <div className="md:hidden">

@@ -82,7 +82,7 @@ export default function PeerConsultantLayout({
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-card border-r border-border">
       <div className="px-6 py-5 border-b border-border">
-        <SafePlaceLogo variant="colored" role="consultant" iconSize={20} textSize="text-base" />
+        <SafePlaceLogo variant="colored" role="consultant" width={150} height={44} />
         <span className="text-xs text-primary font-medium mt-0.5 block">
           Portal Peer Consultant
         </span>
@@ -218,7 +218,7 @@ export default function PeerConsultantLayout({
               <Menu size={20} className="text-muted-foreground" />
             </button>
             <div className="flex items-center gap-2">
-              <SafePlaceLogo variant="colored" role="consultant" iconSize={16} textSize="text-sm" />
+              <SafePlaceLogo variant="colored" role="consultant" width={120} height={35} />
             </div>
           </div>
           <div className="md:hidden text-card-foreground">

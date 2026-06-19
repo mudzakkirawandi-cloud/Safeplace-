@@ -14,6 +14,7 @@ export interface EducationContent {
   content_type: string;
   url?: string;
   thumbnail_url?: string;
+  file_path?: string;
   display_order: number;
   status: string;
   created_at?: string;
@@ -41,17 +42,24 @@ export default function AdminEducationPage() {
     content_type: "video",
     url: "",
     thumbnail_url: "",
+    file_path: "",
     display_order: 0,
     status: "draft"
   });
 
   const fetchContents = useCallback(async () => {
     setLoading(true);
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("education_content")
       .select("*")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Error fetching contents:", error);
+    } else {
+      console.log("Fetched education contents:", data);
+    }
 
     if (data) {
       setContents(data as EducationContent[]);
@@ -75,6 +83,7 @@ export default function AdminEducationPage() {
         content_type: content.content_type,
         url: content.url || "",
         thumbnail_url: content.thumbnail_url || "",
+        file_path: content.file_path || "",
         display_order: content.display_order,
         status: content.status
       });
@@ -87,6 +96,7 @@ export default function AdminEducationPage() {
         content_type: "video",
         url: "",
         thumbnail_url: "",
+        file_path: "",
         display_order: 0,
         status: "draft"
       });
@@ -97,24 +107,41 @@ export default function AdminEducationPage() {
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    if (editingContent) {
-      await supabase
-        .from("education_content")
-        .update({
-          ...formData,
-          updated_at: new Date().toISOString()
-        })
-        .eq("id", editingContent.id);
-    } else {
-      await supabase
-        .from("education_content")
-        .insert([{
-          ...formData
-        }]);
+    try {
+      let result;
+      if (editingContent) {
+        result = await supabase
+          .from("education_content")
+          .update({
+            ...formData,
+            updated_at: new Date().toISOString()
+          })
+          .eq("id", editingContent.id)
+          .select();
+      } else {
+        result = await supabase
+          .from("education_content")
+          .insert([{
+            ...formData
+          }])
+          .select();
+      }
+      
+      console.log("Supabase save result:", result);
+
+      if (result.error) {
+        console.error("Supabase Save Error:", result.error);
+        alert(`Gagal menyimpan konten: ${result.error.message || result.error.details || result.error.hint}`);
+        return;
+      }
+      
+      alert("Konten edukasi berhasil disimpan!");
+      setIsModalOpen(false);
+      fetchContents();
+    } catch (err: any) {
+      console.error("Unexpected Save Error:", err);
+      alert(`Terjadi kesalahan tidak terduga: ${err.message || 'Unknown error'}`);
     }
-    
-    setIsModalOpen(false);
-    fetchContents();
   };
 
   const handleDelete = async (id: string) => {
@@ -154,7 +181,7 @@ export default function AdminEducationPage() {
 
       if (uploadError) throw uploadError;
 
-      setFormData(prev => ({ ...prev, url: data.path }));
+      setFormData(prev => ({ ...prev, file_path: data.path }));
       setUploadedFileName(file.name);
       setUploadedFileSize((file.size / 1024 / 1024).toFixed(2) + " MB");
     } catch (error) {
@@ -346,8 +373,8 @@ export default function AdminEducationPage() {
                           Berhasil diupload: {uploadedFileName} ({uploadedFileSize})
                         </p>
                       )}
-                      {formData.url && !uploadedFileName && (
-                        <p className="text-sm text-muted-foreground mt-2">File saat ini: {formData.url}</p>
+                      {formData.file_path && !uploadedFileName && (
+                        <p className="text-sm text-muted-foreground mt-2">File saat ini: {formData.file_path}</p>
                       )}
                     </div>
                   ) : formData.content_type === 'article' ? (

@@ -32,12 +32,18 @@ export default function EducationPage() {
   const [activeCategory, setActiveCategory] = useState("all");
 
   const fetchContent = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("education_content")
       .select("*")
       .eq("status", "published")
       .order("display_order", { ascending: true })
       .order("created_at", { ascending: false });
+
+    if (error) {
+      console.error("Public fetch education_content error:", error);
+    } else {
+      console.log("Public fetched materials:", data);
+    }
 
     if (data) {
       setMaterials(data as EducationContent[]);

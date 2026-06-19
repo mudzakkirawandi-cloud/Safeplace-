@@ -29,6 +29,10 @@ export default function AdminEducationPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingContent, setEditingContent] = useState<EducationContent | null>(null);
 
+  const [uploadingPdf, setUploadingPdf] = useState(false);
+  const [uploadedFileName, setUploadedFileName] = useState("");
+  const [uploadedFileSize, setUploadedFileSize] = useState("");
+
   // Form State
   const [formData, setFormData] = useState({
     title: "",
@@ -60,6 +64,8 @@ export default function AdminEducationPage() {
   }, [fetchContents]);
 
   const openModal = (content: EducationContent | null = null) => {
+    setUploadedFileName("");
+    setUploadedFileSize("");
     if (content) {
       setEditingContent(content);
       setFormData({
@@ -118,10 +124,45 @@ export default function AdminEducationPage() {
     }
   };
 
-  const getEmbedUrl = (url: string) => {
-    if (!url) return "";
-    const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/)?.[1];
-    return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : "";
+  const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const newUrl = e.target.value;
+    setFormData((prev) => {
+      const updated = { ...prev, url: newUrl };
+      if (prev.content_type === 'video') {
+        const videoId = newUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/)?.[1];
+        if (videoId) {
+          updated.thumbnail_url = `https://img.youtube.com/vi/${videoId}/maxresdefault.jpg`;
+        }
+      }
+      return updated;
+    });
+  };
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    setUploadingPdf(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `${fileName}`;
+
+      const { error: uploadError, data } = await supabase.storage
+        .from('education-content')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      setFormData(prev => ({ ...prev, url: data.path }));
+      setUploadedFileName(file.name);
+      setUploadedFileSize((file.size / 1024 / 1024).toFixed(2) + " MB");
+    } catch (error) {
+      console.error('Error uploading PDF:', error);
+      alert('Gagal mengupload PDF. Pastikan bucket "education-content" tersedia dan public.');
+    } finally {
+      setUploadingPdf(false);
+    }
   };
 
   return (
@@ -282,32 +323,65 @@ export default function AdminEducationPage() {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-sm font-medium text-card-foreground mb-1">URL / Link</label>
-                    <input 
-                      type="url" 
-                      value={formData.url}
-                      onChange={(e) => setFormData({...formData, url: e.target.value})}
-                      placeholder="https://"
-                      className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
-                    />
-                  </div>
-
-                  {formData.content_type === 'video' && formData.url && (
-                    <div className="mt-2 rounded-xl overflow-hidden bg-gray-100 aspect-video">
-                      {getEmbedUrl(formData.url) ? (
-                        <iframe 
-                          className="w-full h-full"
-                          src={getEmbedUrl(formData.url)} 
-                          title="YouTube preview"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                          allowFullScreen
-                        ></iframe>
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center text-muted-foreground text-sm">
-                          URL YouTube tidak valid
+                  {formData.content_type === 'pdf' ? (
+                    <div>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Upload PDF</label>
+                      <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-xl">
+                        <div className="space-y-1 text-center">
+                          <svg className="mx-auto h-12 w-12 text-muted-foreground" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
+                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                          </svg>
+                          <div className="flex text-sm text-muted-foreground justify-center mt-4">
+                            <label htmlFor="file-upload" className="relative cursor-pointer bg-card rounded-md font-medium text-primary hover:text-primary/80 focus-within:outline-none">
+                              <span>Pilih File PDF</span>
+                              <input id="file-upload" name="file-upload" type="file" className="sr-only" accept=".pdf" onChange={handlePdfUpload} disabled={uploadingPdf} />
+                            </label>
+                          </div>
+                          <p className="text-xs text-muted-foreground mt-2">Maksimal 10MB</p>
                         </div>
+                      </div>
+                      {uploadingPdf && <p className="text-sm text-blue-500 mt-2">Mengupload...</p>}
+                      {uploadedFileName && (
+                        <p className="text-sm text-green-600 mt-2">
+                          Berhasil diupload: {uploadedFileName} ({uploadedFileSize})
+                        </p>
                       )}
+                      {formData.url && !uploadedFileName && (
+                        <p className="text-sm text-muted-foreground mt-2">File saat ini: {formData.url}</p>
+                      )}
+                    </div>
+                  ) : formData.content_type === 'article' ? (
+                    <div>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Konten Artikel</label>
+                      <textarea 
+                        rows={6}
+                        value={formData.url}
+                        onChange={handleUrlChange}
+                        placeholder="Tulis konten artikel di sini..."
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      ></textarea>
+                    </div>
+                  ) : (
+                    <div>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">URL / Link</label>
+                      <input 
+                        type="url" 
+                        value={formData.url}
+                        onChange={handleUrlChange}
+                        placeholder="https://"
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      />
+                    </div>
+                  )}
+
+                  {formData.content_type === 'video' && formData.thumbnail_url && (
+                    <div className="mt-2 rounded-xl overflow-hidden bg-gray-100 aspect-video flex items-center justify-center">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img 
+                        src={formData.thumbnail_url} 
+                        alt="YouTube Thumbnail Preview" 
+                        className="w-full h-full object-cover"
+                      />
                     </div>
                   )}
 

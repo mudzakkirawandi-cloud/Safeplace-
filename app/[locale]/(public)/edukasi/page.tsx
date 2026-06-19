@@ -68,9 +68,7 @@ export default function EducationPage() {
     : materials.filter(m => m.category === activeCategory);
 
   const getEmbedUrl = (url: string) => {
-    if (!url) return "";
-    const videoId = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([^&?]+)/)?.[1];
-    return videoId ? `https://www.youtube-nocookie.com/embed/${videoId}` : url;
+    return url;
   };
 
   return (
@@ -121,22 +119,20 @@ export default function EducationPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredMaterials.map((item) => (
                 <div key={item.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-border flex flex-col">
-                  {item.content_type === "video" && (
-                    <div className="aspect-video w-full bg-gray-900">
-                      <iframe 
-                        className="w-full h-full"
-                        src={item.url ? getEmbedUrl(item.url) : ''} 
-                        title={item.title}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowFullScreen
-                      ></iframe>
-                    </div>
-                  )}
-                  {(item.content_type === "pdf" || item.content_type === "article" || item.content_type === "link") && item.thumbnail_url && (
+                  {item.thumbnail_url ? (
                     <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
                       <Image unoptimized src={item.thumbnail_url} alt={item.title} fill className="object-cover" />
+                      {item.content_type === "video" && (
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+                          <PlayCircle size={48} className="text-white drop-shadow-lg opacity-80" />
+                        </div>
+                      )}
                     </div>
-                  )}
+                  ) : item.content_type === "video" ? (
+                    <div className="aspect-video w-full bg-gray-900 flex items-center justify-center">
+                      <PlayCircle size={48} className="text-gray-600" />
+                    </div>
+                  ) : null}
                   
                   <div className="p-6 flex-1 flex flex-col">
                     <div className="inline-block px-3 py-1 bg-gray-100 text-muted-foreground text-xs font-semibold rounded-full w-fit mb-3">

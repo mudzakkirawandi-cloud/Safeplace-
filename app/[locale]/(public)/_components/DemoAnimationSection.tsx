@@ -30,20 +30,7 @@ export default function DemoAnimationSection() {
     transition: { duration: 0.3 }
   };
 
-  const cursorVariants = {
-    step2: {
-      initial: { x: 150, y: 150 },
-      animate: { x: 0, y: 30, transition: { delay: 0.5, duration: 1, type: "tween" } }
-    },
-    step3: {
-      initial: { x: 0, y: 100 },
-      animate: { x: -80, y: 10, transition: { delay: 0.5, duration: 1, type: "tween" } }
-    },
-    step4: {
-      initial: { x: 100, y: 100 },
-      animate: { x: 0, y: -20, transition: { delay: 0.5, duration: 1, type: "tween" } }
-    }
-  };
+
 
   return (
     <section className="py-24 bg-[#F0F7FC]">
@@ -130,9 +117,9 @@ export default function DemoAnimationSection() {
                     </div>
 
                     <motion.div 
-                      variants={cursorVariants.step2}
-                      initial="initial"
-                      animate="animate"
+                      initial={{ x: 150, y: 150 }}
+                      animate={{ x: 0, y: 30 }}
+                      transition={{ delay: 0.5, duration: 1 }}
                       className="absolute top-1/2 left-1/2 ml-10 z-50 pointer-events-none"
                     >
                       <MousePointer2 className="w-6 h-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] fill-slate-800" />
@@ -166,9 +153,9 @@ export default function DemoAnimationSection() {
                     </div>
 
                     <motion.div 
-                      variants={cursorVariants.step3}
-                      initial="initial"
-                      animate="animate"
+                      initial={{ x: 0, y: 100 }}
+                      animate={{ x: -80, y: 10 }}
+                      transition={{ delay: 0.5, duration: 1 }}
                       className="absolute top-1/2 left-1/2 z-50 pointer-events-none"
                     >
                       <MousePointer2 className="w-6 h-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] fill-slate-800" />
@@ -219,9 +206,9 @@ export default function DemoAnimationSection() {
                     </div>
 
                     <motion.div 
-                      variants={cursorVariants.step4}
-                      initial="initial"
-                      animate="animate"
+                      initial={{ x: 100, y: 100 }}
+                      animate={{ x: 0, y: -20 }}
+                      transition={{ delay: 0.5, duration: 1 }}
                       className="absolute top-1/2 left-1/2 z-50 pointer-events-none"
                     >
                       <MousePointer2 className="w-6 h-6 text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.5)] fill-slate-800" />

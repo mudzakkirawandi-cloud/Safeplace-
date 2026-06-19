@@ -334,6 +334,7 @@ export default function AdminEducationPage() {
                         <option value="hukum">Hukum & Regulasi</option>
                         <option value="pemulihan">Pemulihan</option>
                         <option value="regulasi">Regulasi</option>
+                        <option value="mengenal_diri">Mengenal Diri</option>
                       </select>
                     </div>
                     <div>

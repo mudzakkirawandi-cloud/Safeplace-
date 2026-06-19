@@ -69,6 +69,7 @@ export default function EducationPage() {
     { id: "penanganan", label: t("filter_handling") },
     { id: "hukum", label: t("filter_law") },
     { id: "pemulihan", label: t("filter_recovery") },
+    { id: "mengenal_diri", label: "Mengenal Diri" },
   ];
 
   const filteredMaterials = activeCategory === "all" 

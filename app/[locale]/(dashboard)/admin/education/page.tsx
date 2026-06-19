@@ -108,6 +108,15 @@ export default function AdminEducationPage() {
     e.preventDefault();
     
     try {
+      // DEBUG: Cek session & role
+      const { data: { user }, error: sessionError } = await supabase.auth.getUser();
+      console.log("Current Auth User:", user?.id, sessionError);
+      
+      if (user) {
+        const { data: userRole } = await supabase.from('users').select('role').eq('id', user.id).single();
+        console.log("Current User Role in DB:", userRole?.role);
+      }
+
       let result;
       if (editingContent) {
         result = await supabase

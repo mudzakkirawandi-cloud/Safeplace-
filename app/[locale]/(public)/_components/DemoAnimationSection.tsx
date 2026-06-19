@@ -33,15 +33,15 @@ export default function DemoAnimationSection() {
   const cursorVariants = {
     step2: {
       initial: { x: 150, y: 150 },
-      animate: { x: 0, y: 30, transition: { delay: 0.5, duration: 1, ease: "easeInOut" } }
+      animate: { x: 0, y: 30, transition: { delay: 0.5, duration: 1, ease: [0.4, 0, 0.2, 1] } }
     },
     step3: {
       initial: { x: 0, y: 100 },
-      animate: { x: -80, y: 10, transition: { delay: 0.5, duration: 1, ease: "easeInOut" } }
+      animate: { x: -80, y: 10, transition: { delay: 0.5, duration: 1, ease: [0.4, 0, 0.2, 1] } }
     },
     step4: {
       initial: { x: 100, y: 100 },
-      animate: { x: 0, y: -20, transition: { delay: 0.5, duration: 1, ease: "easeInOut" } }
+      animate: { x: 0, y: -20, transition: { delay: 0.5, duration: 1, ease: [0.4, 0, 0.2, 1] } }
     }
   };
 

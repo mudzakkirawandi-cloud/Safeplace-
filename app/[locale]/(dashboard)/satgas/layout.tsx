@@ -52,7 +52,7 @@ export default function SatgasLayout({
     <div className="flex flex-col h-full bg-primary text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#2471A3]">
-        <SafePlaceLogo variant="white" role="satgas" width={150} height={44} />
+        <SafePlaceLogo width={150} height={44} />
         <span className="text-xs text-[#D4AC0D] font-medium mt-0.5 block">
           Portal Satgas PPKS
         </span>
@@ -139,7 +139,7 @@ export default function SatgasLayout({
               <Menu size={20} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <SafePlaceLogo variant="white" role="satgas" width={120} height={35} />
+              <SafePlaceLogo width={120} height={35} />
             </div>
           </div>
           <div className="md:hidden">

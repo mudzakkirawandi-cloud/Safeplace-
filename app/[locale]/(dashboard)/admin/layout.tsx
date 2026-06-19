@@ -67,7 +67,7 @@ export default function AdminLayout({
     <div className="flex flex-col h-full bg-primary text-white">
       {/* Logo */}
       <div className="px-6 py-5 border-b border-[#3b5082]">
-        <SafePlaceLogo variant="white" role="admin" width={150} height={44} />
+        <SafePlaceLogo width={150} height={44} />
         <span className="text-xs text-[#4ECDC4] font-medium mt-0.5 block">
           Portal Admin
         </span>
@@ -155,7 +155,7 @@ export default function AdminLayout({
               <Menu size={20} className="text-white" />
             </button>
             <div className="flex items-center gap-2">
-              <SafePlaceLogo variant="white" role="admin" width={120} height={35} />
+              <SafePlaceLogo width={120} height={35} />
             </div>
           </div>
           <div className="md:hidden">

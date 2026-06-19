@@ -40,7 +40,7 @@ export default function Navbar() {
       >
         <div className="container mx-auto px-6 max-w-6xl flex items-center justify-between">
           <Link href="/" className="z-50 hover:opacity-80 transition-opacity">
-            <SafePlaceLogo role="public" width={140} height={40} />
+            <SafePlaceLogo width={140} height={40} />
           </Link>
 
           {/* Desktop Navigation */}

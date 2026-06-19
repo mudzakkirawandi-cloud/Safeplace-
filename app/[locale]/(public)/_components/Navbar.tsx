@@ -35,7 +35,7 @@ export default function Navbar() {
     <>
       <nav
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-white ${
-          isScrolled ? "shadow-sm py-3" : "py-5"
+          isScrolled ? "shadow-sm py-2" : "py-3"
         }`}
       >
         <div className="container mx-auto px-6 max-w-6xl flex items-center justify-between">

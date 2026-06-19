@@ -345,15 +345,28 @@ export default function AdminEducationPage() {
                       >
                         <option value="video">Video (YouTube)</option>
                         <option value="pdf">PDF</option>
-                        <option value="article">Artikel</option>
-                        <option value="link">Tautan Eksternal</option>
+                        <option value="artikel">Artikel</option>
+                        <option value="tautan_eksternal">Tautan Eksternal</option>
                       </select>
                     </div>
                   </div>
 
-                  {formData.content_type === 'pdf' ? (
+                  {formData.content_type === 'video' && (
                     <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-1">Upload PDF</label>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">URL YouTube</label>
+                      <input 
+                        type="url" 
+                        value={formData.url}
+                        onChange={handleUrlChange}
+                        placeholder="https://youtube.com/watch?v=..."
+                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
+                      />
+                    </div>
+                  )}
+
+                  {formData.content_type === 'pdf' && (
+                    <div>
+                      <label className="block text-sm font-medium text-card-foreground mb-1">Upload File PDF</label>
                       <div className="mt-1 flex justify-center px-6 pt-5 pb-6 border-2 border-border border-dashed rounded-xl">
                         <div className="space-y-1 text-center">
                           <svg className="mx-auto h-12 w-12 text-muted-foreground" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
@@ -378,7 +391,9 @@ export default function AdminEducationPage() {
                         <p className="text-sm text-muted-foreground mt-2">File saat ini: {formData.file_path}</p>
                       )}
                     </div>
-                  ) : formData.content_type === 'article' ? (
+                  )}
+
+                  {formData.content_type === 'artikel' && (
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-card-foreground mb-1">Link Artikel</label>
@@ -401,7 +416,9 @@ export default function AdminEducationPage() {
                         />
                       </div>
                     </div>
-                  ) : formData.content_type === 'link' ? (
+                  )}
+
+                  {formData.content_type === 'tautan_eksternal' && (
                     <div>
                       <label className="block text-sm font-medium text-card-foreground mb-1">URL Tautan</label>
                       <input 
@@ -409,17 +426,6 @@ export default function AdminEducationPage() {
                         value={formData.url}
                         onChange={handleUrlChange}
                         placeholder="https://"
-                        className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
-                      />
-                    </div>
-                  ) : (
-                    <div>
-                      <label className="block text-sm font-medium text-card-foreground mb-1">URL / Link YouTube</label>
-                      <input 
-                        type="url" 
-                        value={formData.url}
-                        onChange={handleUrlChange}
-                        placeholder="https://youtube.com/..."
                         className="w-full px-4 py-2 border border-border rounded-xl focus:outline-none focus:ring-2 focus:ring-[#4A90B8]/20 focus:border-[#4A90B8]"
                       />
                     </div>

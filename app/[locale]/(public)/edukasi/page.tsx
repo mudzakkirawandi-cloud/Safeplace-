@@ -141,7 +141,7 @@ export default function EducationPage() {
                     <div className="aspect-video w-full bg-gray-900 flex items-center justify-center">
                       <PlayCircle size={48} className="text-gray-600" />
                     </div>
-                  ) : item.content_type === "article" && item.file_path ? (
+                  ) : item.content_type === "artikel" && item.file_path ? (
                     <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={item.file_path} alt={item.title} className="w-full h-full object-cover" />
@@ -187,14 +187,14 @@ export default function EducationPage() {
                         <Download size={18} /> Buka PDF
                       </a>
                     )}
-                    {(item.content_type === "article" || item.content_type === "link") && item.url && (
+                    {(item.content_type === "artikel" || item.content_type === "tautan_eksternal") && item.url && (
                       <a 
                         href={item.url} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="w-full py-2.5 px-4 bg-muted text-card-foreground hover:bg-gray-100 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2"
                       >
-                        <ExternalLink size={18} /> {item.content_type === "article" ? "Baca Artikel" : "Buka Tautan"}
+                        <ExternalLink size={18} /> {item.content_type === "artikel" ? "Baca Artikel" : "Buka Tautan"}
                       </a>
                     )}
                   </div>

@@ -15,7 +15,7 @@ export default function Footer() {
           {/* Column 1: Brand & Tagline */}
           <div className="lg:col-span-1">
             <Link href="/" className="mb-4 inline-block hover:opacity-80 transition-opacity">
-              <SafePlaceLogo width={120} height={35} />
+              <SafePlaceLogo />
             </Link>
             <p className="text-muted-foreground text-sm leading-relaxed mb-6">
               {t("tagline")}

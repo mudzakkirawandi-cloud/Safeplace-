@@ -185,7 +185,7 @@ export default function ReportDashboardPage() {
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-30">
         <div className="container mx-auto px-6 h-16 flex items-center justify-between max-w-6xl">
-          <SafePlaceLogo width={150} height={44} />
+          <SafePlaceLogo iconSize={24} textSize="text-lg" textColor="text-primary" />
           <div className="flex items-center gap-4">
             <div className="relative">
               <button 

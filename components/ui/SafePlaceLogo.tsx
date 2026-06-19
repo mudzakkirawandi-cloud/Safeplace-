@@ -3,25 +3,30 @@ import Image from "next/image";
 
 interface SafePlaceLogoProps {
   className?: string;
-  width?: number;
-  height?: number;
+  iconSize?: number;
+  textSize?: string;
+  textColor?: string;
 }
 
 export default function SafePlaceLogo({
   className = "",
-  width = 140,
-  height = 40,
+  iconSize = 28,
+  textSize = "text-xl",
+  textColor = "text-primary",
 }: SafePlaceLogoProps) {
   return (
-    <div className={`flex items-center group ${className}`}>
+    <div className={`flex items-center gap-2 ${className}`}>
       <Image 
         src="/images/logo-safeplace.svg" 
         alt="SafePlace Logo" 
-        width={width} 
-        height={height}
+        width={iconSize} 
+        height={iconSize}
         className="object-contain"
         priority
       />
+      <span className={`font-display font-bold ${textSize} tracking-tight ${textColor}`}>
+        SAFEPLACE
+      </span>
     </div>
   );
 }

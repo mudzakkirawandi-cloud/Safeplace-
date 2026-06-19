@@ -57,7 +57,7 @@ export default function LoginPage() {
         <div className="bg-primary p-8 text-center relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-[#4ECDC4] opacity-20 rounded-full -translate-y-16 translate-x-16 blur-2xl"></div>
             <div className="flex justify-center mb-6">
-              <SafePlaceLogo width={180} height={52} />
+              <SafePlaceLogo iconSize={32} textSize="text-2xl" textColor="text-white" />
             </div>
             <h1 className="text-xl font-medium text-white/90 mb-1">Akses Sistem Tersentralisasi</h1>
         </div>

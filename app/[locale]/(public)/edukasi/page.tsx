@@ -15,12 +15,20 @@ export interface EducationContent {
   category: string;
   content_type: string;
   url?: string;
-  thumbnail_url?: string;
   file_path?: string;
   display_order: number;
   status: string;
   created_at?: string;
   updated_at?: string;
+}
+
+function getYoutubeThumbnail(videoUrl: string): string | null {
+  const match = videoUrl?.match(
+    /(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\n?#]+)/
+  );
+  return match 
+    ? `https://img.youtube.com/vi/${match[1]}/maxresdefault.jpg` 
+    : null;
 }
 
 export default function EducationPage() {
@@ -117,14 +125,19 @@ export default function EducationPage() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredMaterials.map((item) => (
                 <div key={item.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-border flex flex-col">
-                  {item.thumbnail_url ? (
-                    <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
-                      <Image unoptimized src={item.thumbnail_url} alt={item.title} fill className="object-cover" />
-                      {item.content_type === "video" && (
-                        <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
-                          <PlayCircle size={48} className="text-white drop-shadow-lg opacity-80" />
-                        </div>
-                      )}
+                  {item.content_type === "video" && item.url && getYoutubeThumbnail(item.url) ? (
+                    <div className="relative aspect-video w-full bg-gray-900 overflow-hidden">
+                      <img 
+                        src={getYoutubeThumbnail(item.url) as string} 
+                        alt={item.title} 
+                        className="w-full h-full object-cover"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                      <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
+                        <PlayCircle size={48} className="text-white drop-shadow-lg opacity-80" />
+                      </div>
                     </div>
                   ) : item.content_type === "video" ? (
                     <div className="aspect-video w-full bg-gray-900 flex items-center justify-center">

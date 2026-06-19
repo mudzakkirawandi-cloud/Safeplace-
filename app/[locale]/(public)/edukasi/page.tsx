@@ -127,13 +127,11 @@ export default function EducationPage() {
                 <div key={item.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-border flex flex-col">
                   {item.content_type === "video" && item.url && getYoutubeThumbnail(item.url) ? (
                     <div className="relative aspect-video w-full bg-gray-900 overflow-hidden">
-                      <img 
-                        src={getYoutubeThumbnail(item.url) as string} 
+                      <Image 
+                        src={getYoutubeThumbnail(item.url) ?? ""} 
                         alt={item.title} 
-                        className="w-full h-full object-cover"
-                        onError={(e) => {
-                          e.currentTarget.style.display = 'none';
-                        }}
+                        fill
+                        className="object-cover"
                       />
                       <div className="absolute inset-0 flex items-center justify-center bg-black/20 pointer-events-none">
                         <PlayCircle size={48} className="text-white drop-shadow-lg opacity-80" />

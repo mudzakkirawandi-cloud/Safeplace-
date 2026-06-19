@@ -29,6 +29,10 @@ const nextConfig = {
             key: 'Permissions-Policy',
             value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()',
           },
+          {
+            key: 'Content-Security-Policy',
+            value: "frame-src 'self' https://www.youtube-nocookie.com;",
+          },
         ],
       },
     ];

@@ -83,7 +83,18 @@ export default function ReportFormPage() {
 
       if (insertError) {
         console.error("Error inserting report:", insertError);
-        alert("Gagal mengirim laporan. Silakan coba lagi.");
+        console.error("Error Message:", insertError.message);
+        console.error("Error Details:", insertError.details);
+        console.error("Error Hint:", insertError.hint);
+        
+        let errorMessage = "Gagal mengirim laporan. ";
+        if (insertError.message.includes('row-level security')) {
+           errorMessage += "Akses ditolak oleh sistem (RLS Policy).";
+        } else {
+           errorMessage += insertError.message;
+        }
+        
+        alert(errorMessage);
         setIsSubmitting(false);
         return;
       }

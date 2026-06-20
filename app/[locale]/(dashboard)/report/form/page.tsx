@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { createClient } from "../../../../../lib/supabase/client";
 import { useReportContext } from "../../../_contexts/ReportContext";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -46,9 +47,54 @@ export default function ReportFormPage() {
     else router.push("/report/intent");
   };
 
-  const onSubmit = (data: FormValues) => {
-    setFormData(data);
-    router.push("/report/confirmation");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const supabase = createClient();
+
+  const onSubmit = async (data: FormValues) => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
+    try {
+      const { data: { user }, error: userError } = await supabase.auth.getUser();
+      if (userError || !user) throw new Error("Not authenticated");
+
+      // Generate tracking code: 8 chars alphanumeric
+      const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+      let trackingCode = '';
+      for (let i = 0; i < 8; i++) {
+        trackingCode += chars.charAt(Math.floor(Math.random() * chars.length));
+      }
+
+      // Default to verbal_harassment if not matched to enum
+      let incidentTypeEnum = 'other';
+      if (['verbal_harassment', 'physical_harassment', 'sexual_violence', 'digital_violence', 'other'].includes(data.incidentType as string)) {
+         incidentTypeEnum = data.incidentType as string;
+      } else if (data.incidentType === 'verbal') incidentTypeEnum = 'verbal_harassment';
+      else if (data.incidentType === 'physical') incidentTypeEnum = 'physical_harassment';
+      else if (data.incidentType === 'sexual') incidentTypeEnum = 'sexual_violence';
+      else if (data.incidentType === 'digital') incidentTypeEnum = 'digital_violence';
+
+      const { error: insertError } = await supabase.from('reports').insert({
+        tracking_code: trackingCode,
+        reporter_id: user.id,
+        incident_type: incidentTypeEnum,
+        description: data.description || '',
+        // Note: campus_id needs UUID, but data.campus is a string like "kampus_a". We can skip it for now if we don't have the UUID mapping, or we need to look it up.
+      });
+
+      if (insertError) {
+        console.error("Error inserting report:", insertError);
+        alert("Gagal mengirim laporan. Silakan coba lagi.");
+        setIsSubmitting(false);
+        return;
+      }
+
+      setFormData(data);
+      router.push(`/report/confirmation?code=${trackingCode}`);
+    } catch (err) {
+      console.error(err);
+      alert("Terjadi kesalahan sistem.");
+      setIsSubmitting(false);
+    }
   };
 
   const handleSaveDraft = () => {

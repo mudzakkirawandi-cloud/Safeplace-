@@ -67,9 +67,9 @@ export default function ConsultationPage() {
   const handleRequest = async (consultantId: string) => {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) {
-      router.push("/login?redirect=/report/intent");
+      router.push("/login?redirect=/report/start");
     } else {
-      router.push("/report/intent?consultant=" + consultantId);
+      router.push("/report/start?consultant=" + consultantId);
     }
   };
 

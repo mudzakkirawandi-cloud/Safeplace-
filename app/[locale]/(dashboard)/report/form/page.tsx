@@ -147,7 +147,7 @@ export default function ReportFormPage() {
 
   const prevStep = () => {
     if (currentStep > 1) setCurrentStep(s => s - 1);
-    else router.push("/report/intent");
+    else router.push("/report/start");
   };
 
   const skipStep = () => {
@@ -385,16 +385,40 @@ export default function ReportFormPage() {
                   <p className="text-sm text-gray-400 mb-8">Kamu tidak harus menyebut nama tempat secara spesifik</p>
                   
                   <div className="space-y-6">
-                    <div>
-                      <select {...register("campus")} className="w-full p-4 border border-[#E7E9EB] rounded-2xl focus:ring-2 focus:ring-[#1B4F72]/20 focus:border-[#1B4F72] outline-none text-gray-700 font-medium">
-                        <option value="">-- Pilih Kampus --</option>
-                        <option value="kampus_a">Universitas A</option>
-                        <option value="kampus_b">Universitas B</option>
-                        <option value="outside">Di luar kampus / Tidak terkait kampus partner</option>
-                      </select>
+                    <div className="flex flex-col gap-3">
+                      <label className="relative cursor-pointer group w-full">
+                        <input type="radio" value="dalam_kampus" {...register("campus")} className="peer sr-only" />
+                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-left flex gap-4 items-center">
+                          <div className="text-2xl">🏫</div>
+                          <div>
+                            <div className="text-sm font-bold text-gray-800 peer-checked:text-[#1B4F72] mb-1">Di dalam kampus</div>
+                            <div className="text-xs text-gray-500">Gedung kuliah, parkiran, kantin, dll</div>
+                          </div>
+                        </div>
+                      </label>
+                      <label className="relative cursor-pointer group w-full">
+                        <input type="radio" value="luar_kampus" {...register("campus")} className="peer sr-only" />
+                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-left flex gap-4 items-center">
+                          <div className="text-2xl">🌆</div>
+                          <div>
+                            <div className="text-sm font-bold text-gray-800 peer-checked:text-[#1B4F72] mb-1">Di luar kampus</div>
+                            <div className="text-xs text-gray-500">Kos, mall, transportasi, dll</div>
+                          </div>
+                        </div>
+                      </label>
+                      <label className="relative cursor-pointer group w-full">
+                        <input type="radio" value="lainnya" {...register("campus")} className="peer sr-only" />
+                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-left flex gap-4 items-center">
+                          <div className="text-2xl">📝</div>
+                          <div>
+                            <div className="text-sm font-bold text-gray-800 peer-checked:text-[#1B4F72] mb-1">Lainnya</div>
+                            <div className="text-xs text-gray-500">Situasi lain yang tidak tercantum</div>
+                          </div>
+                        </div>
+                      </label>
                     </div>
 
-                    <div>
+                    <div className="pt-4 border-t border-[#E7E9EB]">
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Ada detail lokasi yang ingin ditambahkan? (tidak wajib)</label>
                       <input type="text" {...register("locationDetail")} placeholder="Contoh: Parkiran belakang fakultas..." className="w-full p-4 border border-[#E7E9EB] rounded-2xl focus:ring-2 focus:ring-[#1B4F72]/20 focus:border-[#1B4F72] outline-none text-gray-700" />
                     </div>

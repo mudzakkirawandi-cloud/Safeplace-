@@ -1,14 +1,13 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { useReportContext } from "../../../_contexts/ReportContext";
-import { Shield, User, AlertCircle, ArrowRight, Heart, Phone } from "lucide-react";
+import { Shield, User, AlertCircle, ArrowRight, Heart, Phone, ClipboardList, MessageCircle, Building2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 
-type FlowState = "assessment" | "emergency" | "recommendation" | "waiting" | "path_selection";
+type FlowState = "path_selection" | "intent_selection" | "assessment" | "emergency" | "recommendation" | "waiting";
 
 const questions = [
   {
@@ -46,17 +45,27 @@ const waitTexts = [
 ];
 
 export default function ReportStartPage() {
-  const t = useTranslations("report.start");
   const router = useRouter();
-  const { setPath } = useReportContext();
+  const { setPath, setIntent } = useReportContext();
   const supabase = createClient();
 
-  const [flowState, setFlowState] = useState<FlowState>("assessment");
-  const [questionIndex, setQuestionIndex] = useState(0);
+  const [flowState, setFlowState] = useState<FlowState>("path_selection");
+  const [questionIndex, setQuestionIndex] = useState(0); // 0, 1, 2 mapping to the 3 questions
   const [answers, setAnswers] = useState<string[]>([]);
   
   const [waitTextIndex, setWaitTextIndex] = useState(0);
   const [hasCheckedOnline, setHasCheckedOnline] = useState(false);
+
+  // Derive global step index for the 5 dots (0 to 4)
+  const getGlobalStepIndex = () => {
+    if (flowState === "path_selection") return 0;
+    if (flowState === "intent_selection") return 1;
+    if (flowState === "assessment") return 2 + questionIndex;
+    return 4; // Max out at 4 for recommendation/waiting
+  };
+
+  const globalStep = getGlobalStepIndex();
+  const totalDots = 5;
 
   useEffect(() => {
     if (flowState === "waiting") {
@@ -79,11 +88,11 @@ export default function ReportStartPage() {
 
         if (data && data.length > 0) {
           setTimeout(() => {
-             setFlowState("path_selection");
+             router.push("/report/form");
           }, 3000);
         } else {
           setTimeout(() => {
-            setFlowState("path_selection");
+            router.push("/report/form");
           }, 5000);
         }
         setHasCheckedOnline(true);
@@ -91,7 +100,17 @@ export default function ReportStartPage() {
       
       checkOnline();
     }
-  }, [flowState, hasCheckedOnline, supabase]);
+  }, [flowState, hasCheckedOnline, supabase, router]);
+
+  const handleSelectPath = (path: "anonymous" | "identified") => {
+    setPath(path);
+    setFlowState("intent_selection");
+  };
+
+  const handleSelectIntent = (intent: "document" | "consult" | "satgas") => {
+    setIntent(intent);
+    setFlowState("assessment");
+  };
 
   const handleSelectOption = (optionId: string) => {
     const newAnswers = [...answers];
@@ -108,11 +127,6 @@ export default function ReportStartPage() {
     } else {
       setFlowState("recommendation");
     }
-  };
-
-  const handleSelectPath = (path: "anonymous" | "identified") => {
-    setPath(path);
-    router.push("/report/mode");
   };
 
   const getRecommendation = () => {
@@ -149,26 +163,138 @@ export default function ReportStartPage() {
       </div>
 
       <main className="flex-1 flex flex-col items-center justify-center p-6 container mx-auto max-w-4xl relative z-10 min-h-[80vh]">
+        
+        {/* Progress Dots */}
+        {(flowState === "path_selection" || flowState === "intent_selection" || flowState === "assessment") && (
+          <div className="flex justify-center gap-2 mb-8 absolute top-10 w-full">
+            {[...Array(totalDots)].map((_, idx) => (
+              <div
+                key={idx}
+                className={`h-2 rounded-full transition-all duration-300 ${
+                  idx === globalStep ? "w-8 bg-[#5B8A6F]" : idx < globalStep ? "w-2 bg-[#5B8A6F]" : "w-2 bg-[#D1E0D9]"
+                }`}
+              />
+            ))}
+          </div>
+        )}
+
         <AnimatePresence mode="wait">
+          
+          {flowState === "path_selection" && (
+            <motion.div
+              key="path_selection"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="w-full max-w-[680px]"
+            >
+              <div className="text-center mb-12">
+                <h1 className="text-[28px] md:text-[32px] font-bold text-[#1B4F72] mb-4">Pilih cara melaporkan</h1>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-6 w-full mb-6">
+                <button
+                  onClick={() => handleSelectPath("anonymous")}
+                  className="bg-white p-8 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex flex-col items-center md:items-start text-center md:text-left"
+                >
+                  <div className="bg-[#F0F7FC] w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <Shield className="w-8 h-8 text-[#4A90B8]" />
+                  </div>
+                  <h2 className="text-xl font-bold text-[#1B4F72] mb-3">Lapor Anonim</h2>
+                  <p className="text-gray-500 leading-relaxed text-sm">
+                    Identitasmu disembunyikan. Kamu dapat kode tracking untuk pantau status.
+                  </p>
+                </button>
+
+                <button
+                  onClick={() => handleSelectPath("identified")}
+                  className="bg-white p-8 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex flex-col items-center md:items-start text-center md:text-left"
+                >
+                  <div className="bg-[#F0F7FC] w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                    <User className="w-8 h-8 text-[#4A90B8]" />
+                  </div>
+                  <h2 className="text-xl font-bold text-[#1B4F72] mb-3">Lapor dengan Akun</h2>
+                  <p className="text-gray-500 leading-relaxed text-sm">
+                    Gunakan akunmu. Memudahkan komunikasi lanjutan dengan peer consultant.
+                  </p>
+                </button>
+              </div>
+              <p className="text-center text-sm text-gray-400 mt-4">
+                Kamu bisa tetap anonim meski lapor dengan akun — <br className="md:hidden" />
+                identitasmu hanya diketahui peer consultant kamu
+              </p>
+            </motion.div>
+          )}
+
+          {flowState === "intent_selection" && (
+            <motion.div
+              key="intent_selection"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="w-full max-w-[680px]"
+            >
+              <div className="text-center mb-10">
+                <h1 className="text-[28px] md:text-[32px] font-bold text-[#1B4F72] mb-4">Apa yang ingin kamu lakukan?</h1>
+              </div>
+
+              <div className="flex flex-col gap-4 w-full">
+                <button
+                  onClick={() => handleSelectIntent("document")}
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex items-start gap-5"
+                >
+                  <div className="bg-[#F0FAF6] w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <ClipboardList className="w-7 h-7 text-[#5B8A6F]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#1B4F72] mb-1">Dokumentasikan kejadian</h2>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      Catat kejadian sebagai bukti. Kamu bisa lanjutkan ke pendampingan kapan saja.
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => handleSelectIntent("consult")}
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex items-start gap-5"
+                >
+                  <div className="bg-[#F0F7FC] w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <MessageCircle className="w-7 h-7 text-[#4A90B8]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#1B4F72] mb-1">Bicara dengan Peer Consultant</h2>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      Ceritakan ke teman sebaya yang terlatih dan siap mendengarkan.
+                    </p>
+                  </div>
+                </button>
+
+                <button
+                  onClick={() => handleSelectIntent("satgas")}
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex items-start gap-5"
+                >
+                  <div className="bg-[#FEF5F5] w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
+                    <Building2 className="w-7 h-7 text-[#C0392B]" />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-[#1B4F72] mb-1">Laporkan ke Satgas Kampus</h2>
+                    <p className="text-gray-500 text-sm leading-relaxed">
+                      Proses resmi dengan Satgas PPKS kampus. Peer consultant akan mendampingimu.
+                    </p>
+                  </div>
+                </button>
+              </div>
+            </motion.div>
+          )}
+
           {flowState === "assessment" && (
             <motion.div
               key={`question-${questionIndex}`}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-[640px] md:max-w-[560px] mx-auto"
+              className="w-full max-w-[640px] md:max-w-[560px] mx-auto mt-12"
             >
-              <div className="flex justify-center gap-2 mb-8">
-                {questions.map((_, idx) => (
-                  <div
-                    key={idx}
-                    className={`h-2 rounded-full transition-all duration-300 ${
-                      idx === questionIndex ? "w-8 bg-[#5B8A6F]" : "w-2 bg-[#D1E0D9]"
-                    }`}
-                  />
-                ))}
-              </div>
-
               <h1 className="text-[22px] md:text-[24px] font-bold text-[#1B4F72] mb-8 text-center leading-snug">
                 {questions[questionIndex].title}
               </h1>
@@ -255,10 +381,10 @@ export default function ReportStartPage() {
                 </button>
 
                 <button
-                  onClick={() => setFlowState("path_selection")}
+                  onClick={() => router.push("/report/form")}
                   className="text-sm text-gray-400 hover:text-gray-700 transition-colors"
                 >
-                  Saya ingin langsung ke konsultan / satgas
+                  Lewati dan langsung isi form pelaporan
                 </button>
               </div>
             </motion.div>
@@ -309,48 +435,10 @@ export default function ReportStartPage() {
               `}} />
             </motion.div>
           )}
-
-          {flowState === "path_selection" && (
-            <motion.div
-              key="path_selection"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="w-full"
-            >
-              <div className="text-center mb-12">
-                <h1 className="text-3xl md:text-4xl font-bold text-[#1B4F72] mb-4">{t("title")}</h1>
-                <p className="text-gray-500 text-lg">{t("subtitle")}</p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 w-full mb-8">
-                <button
-                  onClick={() => handleSelectPath("anonymous")}
-                  className="bg-white p-8 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#4A90B8] transition-all text-left group"
-                >
-                  <div className="bg-[#F0F7FC] w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <Shield className="w-8 h-8 text-[#4A90B8]" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-[#1B4F72] mb-3">{t("anonymous_title")}</h2>
-                  <p className="text-gray-500 leading-relaxed">{t("anonymous_desc")}</p>
-                </button>
-
-                <button
-                  onClick={() => handleSelectPath("identified")}
-                  className="bg-white p-8 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#4A90B8] transition-all text-left group"
-                >
-                  <div className="bg-[#F0F7FC] w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <User className="w-8 h-8 text-[#4A90B8]" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-[#1B4F72] mb-3">{t("identified_title")}</h2>
-                  <p className="text-gray-500 leading-relaxed">{t("identified_desc")}</p>
-                </button>
-              </div>
-            </motion.div>
-          )}
         </AnimatePresence>
       </main>
 
-      {flowState === "assessment" && (
+      {(flowState === "path_selection" || flowState === "intent_selection" || flowState === "assessment") && (
         <div className="absolute bottom-6 left-6 z-50">
           <button 
             onClick={() => router.push("/id")}

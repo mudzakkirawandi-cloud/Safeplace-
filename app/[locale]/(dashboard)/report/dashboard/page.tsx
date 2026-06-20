@@ -61,6 +61,7 @@ export default function ReportDashboardPage() {
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
+    let isMounted = true;
     let reportSub: ReturnType<typeof supabase.channel> | null = null;
     let notifSub: ReturnType<typeof supabase.channel> | null = null;
 
@@ -70,7 +71,7 @@ export default function ReportDashboardPage() {
         const { data: { user: currentUser }, error } = await supabase.auth.getUser();
         if (error || !currentUser) {
           console.error("Auth error:", error);
-          router.push("/id/login");
+          if (isMounted) router.push("/id/login");
           return;
         }
 
@@ -86,11 +87,11 @@ export default function ReportDashboardPage() {
         }
 
         if (profile?.role && profile.role !== "reporter") {
-          router.push("/id");
+          if (isMounted) router.push("/id");
           return;
         }
 
-        setUser({ ...currentUser, ...profile });
+        if (isMounted) setUser({ ...currentUser, ...profile });
 
         // Fetch reports
         const { data: reportsData, error: reportsError } = await supabase
@@ -101,8 +102,8 @@ export default function ReportDashboardPage() {
 
         if (reportsError) {
           console.error("Error fetching reports:", reportsError);
-          setFetchError("Gagal memuat data laporan.");
-        } else if (reportsData) {
+          if (isMounted) setFetchError("Gagal memuat data laporan.");
+        } else if (reportsData && isMounted) {
           setReports(reportsData);
         }
 
@@ -116,14 +117,18 @@ export default function ReportDashboardPage() {
 
         if (notifError) {
           console.error("Error fetching notifications:", notifError);
-        } else if (notifData) {
+        } else if (notifData && isMounted) {
           setNotifications(notifData);
         }
 
+        if (!isMounted) return;
+
         // Subscriptions
+        const timestamp = Date.now();
         reportSub = supabase
-          .channel("public:reports")
+          .channel(`public:reports:${currentUser.id}-${timestamp}`)
           .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `reporter_id=eq.${currentUser.id}` }, (payload) => {
+            if (!isMounted) return;
             setReports((prev) => {
               if (payload.eventType === "INSERT") return [payload.new as Report, ...prev];
               if (payload.eventType === "UPDATE") return prev.map(r => r.id === payload.new.id ? (payload.new as Report) : r);
@@ -134,23 +139,25 @@ export default function ReportDashboardPage() {
           .subscribe();
 
         notifSub = supabase
-          .channel("public:notifications")
+          .channel(`public:notifications:${currentUser.id}-${timestamp}`)
           .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+            if (!isMounted) return;
             setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 5));
           })
           .subscribe();
 
       } catch (err) {
         console.error("Unexpected error in fetchUserAndData:", err);
-        setFetchError("Terjadi kesalahan sistem saat memuat data.");
+        if (isMounted) setFetchError("Terjadi kesalahan sistem saat memuat data.");
       } finally {
-        setLoading(false);
+        if (isMounted) setLoading(false);
       }
     };
 
     fetchUserAndData();
 
     return () => {
+      isMounted = false;
       if (reportSub) supabase.removeChannel(reportSub);
       if (notifSub) supabase.removeChannel(notifSub);
     };

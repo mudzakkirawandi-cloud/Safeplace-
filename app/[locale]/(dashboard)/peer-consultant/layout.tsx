@@ -52,6 +52,10 @@ export default function PeerConsultantLayout({
 
   const confirmLogout = async () => {
     setIsLoggingOut(true);
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      await supabase.from('users').update({ is_online: false }).eq('id', data.user.id);
+    }
     await supabase.auth.signOut();
     router.push("/");
   };

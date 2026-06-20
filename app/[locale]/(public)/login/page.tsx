@@ -31,6 +31,9 @@ export default function LoginPage() {
       }
 
       if (data.user) {
+        // Set is_online = true for all roles except admin
+        await supabase.from('users').update({ is_online: true }).eq('id', data.user.id).neq('role', 'admin');
+
         // Biarkan middleware.ts yang menangani pengecekan role dan redirect
         // Menggunakan window.location.href untuk memastikan middleware berjalan secara penuh
         window.location.href = '/';

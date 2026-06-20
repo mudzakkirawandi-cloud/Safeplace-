@@ -94,7 +94,7 @@ export default function ReportDashboardPage() {
         const { data: reportsData, error: reportsError } = await supabase
           .from("reports")
           .select("*")
-          .eq("user_id", currentUser.id)
+          .eq("reporter_id", currentUser.id)
           .order("created_at", { ascending: false });
 
         if (reportsError) {
@@ -121,7 +121,7 @@ export default function ReportDashboardPage() {
         // Subscriptions
         reportSub = supabase
           .channel("public:reports")
-          .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+          .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `reporter_id=eq.${currentUser.id}` }, (payload) => {
             setReports((prev) => {
               if (payload.eventType === "INSERT") return [payload.new as Report, ...prev];
               if (payload.eventType === "UPDATE") return prev.map(r => r.id === payload.new.id ? (payload.new as Report) : r);

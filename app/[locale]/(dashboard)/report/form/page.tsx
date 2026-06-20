@@ -195,19 +195,29 @@ export default function ReportFormPage() {
         }
       }
 
-      const { error: insertError } = await supabase.from('reports').insert({
+      const { data: newReport, error: insertError } = await supabase.from('reports').insert({
         tracking_code: tCode,
         reporter_id: user.id,
         incident_type: incidentTypeEnum,
         description: data.description || '',
-        attachments: audioPath ? [audioPath] : [],
-      });
+      }).select().single();
 
       if (insertError) {
         console.error("Error inserting report:", insertError);
         alert("Gagal mengirim laporan. " + insertError.message);
         setIsSubmitting(false);
         return;
+      }
+
+      if (audioPath && newReport) {
+        const { error: attachmentError } = await supabase.from('report_attachments').insert({
+          report_id: newReport.id,
+          file_url: audioPath,
+          file_type: 'audio/webm'
+        });
+        if (attachmentError) {
+          console.error("Gagal melampirkan file audio:", attachmentError);
+        }
       }
 
       setTrackingCode(tCode);

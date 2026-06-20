@@ -49,83 +49,109 @@ export default function ReportDashboardPage() {
   const router = useRouter();
   const supabase = createClient();
 
-  const [user, setUser] = useState<UserProfile | null>(null); // State for current user
+  const [user, setUser] = useState<UserProfile | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [showNotifications, setShowNotifications] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [fetchError, setFetchError] = useState<string | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   useEffect(() => {
+    let reportSub: ReturnType<typeof supabase.channel> | null = null;
+    let notifSub: ReturnType<typeof supabase.channel> | null = null;
+
     const fetchUserAndData = async () => {
-      const { data: { user: currentUser }, error } = await supabase.auth.getUser();
-      if (error || !currentUser) {
-        router.push("/id/login");
-        return;
+      try {
+        setFetchError(null);
+        const { data: { user: currentUser }, error } = await supabase.auth.getUser();
+        if (error || !currentUser) {
+          console.error("Auth error:", error);
+          router.push("/id/login");
+          return;
+        }
+
+        // Check role - use maybeSingle to prevent 406 if no profile exists
+        const { data: profile, error: profileError } = await supabase
+          .from("users")
+          .select("full_name, role")
+          .eq("id", currentUser.id)
+          .maybeSingle();
+
+        if (profileError) {
+          console.error("Error fetching user profile:", profileError);
+        }
+
+        if (profile?.role && profile.role !== "reporter") {
+          router.push("/id");
+          return;
+        }
+
+        setUser({ ...currentUser, ...profile });
+
+        // Fetch reports
+        const { data: reportsData, error: reportsError } = await supabase
+          .from("reports")
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .order("created_at", { ascending: false });
+
+        if (reportsError) {
+          console.error("Error fetching reports:", reportsError);
+          setFetchError("Gagal memuat data laporan.");
+        } else if (reportsData) {
+          setReports(reportsData);
+        }
+
+        // Fetch notifications
+        const { data: notifData, error: notifError } = await supabase
+          .from("notifications")
+          .select("*")
+          .eq("user_id", currentUser.id)
+          .order("created_at", { ascending: false })
+          .limit(5);
+
+        if (notifError) {
+          console.error("Error fetching notifications:", notifError);
+        } else if (notifData) {
+          setNotifications(notifData);
+        }
+
+        // Subscriptions
+        reportSub = supabase
+          .channel("public:reports")
+          .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+            setReports((prev) => {
+              if (payload.eventType === "INSERT") return [payload.new as Report, ...prev];
+              if (payload.eventType === "UPDATE") return prev.map(r => r.id === payload.new.id ? (payload.new as Report) : r);
+              if (payload.eventType === "DELETE") return prev.filter(r => r.id !== payload.old.id);
+              return prev;
+            });
+          })
+          .subscribe();
+
+        notifSub = supabase
+          .channel("public:notifications")
+          .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
+            setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 5));
+          })
+          .subscribe();
+
+      } catch (err) {
+        console.error("Unexpected error in fetchUserAndData:", err);
+        setFetchError("Terjadi kesalahan sistem saat memuat data.");
+      } finally {
+        setLoading(false);
       }
-
-      // Check role
-      const { data: profile } = await supabase
-        .from("users")
-        .select("full_name, role")
-        .eq("id", currentUser.id)
-        .single();
-
-      if (profile?.role !== "reporter") {
-        router.push("/id");
-        return;
-      }
-
-      setUser({ ...currentUser, ...profile });
-
-      // Fetch reports
-      const { data: reportsData } = await supabase
-        .from("reports")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false });
-
-      if (reportsData) setReports(reportsData);
-
-      // Fetch notifications
-      const { data: notifData } = await supabase
-        .from("notifications")
-        .select("*")
-        .eq("user_id", currentUser.id)
-        .order("created_at", { ascending: false })
-        .limit(5);
-
-      if (notifData) setNotifications(notifData);
-      setLoading(false);
-
-      // Subscriptions
-      const reportSub = supabase
-        .channel("public:reports")
-        .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
-          setReports((prev) => {
-            if (payload.eventType === "INSERT") return [payload.new as Report, ...prev];
-            if (payload.eventType === "UPDATE") return prev.map(r => r.id === payload.new.id ? (payload.new as Report) : r);
-            if (payload.eventType === "DELETE") return prev.filter(r => r.id !== payload.old.id);
-            return prev;
-          });
-        })
-        .subscribe();
-
-      const notifSub = supabase
-        .channel("public:notifications")
-        .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${currentUser.id}` }, (payload) => {
-          setNotifications((prev) => [payload.new as Notification, ...prev].slice(0, 5));
-        })
-        .subscribe();
-
-      return () => {
-        supabase.removeChannel(reportSub);
-        supabase.removeChannel(notifSub);
-      };
     };
 
     fetchUserAndData();
+
+    return () => {
+      if (reportSub) supabase.removeChannel(reportSub);
+      if (notifSub) supabase.removeChannel(notifSub);
+    };
   }, [router, supabase]);
 
   const handleLogoutClick = () => {
@@ -175,6 +201,26 @@ export default function ReportDashboardPage() {
         <div className="animate-pulse flex flex-col items-center">
           <div className="h-12 w-12 bg-gray-200 rounded-full mb-4"></div>
           <div className="h-4 w-32 bg-gray-200 rounded"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (fetchError) {
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center min-h-screen bg-background p-4">
+        <div className="bg-card p-8 rounded-3xl border border-border shadow-sm text-center max-w-md w-full">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+            <AlertCircle size={32} />
+          </div>
+          <h2 className="text-xl font-bold text-card-foreground mb-2">Gagal Memuat Data</h2>
+          <p className="text-muted-foreground mb-6">{fetchError}</p>
+          <button 
+            onClick={() => window.location.reload()}
+            className="w-full py-3 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition-all"
+          >
+            Coba Lagi
+          </button>
         </div>
       </div>
     );

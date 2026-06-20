@@ -16,10 +16,10 @@ export default function SafePlaceLogo({
 }: SafePlaceLogoProps) {
   return (
     <div className={`flex items-center gap-2 ${className}`}>
-      <Image 
-        src="/images/logo-safeplace.svg" 
-        alt="SafePlace Logo" 
-        width={iconSize} 
+      <Image
+        src="/images/logo-safeplace-icon.svg"
+        alt="SafePlace Logo"
+        width={iconSize}
         height={iconSize}
         className="object-contain"
         priority

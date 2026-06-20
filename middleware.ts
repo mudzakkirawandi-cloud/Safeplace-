@@ -95,7 +95,7 @@ export async function middleware(request: NextRequest) {
     
     // Tentukan allowed prefix dan default redirect path untuk role tersebut
     let allowedPrefix = '/report';
-    let defaultPath = '/report/start';
+    let defaultPath = '/report/dashboard';
 
     if (role === 'admin') {
       allowedPrefix = '/admin';

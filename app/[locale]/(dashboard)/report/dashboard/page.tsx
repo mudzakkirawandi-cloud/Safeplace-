@@ -13,7 +13,8 @@ import {
   MessageCircle, 
   Clock, 
   CheckCircle, 
-  AlertCircle 
+  AlertCircle,
+  MoreVertical
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -57,6 +58,7 @@ export default function ReportDashboardPage() {
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   useEffect(() => {
     let reportSub: ReturnType<typeof supabase.channel> | null = null;
@@ -365,9 +367,26 @@ export default function ReportDashboardPage() {
                         <p className="text-sm text-muted-foreground mb-1">ID: {report.tracking_code}</p>
                         <h4 className="font-semibold text-card-foreground">{report.incident_type}</h4>
                       </div>
-                      <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                        {getStatusText(report.status)}
-                      </span>
+                      <div className="flex items-center gap-2">
+                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
+                          {getStatusText(report.status)}
+                        </span>
+                        <div className="relative">
+                          <button 
+                            onClick={() => setActiveDropdown(activeDropdown === report.id ? null : report.id)}
+                            className="p-1 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors"
+                          >
+                            <MoreVertical size={20} />
+                          </button>
+                          {activeDropdown === report.id && (
+                            <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border overflow-hidden z-20">
+                              <Link href={`/report/dashboard/${report.id}`} className="block px-4 py-3 text-sm text-card-foreground hover:bg-muted transition-colors">
+                                Lihat Detail
+                              </Link>
+                            </div>
+                          )}
+                        </div>
+                      </div>
                     </div>
                     <p className="text-xs text-muted-foreground mb-6">
                       Dilaporkan pada: {new Date(report.created_at).toLocaleDateString()}
@@ -403,6 +422,7 @@ export default function ReportDashboardPage() {
                         <th className="px-6 py-4 font-semibold">Jenis</th>
                         <th className="px-6 py-4 font-semibold">Tanggal</th>
                         <th className="px-6 py-4 font-semibold">Status</th>
+                        <th className="px-6 py-4 font-semibold text-right">Aksi</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100">
@@ -415,6 +435,23 @@ export default function ReportDashboardPage() {
                             <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
                               {getStatusText(report.status)}
                             </span>
+                          </td>
+                          <td className="px-6 py-4 text-right">
+                            <div className="relative inline-block text-left">
+                              <button 
+                                onClick={() => setActiveDropdown(activeDropdown === `table-${report.id}` ? null : `table-${report.id}`)}
+                                className="p-1 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors"
+                              >
+                                <MoreVertical size={20} />
+                              </button>
+                              {activeDropdown === `table-${report.id}` && (
+                                <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border overflow-hidden z-20 text-left">
+                                  <Link href={`/report/dashboard/${report.id}`} className="block px-4 py-3 text-sm text-card-foreground hover:bg-muted transition-colors">
+                                    Lihat Detail
+                                  </Link>
+                                </div>
+                              )}
+                            </div>
                           </td>
                         </tr>
                       ))}

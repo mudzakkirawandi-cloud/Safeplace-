@@ -200,6 +200,12 @@ export default function ReportFormPage() {
         reporter_id: user.id,
         incident_type: incidentTypeEnum,
         description: data.description || '',
+        incident_date: data.incidentDate || null,
+        is_ongoing: data.isOngoing || false,
+        location: data.campus || null,
+        location_detail: data.locationDetail || null,
+        perpetrator_relationship: data.relationship || null,
+        safety_status: data.safety || null,
       }).select().single();
 
       if (insertError) {

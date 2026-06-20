@@ -1,14 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { CheckCircle, Copy, FileText, ArrowRight } from "lucide-react";
-import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function ConfirmationPage() {
-  const t = useTranslations("report");
   const searchParams = useSearchParams();
   const trackingCode = searchParams.get("code") || "XXXXXXXX";
 

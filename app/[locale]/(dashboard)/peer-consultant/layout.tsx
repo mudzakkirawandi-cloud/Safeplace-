@@ -72,7 +72,7 @@ export default function PeerConsultantLayout({
       labelKey: "nav_cases",
     },
     {
-      href: "/peer-consultant/messages",
+      href: "/peer-consultant/chat",
       icon: MessageCircle,
       labelKey: "nav_messages",
     },

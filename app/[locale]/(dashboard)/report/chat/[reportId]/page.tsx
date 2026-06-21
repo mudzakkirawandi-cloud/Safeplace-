@@ -171,7 +171,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
         await supabase.from("messages").insert({
           report_id: reportId,
           sender_id: null,
-          content: `[AI]: ${data.text}`,
+          content: `[AI]: ${data.response}`,
           message_type: 'text'
         });
       }

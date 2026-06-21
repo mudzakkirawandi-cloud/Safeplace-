@@ -1,0 +1,62 @@
+[
+  {
+    "id": "d085af65-95f2-4a55-afb9-24f28f537d93",
+    "sender_id": null,
+    "content": "[AI]: Aku melihat gambar yang dikirim oleh kamu. Logo tersebut tampaknya adalah logo WhatsApp, karena kamu mengirimkan gambar dengan nama berdasarkan format pengiriman media di WhatsApp. Jadi, itu bukan logo SafePlace, melainkan logo platform pesan instan yang kamu gunakan untuk mengirimkan gambar.\n\nJika kamu ingin membicarakan tentang SafePlace, aku siap mendengarkan dan membantu. Apakah kamu memiliki pertanyaan atau kebutuhan terkait dengan SafePlace?",
+    "created_at": "2026-06-21T05:49:10.069215+00:00"
+  },
+  {
+    "id": "06801e8a-f784-426c-b0be-e9c33c883f4e",
+    "sender_id": "a6e44d84-4cbf-40b3-a8d4-5095663d2dd7",
+    "content": "ini logo apa?",
+    "created_at": "2026-06-21T05:49:06.80917+00:00"
+  },
+  {
+    "id": "de043e67-c168-40c0-9049-df211b34905a",
+    "sender_id": null,
+    "content": "[AI]: Selamat datang di SafePlace! Kami adalah platform pelaporan dan pendampingan kekerasan seksual di Indonesia. Apakah kamu membutuhkan bantuan atau informasi tentang cara menggunakan SafePlace?\n\nKami memiliki beberapa halaman yang dapat membantu kamu:\n\n- /report/start: Mulai pelaporan kekerasan seksual\n- /report/track: Lacak laporan anonim\n- /pendampingan: Daftar konsultan profesional yang dapat membantu kamu\n- /edukasi: Konten edukasi tentang kekerasan seksual dan hak-hak korban\n- /komunitas: Forum komunitas (segera hadir) untuk berbagi cerita dan mendapatkan dukungan dari orang lain\n- /login: Masuk akun untuk akses ke fitur-fitur premium\n\nJika kamu membutuhkan pendampingan langsung, konsultan kami siap membantu.",
+    "created_at": "2026-06-21T05:23:52.673924+00:00"
+  },
+  {
+    "id": "e1bf0a4a-37d5-42fe-a257-b82b2039903a",
+    "sender_id": "a6e44d84-4cbf-40b3-a8d4-5095663d2dd7",
+    "content": "halo?",
+    "created_at": "2026-06-21T05:23:51.324136+00:00"
+  },
+  {
+    "id": "45e22c28-4eb5-43f9-8bbd-598bf07ee882",
+    "sender_id": "a6e44d84-4cbf-40b3-a8d4-5095663d2dd7",
+    "content": "logo apa ini?",
+    "created_at": "2026-06-21T05:23:33.502943+00:00"
+  },
+  {
+    "id": "0f7d1f12-4828-44ed-85c3-1658ef6d649d",
+    "sender_id": "a6e44d84-4cbf-40b3-a8d4-5095663d2dd7",
+    "content": "Mengirim file",
+    "created_at": "2026-06-21T05:00:10.860552+00:00"
+  },
+  {
+    "id": "7cc28d49-3126-44b4-83d9-97ce57c9876d",
+    "sender_id": null,
+    "content": "[AI]: Di SafePlace, kami memiliki tim konsultan profesional yang terdiri dari psikolog, ahli kesehatan mental, dan ahli hukum yang berpengalaman dalam menangani kasus kekerasan seksual. Mereka tersedia untuk membantu korban kekerasan seksual dengan mendengarkan, memberikan dukungan, dan memberikan panduan yang tepat.\n\nBerikut adalah beberapa informasi tentang peer consultant kami:\n\n- **Profesi:** Psikolog, Ahli Kesehatan Mental, dan Ahli Hukum\n- **Pengalaman:** Berpengalaman dalam menangani kasus kekerasan seksual dan memberikan dukungan kepada korban\n- **Ketersediaan:** Tersedia untuk membantu korban kekerasan seksual melalui telepon, email, atau video konferensi\n\nKami juga memiliki sistem yang memungkinkan kamu untuk memilih konsultan yang sesuai dengan kebutuhan dan preferensi kamu. Jadi, kamu bisa memilih konsultan yang kamu rasa nyaman dan bisa membantu kamu dengan baik.\n\nJika kamu membutuhkan pendampingan langsung, konsultan kami siap membantu.",
+    "created_at": "2026-06-21T04:59:58.461077+00:00"
+  },
+  {
+    "id": "ee0e3b24-4f95-4308-ad2e-7b588e2c25d5",
+    "sender_id": "a6e44d84-4cbf-40b3-a8d4-5095663d2dd7",
+    "content": "mana peer consultant nya",
+    "created_at": "2026-06-21T04:59:57.353432+00:00"
+  },
+  {
+    "id": "83aa1659-4075-4fa3-8ef2-7006f42a6add",
+    "sender_id": null,
+    "content": "[AI]: Mohon beritahu saya apa yang terjadi dan bagaimana saya dapat membantu Anda. Saya di sini untuk mendengar dan memberikan dukungan. \n\nJika Anda ingin melaporkan kekerasan seksual yang dialami, Anda dapat memulai dengan mengklik tombol \"Mulai Pelaporan\" di halaman /report/start. Jika Anda membutuhkan informasi lebih lanjut tentang proses pelaporan, saya dapat memberikan panduan.\n\nJika Anda hanya membutuhkan dukungan emosional, saya di sini untuk mendengar dan memberikan pendampingan. Saya akan melakukan hal terbaik untuk mendukung Anda dalam langkah ini.\n\nJika kamu membutuhkan pendampingan langsung, konsultan kami siap membantu.",
+    "created_at": "2026-06-21T04:59:43.365368+00:00"
+  },
+  {
+    "id": "c69b6d6a-5042-45d2-bcb8-0be8ffafa6b7",
+    "sender_id": "a6e44d84-4cbf-40b3-a8d4-5095663d2dd7",
+    "content": "ak butuh bantuan",
+    "created_at": "2026-06-21T04:59:41.252521+00:00"
+  }
+]

@@ -179,7 +179,12 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
           .channel(`chat-${reportId}-${Date.now()}`)
           .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `report_id=eq.${reportId}` }, (payload) => {
             if (!isMounted) return;
-            setMessages(prev => [...prev, payload.new as Message]);
+            setMessages(prev => {
+              const newMsg = payload.new as Message;
+              const exists = prev.some(m => m.id === newMsg.id);
+              if (exists) return prev;
+              return [...prev, newMsg];
+            });
             if (payload.new.sender_id !== user.id) {
               supabase.from("messages").update({ is_read: true }).eq("id", payload.new.id).then();
             }

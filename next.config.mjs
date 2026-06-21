@@ -51,6 +51,24 @@ const nextConfig = {
           },
         ],
       },
+      {
+        source: '/report/chat/(.*)',
+        headers: [
+          {
+            key: 'Permissions-Policy', 
+            value: 'microphone=(self), camera=(self)',
+          },
+        ],
+      },
+      {
+        source: '/peer-consultant/chat/(.*)',
+        headers: [
+          {
+            key: 'Permissions-Policy',
+            value: 'microphone=(self), camera=(self)',
+          },
+        ],
+      },
     ];
   },
 };

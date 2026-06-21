@@ -67,7 +67,7 @@ export default function PeerConsultantDashboardPage() {
           .from("users")
           .select("full_name, is_online, active_cases_count")
           .eq("id", user.id)
-          .single();
+          .maybeSingle();
 
         if (isMounted) {
           setCurrentUser({ id: user.id, name: profile?.full_name || "Peer Consultant", active_cases_count: profile?.active_cases_count || 0 });
@@ -142,7 +142,7 @@ export default function PeerConsultantDashboardPage() {
                 .from('reports')
                 .select('incident_type, emergency')
                 .eq('id', notif.report_id)
-                .single();
+                .maybeSingle();
               if (repData) setAssignmentDetails(repData);
 
               // Auto dismiss after 30 seconds

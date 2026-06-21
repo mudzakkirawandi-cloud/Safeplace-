@@ -3,112 +3,199 @@
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
 import {
   FolderOpen,
   MessageCircle,
   Clock,
   CheckCircle2,
   ChevronRight,
+  MessageSquare
 } from "lucide-react";
 
-// Data dummy — di produksi fetch dari Supabase
-const STATS = [
-  {
-    key: "active",
-    labelKey: "stat_active",
-    value: 2,
-    icon: FolderOpen,
-    color: "text-primary",
-    bg: "bg-[#EAF3EE]",
-  },
-  {
-    key: "messages",
-    labelKey: "stat_messages", // Misal pesan baru
-    value: 5,
-    icon: MessageCircle,
-    color: "text-[#E8A87C]",
-    bg: "bg-[#FDF3EB]",
-  },
-  {
-    key: "waiting",
-    labelKey: "stat_waiting",
-    value: 1,
-    icon: Clock,
-    color: "text-yellow-600",
-    bg: "bg-yellow-50",
-  },
-  {
-    key: "done_week",
-    labelKey: "stat_done_week",
-    value: 3,
-    icon: CheckCircle2,
-    color: "text-green-600",
-    bg: "bg-green-50",
-  },
-];
-
-type Priority = "urgent" | "normal" | "low";
-
-interface CaseItem {
+interface Report {
   id: string;
-  code: string;
-  type: string;
-  priority: Priority;
+  tracking_code: string;
+  incident_type: string;
   status: string;
-  lastUpdate: string;
+  created_at: string;
+  reporter_id: string;
+  emergency: boolean;
+  unreadCount?: number;
 }
-
-const CASES: CaseItem[] = [
-  {
-    id: "1",
-    code: "RPT-0047",
-    type: "Pelecehan Verbal",
-    priority: "urgent",
-    status: "Konsultasi Aktif",
-    lastUpdate: "10 menit lalu",
-  },
-  {
-    id: "2",
-    code: "RPT-0045",
-    type: "Kekerasan Digital",
-    priority: "normal",
-    status: "Menunggu Respons",
-    lastUpdate: "2 jam lalu",
-  },
-];
-
-const PRIORITY_CONFIG: Record<Priority, { label: string; className: string; pulse: boolean }> = {
-  urgent: {
-    label: "Urgent",
-    className: "bg-red-100 text-red-700",
-    pulse: true,
-  },
-  normal: {
-    label: "Normal",
-    className: "bg-yellow-100 text-yellow-700",
-    pulse: false,
-  },
-  low: {
-    label: "Rendah",
-    className: "bg-green-100 text-green-700",
-    pulse: false,
-  },
-};
 
 export default function PeerConsultantDashboardPage() {
   const t = useTranslations("consultant");
   const router = useRouter();
+  const supabase = createClient();
+
+  const [reports, setReports] = useState<Report[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [currentUser, setCurrentUser] = useState<{ id: string, name: string } | null>(null);
+  const [statusText, setStatusText] = useState<"Tersedia" | "Sibuk" | "Istirahat">("Tersedia");
+
+  useEffect(() => {
+    let isMounted = true;
+    let reportSub: ReturnType<typeof supabase.channel> | null = null;
+
+    const fetchData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) {
+          router.push("/login");
+          return;
+        }
+
+        const { data: profile } = await supabase
+          .from("users")
+          .select("full_name, is_online")
+          .eq("id", user.id)
+          .single();
+
+        if (isMounted) {
+          setCurrentUser({ id: user.id, name: profile?.full_name || "Peer Consultant" });
+          if (profile?.is_online !== undefined) {
+            setStatusText(profile.is_online ? "Tersedia" : "Istirahat");
+          }
+        }
+
+        // Fetch reports assigned to this consultant
+        const { data: reportData, error: reportError } = await supabase
+          .from("reports")
+          .select("id, tracking_code, incident_type, status, created_at, reporter_id, emergency")
+          .eq("assigned_consultant_id", user.id)
+          .order("created_at", { ascending: false });
+
+        if (reportError) throw reportError;
+
+        if (reportData && isMounted) {
+          // Fetch unread count for each report
+          const enhancedReports = await Promise.all(
+            reportData.map(async (rep: Report) => {
+              const { count } = await supabase
+                .from("messages")
+                .select("*", { count: "exact", head: true })
+                .eq("report_id", rep.id)
+                .eq("is_read", false)
+                .neq("sender_id", user.id);
+              return { ...rep, unreadCount: count || 0 };
+            })
+          );
+          setReports(enhancedReports);
+        }
+
+        // Subscriptions
+        const timestamp = Date.now();
+        reportSub = supabase
+          .channel(`consultant-reports-${user.id}-${timestamp}`)
+          .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `assigned_consultant_id=eq.${user.id}` }, (payload: Record<string, unknown>) => {
+            if (!isMounted) return;
+            
+            if (payload.eventType === "INSERT") {
+              const newRep = { ...(payload.new as Report), unreadCount: 0 };
+              setReports((prev) => [newRep, ...prev]);
+            } else if (payload.eventType === "UPDATE") {
+              const updated = payload.new as Report;
+              setReports((prev) => prev.map(r => r.id === updated.id ? { ...r, ...updated } : r));
+            } else if (payload.eventType === "DELETE") {
+              const deleted = payload.old as { id: string };
+              setReports((prev) => prev.filter(r => r.id !== deleted.id));
+            }
+          })
+          .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload: Record<string, unknown>) => {
+            if (!isMounted) return;
+            const newMsg = payload.new as { sender_id: string; report_id: string };
+            if (newMsg.sender_id !== user.id) {
+              setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
+            }
+          })
+          .subscribe();
+
+      } catch (err) {
+        console.error("Error fetching consultant dashboard data:", err);
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      isMounted = false;
+      if (reportSub) supabase.removeChannel(reportSub);
+    };
+  }, [router, supabase]);
+
+  const toggleStatus = async (newStatus: "Tersedia" | "Sibuk" | "Istirahat") => {
+    setStatusText(newStatus);
+    if (currentUser) {
+      const isOnline = newStatus === "Tersedia";
+      await supabase.from("users").update({ is_online: isOnline }).eq("id", currentUser.id);
+    }
+  };
+
+  const getPriorityStyle = (emergency: boolean, status: string) => {
+    if (emergency) return "bg-red-50 text-red-700 border-red-500 border shadow-sm";
+    if (status === "under_review" || status === "in_consultation") return "bg-yellow-50 text-yellow-700 border-yellow-400 border";
+    if (status === "resolved") return "bg-green-50 text-green-700 border-green-400 border";
+    return "bg-gray-50 text-gray-700 border-gray-300 border";
+  };
+
+  const getPriorityLabel = (emergency: boolean, status: string) => {
+    if (emergency) return "Darurat";
+    if (status === "under_review" || status === "in_consultation") return "Aktif";
+    if (status === "resolved") return "Selesai";
+    return "Menunggu";
+  };
+
+  const sortedReports = [...reports].sort((a, b) => {
+    if (a.emergency && !b.emergency) return -1;
+    if (!a.emergency && b.emergency) return 1;
+    return 0;
+  });
+
+  const STATS = [
+    { key: "active", labelKey: "stat_active", value: reports.filter(r => r.status === "in_consultation" || r.status === "under_review").length, icon: FolderOpen, color: "text-primary", bg: "bg-[#EAF3EE]" },
+    { key: "messages", labelKey: "stat_messages", value: reports.reduce((acc, curr) => acc + (curr.unreadCount || 0), 0), icon: MessageCircle, color: "text-[#E8A87C]", bg: "bg-[#FDF3EB]" },
+    { key: "waiting", labelKey: "stat_waiting", value: reports.filter(r => r.status === "received").length, icon: Clock, color: "text-yellow-600", bg: "bg-yellow-50" },
+    { key: "done", labelKey: "stat_done_week", value: reports.filter(r => r.status === "resolved").length, icon: CheckCircle2, color: "text-green-600", bg: "bg-green-50" },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex-1 flex items-center justify-center min-h-[60vh]">
+        <div className="animate-pulse h-12 w-12 bg-gray-200 rounded-full"></div>
+      </div>
+    );
+  }
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="p-6 space-y-6 max-w-6xl mx-auto">
       <motion.div
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
+        className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4"
       >
-        <h1 className="text-2xl font-bold text-primary">
-          Halo, Peer Consultant 👋
-        </h1>
-        <p className="text-muted-foreground text-sm mt-1">Ini adalah ringkasan kasus yang Anda dampingi hari ini.</p>
+        <div>
+          <h1 className="text-2xl font-bold text-primary">
+            Halo, {currentUser?.name?.split(' ')[0] || "Peer Consultant"} 👋
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1">Ini adalah ringkasan kasus yang Anda dampingi hari ini.</p>
+        </div>
+        
+        {/* Status Toggle */}
+        <div className="flex bg-white rounded-full border border-gray-200 p-1 shadow-sm">
+          {(["Tersedia", "Sibuk", "Istirahat"] as const).map((s) => (
+            <button
+              key={s}
+              onClick={() => toggleStatus(s)}
+              className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all ${statusText === s ? "bg-[#1B4F72] text-white shadow-md" : "text-gray-500 hover:text-gray-800"}`}
+            >
+              {s === "Tersedia" ? "● Tersedia" : s === "Sibuk" ? "◐ Sibuk" : "○ Istirahat"}
+            </button>
+          ))}
+        </div>
       </motion.div>
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -122,9 +209,7 @@ export default function PeerConsultantDashboardPage() {
               transition={{ delay: i * 0.08 }}
               className="bg-card rounded-2xl p-5 border border-border shadow-sm"
             >
-              <div
-                className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}
-              >
+              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </div>
               <p className="text-3xl font-bold text-primary">{stat.value}</p>
@@ -140,14 +225,8 @@ export default function PeerConsultantDashboardPage() {
         transition={{ delay: 0.35 }}
         className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
       >
-        <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+        <div className="flex items-center justify-between px-6 py-4 border-b border-border bg-gray-50/50">
           <h2 className="font-semibold text-primary">{t("cases_title")}</h2>
-          <button
-            onClick={() => router.push("/peer-consultant/cases")}
-            className="text-sm text-primary hover:underline font-medium"
-          >
-            {t("cases_view_all")} →
-          </button>
         </div>
 
         <div className="hidden md:block overflow-x-auto">
@@ -157,80 +236,96 @@ export default function PeerConsultantDashboardPage() {
                 <th className="px-6 py-3">{t("table_code")}</th>
                 <th className="px-6 py-3">{t("table_type")}</th>
                 <th className="px-6 py-3">{t("table_priority")}</th>
-                <th className="px-6 py-3">{t("table_status")}</th>
                 <th className="px-6 py-3">{t("table_last_update")}</th>
-                <th className="px-6 py-3"></th>
+                <th className="px-6 py-3 text-right">Aksi</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-50">
-              {CASES.map((c) => (
-                <tr
-                  key={c.id}
-                  className="hover:bg-muted/50 transition-colors"
-                >
+              {sortedReports.map((c) => (
+                <tr key={c.id} className="hover:bg-muted/50 transition-colors">
                   <td className="px-6 py-4 font-mono font-semibold text-primary">
-                    #{c.code}
+                    #{c.tracking_code}
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground">{c.type}</td>
+                  <td className="px-6 py-4 text-muted-foreground capitalize">{c.incident_type.replace('_', ' ')}</td>
                   <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium ${
-                        PRIORITY_CONFIG[c.priority].className
-                      }`}
-                    >
-                      {PRIORITY_CONFIG[c.priority].pulse && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                      )}
-                      {PRIORITY_CONFIG[c.priority].label}
+                    <span className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-bold ${getPriorityStyle(c.emergency, c.status)}`}>
+                      {c.emergency && <span className="w-1.5 h-1.5 rounded-full bg-red-600 animate-pulse" />}
+                      {getPriorityLabel(c.emergency, c.status)}
                     </span>
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground">{c.status}</td>
                   <td className="px-6 py-4 text-muted-foreground text-xs">
-                    {c.lastUpdate}
+                    {new Date(c.created_at).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4">
-                    <button
-                      onClick={() =>
-                        router.push(`/peer-consultant/cases/${c.id}`)
-                      }
-                      className="flex items-center gap-1 text-primary hover:text-[#3d6b52] font-medium text-xs transition-colors"
-                    >
-                      {t("table_open")}
-                      <ChevronRight size={14} />
-                    </button>
+                    <div className="flex items-center justify-end gap-3">
+                      <button
+                        onClick={() => router.push(`/peer-consultant/chat/${c.id}`)}
+                        className="flex items-center gap-1.5 bg-[#F0F7FC] text-[#1B4F72] hover:bg-[#E1F0FA] px-3 py-1.5 rounded-lg font-bold text-xs transition-colors relative"
+                      >
+                        <MessageSquare size={14} />
+                        Chat
+                        {c.unreadCount ? (
+                          <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                            {c.unreadCount}
+                          </span>
+                        ) : null}
+                      </button>
+                      <button
+                        onClick={() => router.push(`/report/dashboard/${c.id}`)}
+                        className="flex items-center gap-1 text-gray-500 hover:text-gray-800 font-medium text-xs transition-colors"
+                      >
+                        Detail <ChevronRight size={14} />
+                      </button>
+                    </div>
                   </td>
                 </tr>
               ))}
+              {sortedReports.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="px-6 py-12 text-center text-gray-500">
+                    Belum ada laporan yang ditugaskan kepada Anda.
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
 
+        {/* Mobile View */}
         <div className="md:hidden divide-y divide-gray-50">
-          {CASES.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => router.push(`/peer-consultant/cases/${c.id}`)}
-              className="w-full px-4 py-4 text-left hover:bg-muted transition-colors"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono font-semibold text-primary text-sm">
-                  #{c.code}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      PRIORITY_CONFIG[c.priority].className
-                    }`}
-                  >
-                    {PRIORITY_CONFIG[c.priority].label}
+          {sortedReports.map((c) => (
+            <div key={c.id} className="p-4 bg-white hover:bg-gray-50 transition-colors">
+              <div className="flex justify-between items-start mb-2">
+                <div>
+                  <span className="font-mono font-bold text-[#1B4F72] text-sm mr-2">#{c.tracking_code}</span>
+                  <span className={`inline-flex items-center gap-1.5 text-[10px] px-2 py-0.5 rounded-full font-bold ${getPriorityStyle(c.emergency, c.status)}`}>
+                    {getPriorityLabel(c.emergency, c.status)}
                   </span>
-                  <ChevronRight size={14} className="text-muted-foreground" />
                 </div>
+                <button
+                  onClick={() => router.push(`/peer-consultant/chat/${c.id}`)}
+                  className="flex items-center justify-center bg-[#1B4F72] text-white w-8 h-8 rounded-full relative"
+                >
+                  <MessageSquare size={14} />
+                  {c.unreadCount ? (
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white ring-2 ring-white">
+                      {c.unreadCount}
+                    </span>
+                  ) : null}
+                </button>
               </div>
-              <p className="text-sm text-muted-foreground">{c.type}</p>
-              <p className="text-xs text-muted-foreground mt-1">{c.lastUpdate}</p>
-            </button>
+              <p className="text-sm font-medium text-gray-800 capitalize mb-1">{c.incident_type.replace('_', ' ')}</p>
+              <div className="flex items-center justify-between mt-2">
+                <span className="text-xs text-gray-500">{new Date(c.created_at).toLocaleDateString()}</span>
+                <button onClick={() => router.push(`/report/dashboard/${c.id}`)} className="text-xs font-semibold text-[#1B4F72]">Detail →</button>
+              </div>
+            </div>
           ))}
+          {sortedReports.length === 0 && (
+            <div className="px-6 py-12 text-center text-gray-500 text-sm">
+              Belum ada laporan.
+            </div>
+          )}
         </div>
       </motion.div>
     </div>

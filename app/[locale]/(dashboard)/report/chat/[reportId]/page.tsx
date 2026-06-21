@@ -1,0 +1,487 @@
+"use client";
+
+import { useEffect, useState, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { createClient } from "@/lib/supabase/client";
+import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
+import { 
+  ArrowLeft, Paperclip, Mic, Send, Square, 
+  ShieldAlert, User, Download, Check, CheckCheck
+} from "lucide-react";
+
+interface Message {
+  id: string;
+  report_id: string;
+  sender_id: string | null;
+  content: string;
+  message_type: 'text'|'audio'|'image'|'file';
+  attachment_url?: string;
+  attachment_type?: string;
+  attachment_name?: string;
+  is_read: boolean;
+  created_at: string;
+  sender?: { name: string; role: string; avatar_url?: string };
+}
+
+interface ReportDetail {
+  assigned_consultant_id?: string;
+  assigned_consultant?: { full_name: string; is_online: boolean };
+}
+
+export default function ReporterChatPage({ params }: { params: { reportId: string } }) {
+  const router = useRouter();
+  const supabase = createClient();
+  const { reportId } = params;
+
+  const [currentUser, setCurrentUser] = useState<{ id: string } | null>(null);
+  const [report, setReport] = useState<ReportDetail | null>(null);
+  const [messages, setMessages] = useState<Message[]>([]);
+  
+  const [inputMessage, setInputMessage] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const [isAITyping, setIsAITyping] = useState(false);
+  
+  // Audio Recording
+  const [isRecording, setIsRecording] = useState(false);
+  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<Blob[]>([]);
+
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
+
+  useEffect(() => {
+    let isMounted = true;
+    let messagesSub: ReturnType<typeof supabase.channel> | null = null;
+    let reportSub: ReturnType<typeof supabase.channel> | null = null;
+
+    const fetchInitialData = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (!user) return router.push("/login");
+        if (isMounted) setCurrentUser(user);
+
+        const { data: repDetail } = await supabase
+          .from("reports")
+          .select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)")
+          .eq("id", reportId)
+          .single();
+        
+        if (repDetail && isMounted) {
+          setReport(repDetail);
+        }
+
+        const { data: msgs } = await supabase
+          .from("messages")
+          .select("*")
+          .eq("report_id", reportId)
+          .order("created_at", { ascending: true });
+
+        if (msgs && isMounted) {
+          setMessages(msgs);
+          // Auto-greeting from AI if consultant is not assigned and no AI messages exist yet
+          if (!repDetail?.assigned_consultant_id) {
+            const hasAIMessage = msgs.some((m: Message) => m.sender_id === null || m.content.startsWith('[AI]'));
+            if (!hasAIMessage) {
+              const greeting = "[AI]: Halo, aku AI Pendamping SafePlace 💙\nPeer consultant kami sedang dalam perjalanan.\nAku di sini bersamamu dulu ya —\nceritakan apa yang kamu rasakan sekarang?";
+              await supabase.from("messages").insert({
+                report_id: reportId,
+                sender_id: null,
+                content: greeting,
+                message_type: 'text'
+              });
+            }
+          }
+          
+          // Mark unread as read
+          msgs.forEach((m: Message) => {
+            if (m.sender_id !== user.id && !m.is_read) {
+              supabase.from("messages").update({ is_read: true }).eq("id", m.id).then();
+            }
+          });
+        }
+
+        if (!isMounted) return;
+
+        messagesSub = supabase
+          .channel(`reporter-chat-${reportId}-${Date.now()}`)
+          .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `report_id=eq.${reportId}` }, (payload) => {
+            if (!isMounted) return;
+            setMessages(prev => [...prev, payload.new as Message]);
+            if (payload.new.sender_id !== user.id) {
+              supabase.from("messages").update({ is_read: true }).eq("id", payload.new.id).then();
+            }
+            scrollToBottom();
+          })
+          .on("postgres_changes", { event: "UPDATE", schema: "public", table: "messages", filter: `report_id=eq.${reportId}` }, (payload: Record<string, unknown>) => {
+             if (!isMounted) return;
+             const newMsg = payload.new as Message;
+             setMessages(prev => prev.map(m => m.id === newMsg.id ? { ...m, ...newMsg } : m));
+          })
+          .subscribe();
+          
+        reportSub = supabase
+          .channel(`reporter-rep-${reportId}-${Date.now()}`)
+          .on("postgres_changes", { event: "UPDATE", schema: "public", table: "reports", filter: `id=eq.${reportId}` }, async () => {
+             if (!isMounted) return;
+             const { data: updatedRep } = await supabase.from("reports").select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)").eq("id", reportId).single();
+             setReport(updatedRep);
+          })
+          .subscribe();
+
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchInitialData();
+    return () => {
+      isMounted = false;
+      if (messagesSub) supabase.removeChannel(messagesSub);
+      if (reportSub) supabase.removeChannel(reportSub);
+    };
+  }, [reportId, router, supabase]);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, isAITyping]);
+
+  const scrollToBottom = () => {
+    setTimeout(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
+  };
+
+  const callAIAgent = async (userMessage: string) => {
+    setIsAITyping(true);
+    try {
+      const res = await fetch("/api/ai-agent", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: userMessage }],
+          systemInstruction: "Kamu adalah AI Pendamping SafePlace yang empatik. Tugas utamamu adalah mendengarkan dan mendampingi korban kekerasan seksual sambil menunggu peer consultant. Gunakan bahasa yang hangat, tidak menghakimi, dan selalu validasi perasaan mereka. Jangan memberi saran hukum atau medis. Selalu ingatkan bahwa peer consultant segera hadir."
+        })
+      });
+      if (res.ok) {
+        const data = await res.json();
+        await supabase.from("messages").insert({
+          report_id: reportId,
+          sender_id: null,
+          content: `[AI]: ${data.text}`,
+          message_type: 'text'
+        });
+      }
+    } catch (err) {
+      console.error("AI Agent error:", err);
+    } finally {
+      setIsAITyping(false);
+    }
+  };
+
+  const handleSendMessage = async () => {
+    if (!currentUser) return;
+    if ((!inputMessage.trim() && !audioBlob) || isSending) return;
+    setIsSending(true);
+
+    try {
+      let attachmentUrl = null;
+      let attachmentType = null;
+      let attachmentName = null;
+      let messageType = "text";
+      const messageContent = inputMessage || "Voice Note";
+
+      if (audioBlob) {
+        const fileName = `chat/${reportId}/${Date.now()}_audio.webm`;
+        const { error } = await supabase.storage.from("chat-media").upload(fileName, audioBlob);
+        if (!error) {
+          const { data } = supabase.storage.from("chat-media").getPublicUrl(fileName);
+          attachmentUrl = data.publicUrl;
+          attachmentType = "audio/webm";
+          attachmentName = "Voice Note";
+          messageType = "audio";
+        }
+      }
+
+      await supabase.from("messages").insert({
+        report_id: reportId,
+        sender_id: currentUser.id,
+        content: messageContent,
+        message_type: messageType,
+        attachment_url: attachmentUrl,
+        attachment_type: attachmentType,
+        attachment_name: attachmentName,
+      });
+
+      // If no consultant assigned, trigger AI
+      if (!report?.assigned_consultant_id && !audioBlob) {
+        callAIAgent(messageContent);
+      }
+
+      setInputMessage("");
+      setAudioBlob(null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (!currentUser) return;
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 50 * 1024 * 1024) return alert("File terlalu besar (Max 50MB)");
+
+    setIsSending(true);
+    try {
+      const fileName = `chat/${reportId}/${Date.now()}_${file.name}`;
+      const { error } = await supabase.storage.from("chat-media").upload(fileName, file);
+      if (!error) {
+        const { data } = supabase.storage.from("chat-media").getPublicUrl(fileName);
+        const msgType = file.type.startsWith("image/") ? "image" : "file";
+        
+        await supabase.from("messages").insert({
+          report_id: reportId,
+          sender_id: currentUser.id,
+          content: "Mengirim file",
+          message_type: msgType,
+          attachment_url: data.publicUrl,
+          attachment_type: file.type,
+          attachment_name: file.name,
+        });
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setIsSending(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  };
+
+  const startRecording = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+      };
+
+      mediaRecorder.onstop = () => {
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        setAudioBlob(blob);
+      };
+
+      mediaRecorder.start();
+      setIsRecording(true);
+    } catch {
+      alert("Gagal mengakses mikrofon");
+    }
+  };
+
+  const stopRecording = () => {
+    if (mediaRecorderRef.current && isRecording) {
+      mediaRecorderRef.current.stop();
+      mediaRecorderRef.current.stream.getTracks().forEach(track => track.stop());
+      setIsRecording(false);
+    }
+  };
+
+  const formatTimestamp = (iso: string) => {
+    const d = new Date(iso);
+    return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`;
+  };
+
+  const handleEmergency = async () => {
+    await supabase.from("reports").update({ emergency: true }).eq("id", reportId);
+    setIsEmergencyModalOpen(false);
+  };
+
+  return (
+    <div className="h-screen flex flex-col bg-[#F4FAF8] max-w-4xl mx-auto md:border-x border-[#E7E9EB] shadow-sm">
+      {/* Header */}
+      <header className="bg-white border-b border-[#E7E9EB] px-4 md:px-6 h-16 flex items-center justify-between sticky top-0 z-30 shrink-0">
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.push("/report/dashboard")} className="text-gray-500 hover:text-[#1B4F72] transition-colors">
+            <ArrowLeft size={20} />
+          </button>
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 bg-[#E1F0FA] rounded-full flex items-center justify-center text-[#1B4F72] relative">
+              <User size={20} />
+              <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${report?.assigned_consultant?.is_online ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+            </div>
+            <div>
+              <h2 className="font-bold text-[#1B4F72] leading-tight">
+                {report?.assigned_consultant?.full_name || "Mencari Peer Consultant..."}
+              </h2>
+              <p className="text-[11px] font-medium text-gray-500">
+                {report?.assigned_consultant ? 'Peer Consultant' : 'Harap tunggu...'}
+              </p>
+            </div>
+          </div>
+        </div>
+        <button onClick={() => setIsEmergencyModalOpen(true)} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors shadow-sm">
+          <ShieldAlert size={16} /> <span className="hidden sm:inline">Darurat</span>
+        </button>
+      </header>
+
+      {/* Banner Wait for Consultant */}
+      {!report?.assigned_consultant_id && (
+        <div className="bg-[#E1F0FA] p-3 text-center border-b border-[#BDE0F5] shrink-0">
+          <p className="text-sm font-semibold text-[#1B4F72]">⏳ Peer consultant sedang menuju...</p>
+          <p className="text-xs text-[#4A90B8]">AI Pendamping akan menemanimu sementara waktu.</p>
+        </div>
+      )}
+
+      {/* Chat Messages */}
+      <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        {messages.map((msg) => {
+          const isMe = msg.sender_id === currentUser?.id;
+          const isAI = msg.sender_id === null || msg.content.startsWith('[AI]');
+          
+          let bubbleClass = "bg-gray-100 text-gray-800 rounded-tr-xl rounded-b-xl";
+          let wrapperClass = "justify-start";
+          
+          if (isMe) {
+            bubbleClass = "bg-[#1B4F72] text-white rounded-tl-xl rounded-b-xl shadow-sm";
+            wrapperClass = "justify-end";
+          } else if (isAI) {
+            bubbleClass = "bg-[#E1F0FA] border border-[#BDE0F5] text-[#1B4F72] rounded-tr-xl rounded-b-xl shadow-sm";
+            wrapperClass = "justify-start";
+          } else {
+            bubbleClass = "bg-white border border-[#E7E9EB] text-gray-800 rounded-tr-xl rounded-b-xl shadow-sm";
+          }
+
+          return (
+            <motion.div key={msg.id} initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className={`flex w-full ${wrapperClass}`}>
+              <div className={`max-w-[85%] md:max-w-[75%] flex flex-col ${isMe ? 'items-end' : 'items-start'}`}>
+                {isAI && <span className="text-[10px] font-bold text-[#4A90B8] mb-1 ml-1">🤖 AI Pendamping</span>}
+                {!isMe && !isAI && <span className="text-[10px] font-bold text-gray-500 mb-1 ml-1">{report?.assigned_consultant?.full_name || 'Consultant'}</span>}
+                
+                <div className={`px-4 py-3 ${bubbleClass} text-[15px] leading-relaxed relative group`}>
+                  {msg.message_type === 'image' && msg.attachment_url && (
+                    <a href={msg.attachment_url} target="_blank" rel="noreferrer" className="block relative w-[200px] md:w-[300px] h-[200px] mb-2 rounded-lg overflow-hidden">
+                      <Image src={msg.attachment_url} alt="Attachment" fill className="object-cover" />
+                    </a>
+                  )}
+                  {msg.message_type === 'audio' && msg.attachment_url && (
+                    <audio src={msg.attachment_url} controls className="max-w-[200px] md:max-w-[260px] h-10 mb-2" />
+                  )}
+                  {msg.message_type === 'file' && msg.attachment_url && (
+                    <a href={msg.attachment_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-black/10 p-2 rounded-lg mb-2 text-sm hover:bg-black/20 transition-colors">
+                      <Paperclip size={16} /> {msg.attachment_name || "Download File"} <Download size={14} className="ml-2" />
+                    </a>
+                  )}
+                  
+                  <p className="whitespace-pre-wrap">{msg.content.replace('[AI]:', '').trim()}</p>
+                  
+                  <div className={`text-[10px] mt-1.5 flex items-center justify-end gap-1 ${isMe ? 'text-blue-200' : 'text-gray-400'}`}>
+                    {formatTimestamp(msg.created_at)}
+                    {isMe && (msg.is_read ? <CheckCheck size={12} /> : <Check size={12} />)}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          );
+        })}
+        {isAITyping && (
+           <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex w-full justify-start">
+             <div className="bg-[#E1F0FA] px-4 py-3 border border-[#BDE0F5] text-[#1B4F72] rounded-tr-xl rounded-b-xl shadow-sm">
+                <span className="flex items-center gap-1">
+                  <span className="w-1.5 h-1.5 bg-[#4A90B8] rounded-full animate-bounce"></span>
+                  <span className="w-1.5 h-1.5 bg-[#4A90B8] rounded-full animate-bounce delay-75"></span>
+                  <span className="w-1.5 h-1.5 bg-[#4A90B8] rounded-full animate-bounce delay-150"></span>
+                </span>
+             </div>
+           </motion.div>
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Input Area */}
+      <div className="bg-white border-t border-[#E7E9EB] p-4 shrink-0">
+        {audioBlob ? (
+          <div className="flex items-center justify-between bg-gray-50 p-3 rounded-2xl border border-gray-200">
+            <audio src={URL.createObjectURL(audioBlob)} controls className="h-10 flex-1 mr-4" />
+            <div className="flex gap-2">
+              <button onClick={() => setAudioBlob(null)} className="p-2 text-red-500 hover:bg-red-50 rounded-full"><Square size={18} /></button>
+              <button onClick={handleSendMessage} disabled={isSending} className="bg-[#1B4F72] text-white p-2 px-4 rounded-full font-bold text-sm hover:bg-[#123650]">Kirim</button>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-end gap-2 relative">
+            <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
+            
+            <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl flex items-center p-1 focus-within:border-[#1B4F72] transition-colors shadow-sm">
+              <button onClick={() => fileInputRef.current?.click()} className="p-2 text-gray-400 hover:text-[#1B4F72] hover:bg-gray-100 rounded-full transition-colors">
+                <Paperclip size={20} />
+              </button>
+              
+              <textarea 
+                value={inputMessage}
+                onChange={(e) => setInputMessage(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    handleSendMessage();
+                  }
+                }}
+                placeholder="Ketik pesan..."
+                className="flex-1 bg-transparent border-none outline-none resize-none max-h-32 min-h-[40px] px-2 py-2.5 text-[16px]"
+                rows={1}
+              />
+              
+              {!inputMessage.trim() ? (
+                <button 
+                  onMouseDown={startRecording}
+                  onMouseUp={stopRecording}
+                  onMouseLeave={stopRecording}
+                  onTouchStart={startRecording}
+                  onTouchEnd={stopRecording}
+                  className={`p-2 rounded-full transition-colors ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'text-gray-400 hover:text-[#1B4F72] hover:bg-gray-100'}`}
+                >
+                  {isRecording ? <Square size={20} className="fill-current" /> : <Mic size={20} />}
+                </button>
+              ) : (
+                <button onClick={handleSendMessage} disabled={isSending} className="p-2 bg-[#1B4F72] text-white rounded-full hover:bg-[#123650] transition-colors disabled:opacity-50 mx-1">
+                  <Send size={18} className="ml-0.5" />
+                </button>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Emergency Modal */}
+      <AnimatePresence>
+        {isEmergencyModalOpen && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600"><ShieldAlert size={32} /></div>
+              <h3 className="text-xl font-bold text-red-600 mb-2">Aktifkan Bantuan Darurat?</h3>
+              <p className="text-gray-500 mb-6 text-sm">Tim keamanan kampus terdekat akan diberitahu lokasi dan status Anda saat ini.</p>
+              
+              <div className="bg-gray-50 p-4 rounded-xl text-left mb-6 space-y-2">
+                <p className="font-bold text-gray-700 text-sm">Hubungi Langsung:</p>
+                <div className="flex items-center gap-2 text-[#1B4F72] font-mono text-sm"><span className="text-xl">📞</span> Polri 110</div>
+                <div className="flex items-center gap-2 text-[#1B4F72] font-mono text-sm"><span className="text-xl">📞</span> 119 ext 8</div>
+                <div className="flex items-center gap-2 text-[#1B4F72] font-mono text-sm"><span className="text-xl">📞</span> SAPA 129</div>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <button onClick={handleEmergency} className="w-full py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700">🚨 Panggil Bantuan Sekarang</button>
+                <button onClick={() => setIsEmergencyModalOpen(false)} className="w-full py-3 text-gray-500 font-semibold hover:bg-gray-100 rounded-xl">Batal</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}

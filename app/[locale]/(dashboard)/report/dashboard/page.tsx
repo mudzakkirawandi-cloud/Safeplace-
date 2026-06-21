@@ -27,8 +27,9 @@ interface Report {
   incident_type: string;
   status: string;
   created_at: string;
-  updated_at: string;
+  description?: string;
   consultant_id?: string;
+  unreadCount?: number;
 }
 
 interface Notification {
@@ -104,7 +105,18 @@ export default function ReportDashboardPage() {
           console.error("Error fetching reports:", reportsError);
           if (isMounted) setFetchError("Gagal memuat data laporan.");
         } else if (reportsData && isMounted) {
-          setReports(reportsData);
+          const enhancedReports = await Promise.all(
+            reportsData.map(async (rep: Report) => {
+              const { count } = await supabase
+                .from("messages")
+                .select("*", { count: "exact", head: true })
+                .eq("report_id", rep.id)
+                .eq("is_read", false)
+                .neq("sender_id", currentUser.id);
+              return { ...rep, unreadCount: count || 0 };
+            })
+          );
+          setReports(enhancedReports);
         }
 
         // Fetch notifications
@@ -130,11 +142,18 @@ export default function ReportDashboardPage() {
           .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `reporter_id=eq.${currentUser.id}` }, (payload) => {
             if (!isMounted) return;
             setReports((prev) => {
-              if (payload.eventType === "INSERT") return [payload.new as Report, ...prev];
-              if (payload.eventType === "UPDATE") return prev.map(r => r.id === payload.new.id ? (payload.new as Report) : r);
+              if (payload.eventType === "INSERT") return [{ ...(payload.new as Report), unreadCount: 0 }, ...prev];
+              if (payload.eventType === "UPDATE") return prev.map(r => r.id === payload.new.id ? { ...r, ...payload.new } : r);
               if (payload.eventType === "DELETE") return prev.filter(r => r.id !== payload.old.id);
               return prev;
             });
+          })
+          .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload) => {
+            if (!isMounted) return;
+            const newMsg = payload.new;
+            if (newMsg.sender_id !== currentUser.id) {
+              setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
+            }
           })
           .subscribe();
 
@@ -398,12 +417,17 @@ export default function ReportDashboardPage() {
                     <p className="text-xs text-muted-foreground mb-6">
                       Dilaporkan pada: {new Date(report.created_at).toLocaleDateString()}
                     </p>
-                    {report.consultant_id && (
-                      <Link href={`/report/chat/${report.id}`} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-background text-primary rounded-lg text-sm font-semibold hover:bg-[#D6EAF8] transition-colors">
+                    <div className="flex flex-col gap-2">
+                      <Link href={`/report/chat/${report.id}`} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1B4F72] text-white rounded-lg text-sm font-semibold hover:bg-[#123650] transition-colors relative">
                         <MessageCircle size={16} />
                         {t("continue_chat")}
+                        {report.unreadCount ? (
+                          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
+                            {report.unreadCount}
+                          </span>
+                        ) : null}
                       </Link>
-                    )}
+                    </div>
                   </div>
                 ))}
               </div>

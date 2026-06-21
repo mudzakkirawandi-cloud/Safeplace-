@@ -107,12 +107,17 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
         if (!isMounted) return;
 
         messagesSub = supabase
-          .channel(`reporter-chat-${reportId}-${Date.now()}`)
+          .channel(`messages-${reportId}-${Date.now()}`)
           .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages", filter: `report_id=eq.${reportId}` }, (payload) => {
             if (!isMounted) return;
-            setMessages(prev => [...prev, payload.new as Message]);
-            if (payload.new.sender_id !== user.id) {
-              supabase.from("messages").update({ is_read: true }).eq("id", payload.new.id).then();
+            const newMsg = payload.new as Message;
+            setMessages(prev => {
+              const exists = prev.some(m => m.id === newMsg.id);
+              if (exists) return prev;
+              return [...prev, newMsg];
+            });
+            if (newMsg.sender_id !== user.id) {
+              supabase.from("messages").update({ is_read: true }).eq("id", newMsg.id).then();
             }
             scrollToBottom();
           })
@@ -146,13 +151,11 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
   }, [reportId, router, supabase]);
 
   useEffect(() => {
-    scrollToBottom();
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isAITyping]);
 
   const scrollToBottom = () => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 100);
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const callAIAgent = async (userMessage: string) => {
@@ -168,11 +171,25 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
       });
       if (res.ok) {
         const data = await res.json();
-        await supabase.from("messages").insert({
+        const msgId = crypto.randomUUID();
+        const aiMessage: Message = {
+          id: msgId,
           report_id: reportId,
           sender_id: null,
           content: `[AI]: ${data.response}`,
-          message_type: 'text'
+          message_type: 'text',
+          is_read: false,
+          created_at: new Date().toISOString(),
+        };
+        setMessages(prev => [...prev, aiMessage]);
+
+        await supabase.from("messages").insert({
+          id: msgId,
+          report_id: reportId,
+          sender_id: null,
+          content: `[AI]: ${data.response}`,
+          message_type: 'text',
+          is_read: true
         });
       }
     } catch (err) {
@@ -188,11 +205,25 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     setIsSending(true);
 
     try {
-      let attachmentUrl = null;
-      let attachmentType = null;
-      let attachmentName = null;
-      let messageType = "text";
+      let attachmentUrl: string | null = null;
+      let attachmentType: string | null = null;
+      let attachmentName: string | null = null;
+      let messageType: "text" | "audio" | "image" | "file" = "text";
       const messageContent = inputMessage || "Voice Note";
+
+      const msgId = crypto.randomUUID();
+      const newMessage: Message = {
+        id: msgId,
+        report_id: reportId,
+        sender_id: currentUser.id,
+        content: messageContent,
+        message_type: messageType,
+        is_read: false,
+        created_at: new Date().toISOString(),
+      };
+
+      setMessages(prev => [...prev, newMessage]);
+      setInputMessage("");
 
       if (audioBlob) {
         const fileName = `chat/${reportId}/${Date.now()}_audio.webm`;
@@ -203,10 +234,13 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           attachmentType = "audio/webm";
           attachmentName = "Voice Note";
           messageType = "audio";
+          
+          setMessages(prev => prev.map(m => m.id === msgId ? { ...m, attachment_url: attachmentUrl as string, attachment_type: attachmentType as string, attachment_name: attachmentName as string, message_type: messageType } : m));
         }
       }
 
       await supabase.from("messages").insert({
+        id: msgId,
         report_id: reportId,
         sender_id: currentUser.id,
         content: messageContent,
@@ -221,7 +255,6 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
         callAIAgent(messageContent);
       }
 
-      setInputMessage("");
       setAudioBlob(null);
     } catch (err) {
       console.error(err);

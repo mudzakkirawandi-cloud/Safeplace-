@@ -21,7 +21,16 @@ export async function OPTIONS() {
   return NextResponse.json({}, { headers: corsHeaders });
 }
 
-const SYSTEM_PROMPT_ID = `Kamu adalah AI Assistant SafePlace — platform pelaporan dan pendampingan kekerasan seksual di Indonesia.
+const SYSTEM_PROMPT_ID = `Kamu adalah AI Pendamping SafePlace yang berempati dan profesional.
+Sebelum menjawab, selalu:
+1. Analisa konteks pesan dan attachment yang dikirim user
+2. Jika ada gambar, deskripsikan apa yang kamu lihat
+3. Jawab sesuai konteks — jangan jawaban generik
+4. Gunakan bahasa Indonesia yang hangat dan supportif
+
+Jika user kirim gambar → analisa gambar tersebut dulu baru jawab.
+Jika user kirim audio → acknowledge bahwa ada voice note.
+Jika user kirim file → acknowledge nama file dan tipenya.
 
 Peranmu:
 - Membantu pengguna memahami cara menggunakan SafePlace
@@ -46,7 +55,16 @@ Halaman-halaman di SafePlace yang perlu kamu ketahui:
 - /komunitas → forum komunitas (segera hadir)
 - /login → masuk akun`;
 
-const SYSTEM_PROMPT_EN = `You are the SafePlace AI Assistant — a sexual violence reporting and support platform in Indonesia.
+const SYSTEM_PROMPT_EN = `You are the empathetic and professional SafePlace AI Companion.
+Before answering, always:
+1. Analyze the context of the user's message and any attachments sent
+2. If there is an image, describe what you see
+3. Answer according to the context — no generic answers
+4. Use warm and supportive language
+
+If the user sends an image → analyze the image first before answering.
+If the user sends audio → acknowledge that there is a voice note.
+If the user sends a file → acknowledge the file name and its type.
 
 Your role:
 - Help users understand how to use SafePlace
@@ -87,9 +105,38 @@ export async function POST(req: NextRequest) {
       // 1. Try Gemini REST API
       const geminiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
       
-      const geminiContents = messages.map((msg: { role: string; content: string }) => ({
-        role: msg.role === 'assistant' || msg.role === 'model' ? 'model' : 'user',
-        parts: [{ text: msg.content }]
+      const geminiContents = await Promise.all(messages.map(async (msg: { role: string; content: string; attachment_url?: string; message_type?: string; attachment_name?: string }) => {
+        const parts: { text?: string; inlineData?: { mimeType: string; data: string } }[] = [];
+        
+        if (msg.message_type === 'image' && msg.attachment_url) {
+            try {
+                const response = await fetch(msg.attachment_url);
+                if (response.ok) {
+                    const arrayBuffer = await response.arrayBuffer();
+                    const base64 = Buffer.from(arrayBuffer).toString('base64');
+                    const mimeType = response.headers.get('content-type') || 'image/jpeg';
+                    parts.push({
+                        inlineData: {
+                            mimeType,
+                            data: base64
+                        }
+                    });
+                }
+            } catch (e) {
+                console.error("Failed to fetch image", e);
+            }
+        } else if (msg.attachment_url && (msg.message_type === 'file' || msg.message_type === 'audio' || msg.message_type === 'video')) {
+            parts.push({ text: `[Sistem: User mengirimkan sebuah attachment berjenis ${msg.message_type} bernama "${msg.attachment_name || 'file'}" dengan URL: ${msg.attachment_url}. Analisa konteks berdasarkan teks pesan jika ada.]` });
+        }
+        
+        if (msg.content) {
+            parts.push({ text: msg.content });
+        }
+
+        return {
+          role: msg.role === 'assistant' || msg.role === 'model' ? 'model' : 'user',
+          parts
+        };
       }));
 
       const geminiBody = {
@@ -131,10 +178,16 @@ export async function POST(req: NextRequest) {
       
       const groqMessages = [
         { role: 'system', content: systemInstruction },
-        ...messages.map((msg: { role: string; content: string }) => ({
-          role: msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user',
-          content: msg.content
-        }))
+        ...messages.map((msg: { role: string; content: string; attachment_url?: string; message_type?: string; attachment_name?: string }) => {
+          let contentStr = msg.content || '';
+          if (msg.attachment_url) {
+             contentStr += `\n[Sistem: User mengirimkan attachment berjenis ${msg.message_type} bernama "${msg.attachment_name || 'file'}".]`;
+          }
+          return {
+            role: msg.role === 'model' || msg.role === 'assistant' ? 'assistant' : 'user',
+            content: contentStr
+          };
+        })
       ];
 
       const groqResponse = await fetch(groqUrl, {

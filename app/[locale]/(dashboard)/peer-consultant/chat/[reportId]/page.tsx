@@ -76,7 +76,6 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   // Audio Recording
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -314,26 +313,39 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: true,
+        video: false 
+      });
+      
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
+      const chunks: BlobPart[] = [];
 
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+        if (e.data.size > 0) chunks.push(e.data);
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const blob = new Blob(chunks, { type: 'audio/webm' });
         if (pendingAudioUrl) URL.revokeObjectURL(pendingAudioUrl);
         setPendingAudio(blob);
         setPendingAudioUrl(URL.createObjectURL(blob));
+        stream.getTracks().forEach(track => track.stop());
       };
 
       mediaRecorder.start();
       setIsRecording(true);
-    } catch {
-      alert("Gagal mengakses mikrofon");
+    } catch (err: unknown) {
+      const error = err as Error;
+      if (error.name === 'NotAllowedError') {
+        alert('Izin mikrofon ditolak. Silakan izinkan akses mikrofon di pengaturan browser.');
+      } else if (error.name === 'NotFoundError') {
+        alert('Mikrofon tidak ditemukan di perangkat ini.');
+      } else {
+        alert('Gagal mengakses mikrofon: ' + error.message);
+      }
+      setIsRecording(false);
     }
   };
 

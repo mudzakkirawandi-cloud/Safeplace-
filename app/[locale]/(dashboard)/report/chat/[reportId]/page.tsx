@@ -28,7 +28,7 @@ interface ReportDetail {
   assigned_consultant?: { full_name: string; is_online: boolean };
 }
 
-export default function ReporterChatPage({ params }: { params: { reportId: string } }) {
+export default function ReporterChatPage({ params }: { params: { reportId: string; locale: string } }) {
   const router = useRouter();
   const supabase = createClient();
   const { reportId } = params;
@@ -49,7 +49,6 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
   // Audio Recording
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
-  const audioChunksRef = useRef<Blob[]>([]);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -169,15 +168,21 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
-  const callAIAgent = async (userMessage: string) => {
+  const callAIAgent = async (userMessage: string, attachmentUrl?: string | null, messageType?: string | null, attachmentName?: string | null) => {
     setIsAITyping(true);
     try {
       const res = await fetch("/api/ai-agent", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: [{ role: "user", content: userMessage }],
-          systemInstruction: "Kamu adalah AI Pendamping SafePlace yang empatik. Tugas utamamu adalah mendengarkan dan mendampingi korban kekerasan seksual sambil menunggu peer consultant. Gunakan bahasa yang hangat, tidak menghakimi, dan selalu validasi perasaan mereka. Jangan memberi saran hukum atau medis. Selalu ingatkan bahwa peer consultant segera hadir."
+          messages: [{ 
+            role: "user", 
+            content: userMessage,
+            attachment_url: attachmentUrl,
+            message_type: messageType,
+            attachment_name: attachmentName
+          }],
+          locale: params.locale || 'id'
         })
       });
       if (res.ok) {
@@ -291,8 +296,8 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
         attachment_type: attachmentType,
         attachment_name: attachmentName,
       });
-      if (!report?.assigned_consultant_id && !audioToUpload && !fileToUpload) {
-        callAIAgent(messageContent);
+      if (!report?.assigned_consultant_id) {
+        callAIAgent(messageContent, attachmentUrl, messageType, attachmentName);
       }
     } catch (err) {
       console.error(err);
@@ -316,26 +321,39 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
 
   const startRecording = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        audio: true,
+        video: false 
+      });
+      
       const mediaRecorder = new MediaRecorder(stream);
       mediaRecorderRef.current = mediaRecorder;
-      audioChunksRef.current = [];
+      const chunks: BlobPart[] = [];
 
       mediaRecorder.ondataavailable = (e) => {
-        if (e.data.size > 0) audioChunksRef.current.push(e.data);
+        if (e.data.size > 0) chunks.push(e.data);
       };
 
       mediaRecorder.onstop = () => {
-        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const blob = new Blob(chunks, { type: 'audio/webm' });
         if (pendingAudioUrl) URL.revokeObjectURL(pendingAudioUrl);
         setPendingAudio(blob);
         setPendingAudioUrl(URL.createObjectURL(blob));
+        stream.getTracks().forEach(track => track.stop());
       };
 
       mediaRecorder.start();
       setIsRecording(true);
-    } catch {
-      alert("Gagal mengakses mikrofon");
+    } catch (err: unknown) {
+      const error = err as Error;
+      if (error.name === 'NotAllowedError') {
+        alert('Izin mikrofon ditolak. Silakan izinkan akses mikrofon di pengaturan browser.');
+      } else if (error.name === 'NotFoundError') {
+        alert('Mikrofon tidak ditemukan di perangkat ini.');
+      } else {
+        alert('Gagal mengakses mikrofon: ' + error.message);
+      }
+      setIsRecording(false);
     }
   };
 

@@ -131,18 +131,23 @@ export default function PeerConsultantDashboardPage() {
             if (!isMounted) return;
             const newMsg = payload.new as { sender_id: string; report_id: string; content: string };
             if (newMsg.sender_id !== user.id) {
-              setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
-
-              // Tambahan baru - tampilkan popup LANGSUNG tanpa delay
               const report = reports.find(r => r.id === newMsg.report_id);
+              
+              // STOP jika pesan bukan untuk laporan milik peer consultant ini
+              if (!report) return;
+              
+              setReports((prev) => prev.map(r => 
+                r.id === newMsg.report_id 
+                  ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } 
+                  : r
+              ));
+              
               setNewChatNotif({
                 reportId: newMsg.report_id,
                 content: newMsg.content || 'Pesan baru',
-                trackingCode: report?.tracking_code || ''
+                trackingCode: report.tracking_code
               });
               setShowChatNotifPopup(true);
-
-              // Auto hide setelah 5 detik
               setTimeout(() => setShowChatNotifPopup(false), 5000);
             }
           })

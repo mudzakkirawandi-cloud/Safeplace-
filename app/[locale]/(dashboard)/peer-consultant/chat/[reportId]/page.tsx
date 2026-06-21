@@ -52,6 +52,16 @@ interface ReportDetail extends ReportItem {
   };
 }
 
+interface AssignmentNotification {
+  id: string;
+  report_id: string;
+  status: string;
+}
+
+interface AssignmentDetails {
+  incident_type: string;
+  emergency: boolean;
+}
 export default function PeerConsultantChatPage({ params }: { params: { reportId: string } }) {
   const router = useRouter();
   const supabase = createClient();
@@ -86,6 +96,11 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   const [showInfoPanel, setShowInfoPanel] = useState(false);
   const [showAIPanel, setShowAIPanel] = useState(false);
   const [showMicModal, setShowMicModal] = useState(false);
+
+  const [newAssignment, setNewAssignment] = useState<AssignmentNotification | null>(null);
+  const [showAssignmentPopup, setShowAssignmentPopup] = useState(false);
+  const [showAssignmentModal, setShowAssignmentModal] = useState(false);
+  const [assignmentDetails, setAssignmentDetails] = useState<AssignmentDetails | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -172,6 +187,32 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
              const newMsg = payload.new as Message;
              setMessages(prev => prev.map(m => m.id === newMsg.id ? { ...m, ...newMsg } : m));
           })
+          .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'assignment_notifications',
+            filter: `peer_consultant_id=eq.${user.id}`
+          }, async (payload) => {
+            const notif = payload.new as AssignmentNotification;
+            if (notif.status === 'pending') {
+              setNewAssignment(notif);
+              setShowAssignmentPopup(true);
+              
+              // Fetch report details for modal
+              const { data: repData } = await supabase
+                .from('reports')
+                .select('incident_type, emergency')
+                .eq('id', notif.report_id)
+                .single();
+              if (repData) setAssignmentDetails(repData);
+
+              // Auto dismiss after 30 seconds
+              setTimeout(() => {
+                setShowAssignmentPopup(false);
+                setShowAssignmentModal(false);
+              }, 30000);
+            }
+          })
           .subscribe();
 
       } catch (err) {
@@ -209,6 +250,67 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
     const newStatus = !isOnline;
     setIsOnline(newStatus);
     await supabase.from("users").update({ is_online: newStatus }).eq("id", currentUser?.id);
+  };
+
+  const handleAcceptAssignment = async () => {
+    if (!newAssignment || !currentUser) return;
+    try {
+      await supabase.from('assignment_notifications')
+        .update({ status: 'accepted', responded_at: new Date().toISOString() })
+        .eq('id', newAssignment.id);
+
+      await supabase.from('reports')
+        .update({ 
+          assigned_consultant_id: currentUser.id,
+          assignment_status: 'assigned'
+        })
+        .eq('id', newAssignment.report_id);
+
+      await supabase.from('assignment_notifications')
+        .update({ status: 'expired' })
+        .eq('report_id', newAssignment.report_id)
+        .neq('id', newAssignment.id)
+        .eq('status', 'pending');
+
+      await supabase.from('users')
+        .update({ active_cases_count: ((currentUser as Record<string, unknown>).active_cases_count as number || 0) + 1 })
+        .eq('id', currentUser.id);
+
+      setShowAssignmentPopup(false);
+      setShowAssignmentModal(false);
+      router.push(`/peer-consultant/chat/${newAssignment.report_id}`);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSkipAssignment = async () => {
+    if (!newAssignment) return;
+    try {
+      await supabase.from('assignment_notifications')
+        .update({ status: 'skipped', responded_at: new Date().toISOString() })
+        .eq('id', newAssignment.id);
+        
+      // Cek peer consultant lain yang pending
+      const { data: pendingOthers } = await supabase.from('assignment_notifications')
+        .select('id')
+        .eq('report_id', newAssignment.report_id)
+        .eq('status', 'pending');
+
+      if (!pendingOthers || pendingOthers.length === 0) {
+        // Panggil ulang API assignment
+        fetch('/api/assign-consultant', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ report_id: newAssignment.report_id })
+        });
+      }
+      
+      setShowAssignmentPopup(false);
+      setShowAssignmentModal(false);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleSendMessage = async () => {
@@ -753,6 +855,51 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
           </div>
         )}
       </AnimatePresence>
+
+      {/* Assignment Popup */}
+      {showAssignmentPopup && !showAssignmentModal && (
+        <motion.div 
+          initial={{ opacity: 0, y: 50 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          exit={{ opacity: 0, y: 50 }}
+          className="fixed bottom-4 right-4 z-50 bg-white rounded-2xl shadow-xl border-l-4 border-l-teal-500 p-5 max-w-sm w-full"
+        >
+          <h3 className="font-bold text-gray-900 mb-1 flex items-center gap-2">
+            <span className="text-xl">🔔</span> Pelapor Baru Membutuhkan Bantuan
+          </h3>
+          <p className="text-sm text-gray-600 mb-4">Ada seseorang yang membutuhkan pendampingan sekarang.</p>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setShowAssignmentModal(true)} className="flex-1 py-2 text-sm font-semibold text-[#1B4F72] bg-[#F0F7FC] rounded-xl hover:bg-[#E1F0FA]">Lihat Detail</button>
+            <button onClick={handleAcceptAssignment} className="flex-1 py-2 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700">Terima</button>
+            <button onClick={handleSkipAssignment} className="flex-1 py-2 text-sm font-semibold text-gray-500 bg-gray-100 rounded-xl hover:bg-gray-200">Lewati</button>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Assignment Modal Detail */}
+      {showAssignmentModal && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/50 p-4">
+          <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white rounded-2xl p-6 max-w-md w-full shadow-2xl">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Detail Laporan Masuk</h3>
+            <div className="bg-gray-50 p-4 rounded-xl space-y-3 mb-6">
+              <div>
+                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Jenis Kekerasan</p>
+                <p className="text-gray-900 font-medium capitalize">{assignmentDetails?.incident_type?.replace('_', ' ') || 'Tidak disebutkan'}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 font-semibold uppercase tracking-wider mb-1">Status Darurat</p>
+                <p className={`font-medium ${assignmentDetails?.emergency ? 'text-red-600' : 'text-green-600'}`}>
+                  {assignmentDetails?.emergency ? 'Ya, Darurat' : 'Tidak Darurat'}
+                </p>
+              </div>
+            </div>
+            <div className="flex gap-3">
+              <button onClick={handleSkipAssignment} className="flex-1 py-3 text-sm font-semibold text-gray-500 bg-gray-100 rounded-xl hover:bg-gray-200">Lewati Kasus</button>
+              <button onClick={handleAcceptAssignment} className="flex-1 py-3 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700">Terima Kasus</button>
+            </div>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

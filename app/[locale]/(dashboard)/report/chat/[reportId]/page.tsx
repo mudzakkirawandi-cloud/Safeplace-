@@ -25,6 +25,7 @@ interface Message {
 
 interface ReportDetail {
   assigned_consultant_id?: string;
+  assignment_status?: string;
   assigned_consultant?: { full_name: string; is_online: boolean };
 }
 
@@ -96,6 +97,15 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
                 content: greeting,
                 message_type: 'text'
               });
+            }
+
+            // Trigger assignment jika belum pending/unassigned
+            if (repDetail?.assignment_status !== 'pending' && repDetail?.assignment_status !== 'unassigned') {
+              fetch('/api/assign-consultant', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ report_id: reportId })
+              }).catch(err => console.error('Error triggering assignment:', err));
             }
           }
           

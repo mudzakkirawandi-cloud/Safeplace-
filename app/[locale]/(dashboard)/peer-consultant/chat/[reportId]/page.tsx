@@ -242,6 +242,22 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   }, [reportId, router, supabase]);
 
   useEffect(() => {
+    if (!reportId) return;
+    
+    const fetchMessages = async () => {
+      const { data: msgs } = await supabase
+        .from('messages')
+        .select('*, sender:users!messages_sender_id_fkey(full_name, role, avatar_url)')
+        .eq('report_id', reportId)
+        .order('created_at', { ascending: true });
+      
+      if (msgs) setMessages(msgs);
+    };
+    
+    fetchMessages();
+  }, [reportId, supabase]);
+
+  useEffect(() => {
     return () => {
       if (pendingFileUrl) URL.revokeObjectURL(pendingFileUrl);
       if (pendingAudioUrl) URL.revokeObjectURL(pendingAudioUrl);

@@ -173,6 +173,9 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
              if (!isMounted) return;
              const { data: updatedRep } = await supabase.from("reports").select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)").eq("id", reportId).single();
              setReport(updatedRep);
+             if (updatedRep?.assigned_consultant) {
+               setPeerConsultant(updatedRep.assigned_consultant);
+             }
           })
           .subscribe();
 

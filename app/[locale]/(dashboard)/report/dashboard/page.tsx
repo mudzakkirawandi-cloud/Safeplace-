@@ -13,7 +13,8 @@ import {
   Clock, 
   CheckCircle, 
   AlertCircle,
-  MoreVertical
+  MoreVertical,
+  X
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -59,6 +60,13 @@ export default function ReportDashboardPage() {
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+
+  const [newMsgNotif, setNewMsgNotif] = useState<{
+    reportId: string
+    content: string
+    trackingCode: string
+  } | null>(null);
+  const [showMsgNotifPopup, setShowMsgNotifPopup] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -151,7 +159,21 @@ export default function ReportDashboardPage() {
             if (!isMounted) return;
             const newMsg = payload.new;
             if (newMsg.sender_id !== currentUser.id) {
-              setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
+              setReports((prev) => {
+                const report = prev.find(r => r.id === newMsg.report_id);
+                if (report) {
+                  setTimeout(() => {
+                    setNewMsgNotif({
+                      reportId: newMsg.report_id,
+                      content: newMsg.content || 'Pesan baru',
+                      trackingCode: report.tracking_code || ''
+                    });
+                    setShowMsgNotifPopup(true);
+                    setTimeout(() => setShowMsgNotifPopup(false), 5000);
+                  }, 0);
+                }
+                return prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r);
+              });
             }
           })
           .subscribe();
@@ -496,6 +518,54 @@ export default function ReportDashboardPage() {
         onConfirm={confirmLogout}
         isLoggingOut={isLoggingOut}
       />
+
+      <AnimatePresence>
+        {showMsgNotifPopup && newMsgNotif && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-xl p-4 z-50 max-w-sm border border-teal-100"
+          >
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center flex-shrink-0">
+                <MessageCircle className="w-5 h-5 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="font-semibold text-gray-800 text-sm">
+                  💬 Pesan dari Peer Consultant
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Laporan #{newMsgNotif.trackingCode}
+                </p>
+                <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                  {newMsgNotif.content}
+                </p>
+              </div>
+              <button onClick={() => setShowMsgNotifPopup(false)} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+            <div className="flex gap-2 mt-3">
+              <button
+                onClick={() => {
+                  router.push(`/report/chat/${newMsgNotif.reportId}`);
+                  setShowMsgNotifPopup(false);
+                }}
+                className="flex-1 bg-teal-600 text-white text-xs py-2 rounded-xl hover:bg-teal-700 transition font-medium"
+              >
+                Buka Chat
+              </button>
+              <button
+                onClick={() => setShowMsgNotifPopup(false)}
+                className="flex-1 border border-gray-200 text-gray-600 text-xs py-2 rounded-xl hover:bg-gray-50 transition"
+              >
+                Tutup
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

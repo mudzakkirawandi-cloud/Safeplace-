@@ -129,7 +129,7 @@ export default function PeerConsultantDashboardPage() {
           })
           .on("postgres_changes", { event: "INSERT", schema: "public", table: "messages" }, (payload: Record<string, unknown>) => {
             if (!isMounted) return;
-            const newMsg = payload.new as { sender_id: string; report_id: string };
+            const newMsg = payload.new as { sender_id: string; report_id: string; content: string };
             if (newMsg.sender_id !== user.id) {
               setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
 
@@ -137,7 +137,7 @@ export default function PeerConsultantDashboardPage() {
               const report = reports.find(r => r.id === newMsg.report_id);
               setNewChatNotif({
                 reportId: newMsg.report_id,
-                content: (newMsg as any).content || 'Pesan baru',
+                content: newMsg.content || 'Pesan baru',
                 trackingCode: report?.tracking_code || ''
               });
               setShowChatNotifPopup(true);
@@ -161,6 +161,7 @@ export default function PeerConsultantDashboardPage() {
       isMounted = false;
       if (reportSub) supabase.removeChannel(reportSub);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, supabase]);
 
   useEffect(() => {

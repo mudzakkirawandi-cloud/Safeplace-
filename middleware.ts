@@ -70,6 +70,7 @@ export async function middleware(request: NextRequest) {
   const isProtectedRoute = 
     pathnameWithoutLocale.startsWith('/admin') || 
     pathnameWithoutLocale.startsWith('/consultant') || 
+    pathnameWithoutLocale.startsWith('/peer-consultant') || 
     pathnameWithoutLocale.startsWith('/operator') || 
     pathnameWithoutLocale.startsWith('/satgas') || 
     (pathnameWithoutLocale.startsWith('/report') && 
@@ -109,6 +110,9 @@ export async function middleware(request: NextRequest) {
     } else if (role === 'satgas') {
       allowedPrefix = '/satgas';
       defaultPath = '/satgas/dashboard';
+    } else if (role === 'peer_consultant') {
+      allowedPrefix = '/peer-consultant';
+      defaultPath = '/peer-consultant/dashboard';
     }
 
     // Redirect jika user berada di auth page, root page, atau mengakses rute terlindungi yang BUKAN milik role-nya

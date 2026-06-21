@@ -41,6 +41,11 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
   const [inputMessage, setInputMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [isAITyping, setIsAITyping] = useState(false);
+  
+  const [peerConsultant, setPeerConsultant] = useState<{ full_name: string; is_online: boolean } | null>(null);
+  const [isPeerTyping, setIsPeerTyping] = useState(false);
+  const [presenceChannel, setPresenceChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout>();
   const [pendingFile, setPendingFile] = useState<File | null>(null);
   const [pendingFileUrl, setPendingFileUrl] = useState<string | null>(null);
   const [pendingFileType, setPendingFileType] = useState<string | null>(null);
@@ -72,10 +77,13 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           .from("reports")
           .select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)")
           .eq("id", reportId)
-          .single();
+          .maybeSingle();
         
         if (repDetail && isMounted) {
           setReport(repDetail);
+          if (repDetail.assigned_consultant) {
+            setPeerConsultant(repDetail.assigned_consultant);
+          }
         }
 
         const { data: msgs } = await supabase
@@ -142,8 +150,23 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
              const newMsg = payload.new as Message;
              setMessages(prev => prev.map(m => m.id === newMsg.id ? { ...m, ...newMsg } : m));
           })
-          .subscribe();
-          
+          .subscribe((status) => {
+            console.log('Chat realtime status:', status);
+          });
+        const pChannel = supabase.channel(`presence-chat-${reportId}`, {
+          config: { presence: { key: user.id } },
+        });
+
+        pChannel.on('presence', { event: 'sync' }, () => {
+          const state = pChannel.presenceState();
+          const typing = Object.values(state).some((presences) =>
+            (presences as unknown as Array<{typing: boolean, userId: string}>)
+              .some(p => p.typing === true && p.userId !== user.id)
+          );
+          if (isMounted) setIsPeerTyping(typing);
+        }).subscribe();
+        
+        if (isMounted) setPresenceChannel(pChannel);
         reportSub = supabase
           .channel(`reporter-rep-${reportId}-${Date.now()}`)
           .on("postgres_changes", { event: "UPDATE", schema: "public", table: "reports", filter: `id=eq.${reportId}` }, async () => {
@@ -164,7 +187,31 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
       if (messagesSub) supabase.removeChannel(messagesSub);
       if (reportSub) supabase.removeChannel(reportSub);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId, router, supabase]);
+
+  useEffect(() => {
+    let userSub: ReturnType<typeof supabase.channel> | null = null;
+    if (report?.assigned_consultant_id) {
+      userSub = supabase
+        .channel(`user-status-${report.assigned_consultant_id}-${Date.now()}`)
+        .on("postgres_changes", { event: "UPDATE", schema: "public", table: "users", filter: `id=eq.${report.assigned_consultant_id}` }, (payload) => {
+           const updatedUser = payload.new as { full_name: string; is_online: boolean };
+           setPeerConsultant(prev => prev ? { ...prev, is_online: updatedUser.is_online } : null);
+        })
+        .subscribe();
+    }
+    return () => {
+      if (userSub) supabase.removeChannel(userSub);
+    };
+  }, [report?.assigned_consultant_id, supabase]);
+
+  useEffect(() => {
+    return () => {
+      if (presenceChannel) supabase.removeChannel(presenceChannel);
+      clearTimeout(typingTimeoutRef.current);
+    };
+  }, [presenceChannel, supabase]);
 
   useEffect(() => {
     return () => {
@@ -227,6 +274,21 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     } finally {
       setIsAITyping(false);
     }
+  };
+
+  const handleTyping = () => {
+    if (!presenceChannel || !currentUser) return;
+    presenceChannel.track({ 
+      typing: true, 
+      userId: currentUser.id 
+    });
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      presenceChannel.track({ 
+        typing: false, 
+        userId: currentUser.id 
+      });
+    }, 2000);
   };
 
   const handleSendMessage = async () => {
@@ -398,15 +460,25 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-[#E1F0FA] rounded-full flex items-center justify-center text-[#1B4F72] relative">
               <User size={20} />
-              <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${report?.assigned_consultant?.is_online ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+              {peerConsultant && (
+                <span className={`absolute bottom-0 right-0 w-3 h-3 rounded-full border-2 border-white ${peerConsultant.is_online ? 'bg-green-500' : 'bg-gray-400'}`}></span>
+              )}
             </div>
             <div>
               <h2 className="font-bold text-[#1B4F72] leading-tight">
-                {report?.assigned_consultant?.full_name || "Mencari Peer Consultant..."}
+                {peerConsultant?.full_name || "Mencari Peer Consultant..."}
               </h2>
-              <p className="text-[11px] font-medium text-gray-500">
-                {report?.assigned_consultant ? 'Peer Consultant' : 'Harap tunggu...'}
-              </p>
+              {isPeerTyping ? (
+                <p className="text-xs text-teal-500 font-medium animate-pulse">
+                  sedang mengetik...
+                </p>
+              ) : (
+                <p className={`text-xs font-medium flex items-center gap-1 ${
+                  peerConsultant?.is_online ? 'text-green-500' : 'text-gray-400'
+                }`}>
+                  {peerConsultant ? (peerConsultant.is_online ? 'Online' : 'Offline') : 'Harap tunggu...'}
+                </p>
+              )}
             </div>
           </div>
         </div>
@@ -566,7 +638,10 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
             
             <textarea 
               value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
+              onChange={(e) => {
+                setInputMessage(e.target.value);
+                handleTyping();
+              }}
               onKeyDown={(e) => {
                 if (e.key === 'Enter' && !e.shiftKey) {
                   e.preventDefault();

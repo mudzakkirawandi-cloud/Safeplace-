@@ -83,6 +83,9 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   const [pendingAudio, setPendingAudio] = useState<Blob | null>(null);
   const [pendingAudioUrl, setPendingAudioUrl] = useState<string | null>(null);
   
+  const [presenceChannel, setPresenceChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
+  const typingTimeoutRef = useRef<NodeJS.Timeout>();
+  
   // Audio Recording
   const [isRecording, setIsRecording] = useState(false);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
@@ -213,7 +216,15 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
               }, 30000);
             }
           })
-          .subscribe();
+          .subscribe((status) => {
+            console.log('Chat realtime status:', status);
+          });
+          
+        const pChannel = supabase.channel(`presence-chat-${reportId}`, {
+          config: { presence: { key: user.id } },
+        });
+        pChannel.subscribe();
+        if (isMounted) setPresenceChannel(pChannel);
 
       } catch (err) {
         console.error(err);
@@ -224,7 +235,10 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
     return () => {
       isMounted = false;
       if (messagesSub) supabase.removeChannel(messagesSub);
+      if (presenceChannel) supabase.removeChannel(presenceChannel);
+      clearTimeout(typingTimeoutRef.current);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId, router, supabase]);
 
   useEffect(() => {
@@ -311,6 +325,21 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
     } catch (err) {
       console.error(err);
     }
+  };
+
+  const handleTyping = () => {
+    if (!presenceChannel || !currentUser) return;
+    presenceChannel.track({ 
+      typing: true, 
+      userId: currentUser.id 
+    });
+    clearTimeout(typingTimeoutRef.current);
+    typingTimeoutRef.current = setTimeout(() => {
+      presenceChannel.track({ 
+        typing: false, 
+        userId: currentUser.id 
+      });
+    }, 2000);
   };
 
   const handleSendMessage = async () => {
@@ -748,7 +777,10 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
                   
                   <textarea 
                     value={inputMessage}
-                    onChange={(e) => setInputMessage(e.target.value)}
+                    onChange={(e) => {
+                      setInputMessage(e.target.value);
+                      handleTyping();
+                    }}
                     onKeyDown={(e) => {
                       if (e.key === 'Enter' && !e.shiftKey) {
                         e.preventDefault();

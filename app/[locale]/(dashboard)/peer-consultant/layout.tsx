@@ -67,12 +67,12 @@ export default function PeerConsultantLayout({
       labelKey: "nav_dashboard",
     },
     {
-      href: "/peer-consultant/cases",
+      href: "/peer-consultant/messages",
       icon: FolderOpen,
       labelKey: "nav_cases",
     },
     {
-      href: "/peer-consultant/chat",
+      href: "/peer-consultant/messages",
       icon: MessageCircle,
       labelKey: "nav_messages",
     },

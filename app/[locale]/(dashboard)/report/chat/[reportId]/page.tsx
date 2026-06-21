@@ -100,7 +100,10 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
             }
 
             // Trigger assignment jika belum pending/unassigned
-            if (repDetail?.assignment_status !== 'pending' && repDetail?.assignment_status !== 'unassigned') {
+            if (!repDetail?.assigned_consultant_id && repDetail?.assignment_status !== 'pending') {
+              console.log('Triggering assignment for:', reportId);
+              console.log('Status:', repDetail?.assignment_status);
+              console.log('Consultant:', repDetail?.assigned_consultant_id);
               fetch('/api/assign-consultant', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },

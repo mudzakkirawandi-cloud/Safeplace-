@@ -54,6 +54,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
+  const [showMicModal, setShowMicModal] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -347,16 +348,9 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     } catch (err: unknown) {
       const error = err as Error;
       if (error.name === 'NotAllowedError') {
-        const confirmed = window.confirm(
-          'Izin mikrofon ditolak.\n\nKlik OK untuk membuka pengaturan browser dan izinkan akses mikrofon.'
-        );
-        if (confirmed) {
-          window.open('chrome://settings/content/microphone', '_blank');
-        }
+        setShowMicModal(true);
       } else if (error.name === 'NotFoundError') {
-        alert('Mikrofon tidak ditemukan di perangkat ini.');
-      } else {
-        alert('Gagal mengakses mikrofon: ' + error.message);
+        alert('Mikrofon tidak ditemukan.');
       }
       setIsRecording(false);
     }
@@ -609,6 +603,36 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
               <div className="flex flex-col gap-2">
                 <button onClick={handleEmergency} className="w-full py-3 bg-red-600 text-white font-bold rounded-xl hover:bg-red-700">🚨 Panggil Bantuan Sekarang</button>
                 <button onClick={() => setIsEmergencyModalOpen(false)} className="w-full py-3 text-gray-500 font-semibold hover:bg-gray-100 rounded-xl">Batal</button>
+              </div>
+            </motion.div>
+          </div>
+        )}
+
+        {showMicModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white rounded-2xl p-6 w-full max-w-sm shadow-xl text-center">
+              <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4 text-red-600">
+                <Mic size={32} />
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Izin Mikrofon Ditolak</h3>
+              <p className="text-gray-500 mb-6 text-sm">Browser Anda memblokir akses mikrofon. Silakan izinkan melalui pengaturan browser.</p>
+              
+              <div className="flex flex-col gap-2">
+                <button 
+                  onClick={() => {
+                    window.open('chrome://settings/content/microphone', '_blank');
+                    setShowMicModal(false);
+                  }} 
+                  className="w-full py-3 bg-[#1B4F72] text-white font-bold rounded-xl hover:bg-[#123650]"
+                >
+                  Buka Pengaturan
+                </button>
+                <button 
+                  onClick={() => setShowMicModal(false)} 
+                  className="w-full py-3 bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 rounded-xl"
+                >
+                  Tutup
+                </button>
               </div>
             </motion.div>
           </div>

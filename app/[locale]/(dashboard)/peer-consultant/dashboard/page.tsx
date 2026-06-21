@@ -11,7 +11,8 @@ import {
   Clock,
   CheckCircle2,
   ChevronRight,
-  MessageSquare
+  MessageSquare,
+  X
 } from "lucide-react";
 
 interface Report {
@@ -50,6 +51,13 @@ export default function PeerConsultantDashboardPage() {
   const [showAssignmentPopup, setShowAssignmentPopup] = useState(false);
   const [showAssignmentModal, setShowAssignmentModal] = useState(false);
   const [assignmentDetails, setAssignmentDetails] = useState<AssignmentDetails | null>(null);
+
+  const [newChatNotif, setNewChatNotif] = useState<{
+    reportId: string;
+    content: string;
+    trackingCode: string;
+  } | null>(null);
+  const [showChatNotifPopup, setShowChatNotifPopup] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -104,7 +112,7 @@ export default function PeerConsultantDashboardPage() {
         // Subscriptions
         const timestamp = Date.now();
         reportSub = supabase
-          .channel(`consultant-reports-${user.id}-${timestamp}`)
+          .channel(`peer-dashboard-${user.id}-${timestamp}`)
           .on("postgres_changes", { event: "*", schema: "public", table: "reports", filter: `assigned_consultant_id=eq.${user.id}` }, (payload: Record<string, unknown>) => {
             if (!isMounted) return;
             
@@ -124,6 +132,18 @@ export default function PeerConsultantDashboardPage() {
             const newMsg = payload.new as { sender_id: string; report_id: string };
             if (newMsg.sender_id !== user.id) {
               setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
+
+              // Tambahan baru - tampilkan popup LANGSUNG tanpa delay
+              const report = reports.find(r => r.id === newMsg.report_id);
+              setNewChatNotif({
+                reportId: newMsg.report_id,
+                content: (newMsg as any).content || 'Pesan baru',
+                trackingCode: report?.tracking_code || ''
+              });
+              setShowChatNotifPopup(true);
+
+              // Auto hide setelah 5 detik
+              setTimeout(() => setShowChatNotifPopup(false), 5000);
             }
           })
           .subscribe();
@@ -543,6 +563,51 @@ export default function PeerConsultantDashboardPage() {
               <button onClick={handleAcceptAssignment} className="flex-1 py-3 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700">Terima Kasus</button>
             </div>
           </motion.div>
+        </div>
+      )}
+
+      {showChatNotifPopup && newChatNotif && (
+        <div className="fixed bottom-6 right-6 bg-white rounded-2xl 
+          shadow-xl p-4 z-50 max-w-sm border border-teal-100 
+          animate-in slide-in-from-bottom-4">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-teal-500 rounded-full flex 
+              items-center justify-center flex-shrink-0">
+              <MessageCircle className="w-5 h-5 text-white" />
+            </div>
+            <div className="flex-1 min-w-0">
+              <p className="font-semibold text-gray-800 text-sm">
+                💬 Pesan Baru
+              </p>
+              <p className="text-xs text-gray-500 mt-0.5">
+                Laporan #{newChatNotif.trackingCode}
+              </p>
+              <p className="text-xs text-gray-600 mt-1 line-clamp-2">
+                {newChatNotif.content}
+              </p>
+            </div>
+            <button onClick={() => setShowChatNotifPopup(false)}
+              className="text-gray-400 hover:text-gray-600 flex-shrink-0">
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={() => {
+                router.push(`/peer-consultant/chat/${newChatNotif.reportId}`)
+                setShowChatNotifPopup(false)
+              }}
+              className="flex-1 bg-teal-600 text-white text-xs py-2 
+                rounded-xl hover:bg-teal-700 transition font-medium">
+              Buka Chat
+            </button>
+            <button
+              onClick={() => setShowChatNotifPopup(false)}
+              className="flex-1 border border-gray-200 text-gray-600 
+                text-xs py-2 rounded-xl hover:bg-gray-50 transition">
+              Tutup
+            </button>
+          </div>
         </div>
       )}
     </div>

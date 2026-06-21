@@ -126,32 +126,6 @@ export default function PeerConsultantDashboardPage() {
               setReports((prev) => prev.map(r => r.id === newMsg.report_id ? { ...r, unreadCount: (r.unreadCount || 0) + 1 } : r));
             }
           })
-          .on('postgres_changes', {
-            event: 'INSERT',
-            schema: 'public',
-            table: 'assignment_notifications',
-            filter: `peer_consultant_id=eq.${user.id}`
-          }, async (payload) => {
-            const notif = payload.new as AssignmentNotification;
-            if (notif.status === 'pending') {
-              setNewAssignment(notif);
-              setShowAssignmentPopup(true);
-              
-              // Fetch report details for modal
-              const { data: repData } = await supabase
-                .from('reports')
-                .select('incident_type, emergency')
-                .eq('id', notif.report_id)
-                .maybeSingle();
-              if (repData) setAssignmentDetails(repData);
-
-              // Auto dismiss after 30 seconds
-              setTimeout(() => {
-                setShowAssignmentPopup(false);
-                setShowAssignmentModal(false);
-              }, 30000);
-            }
-          })
           .subscribe();
 
       } catch (err) {
@@ -168,6 +142,49 @@ export default function PeerConsultantDashboardPage() {
       if (reportSub) supabase.removeChannel(reportSub);
     };
   }, [router, supabase]);
+
+  useEffect(() => {
+    if (!currentUser) return;
+    
+    console.log('Setting up assignment listener for:', currentUser.id);
+    
+    const channel = supabase
+      .channel(`assignments-${currentUser.id}-${Date.now()}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'assignment_notifications',
+        filter: `peer_consultant_id=eq.${currentUser.id}`
+      }, async (payload) => {
+        console.log('New assignment received:', payload);
+        const notif = payload.new as AssignmentNotification;
+        if (notif.status === 'pending') {
+          setNewAssignment(notif);
+          setShowAssignmentPopup(true);
+          
+          // Fetch report details for modal
+          const { data: repData } = await supabase
+            .from('reports')
+            .select('incident_type, emergency')
+            .eq('id', notif.report_id)
+            .maybeSingle();
+          if (repData) setAssignmentDetails(repData);
+
+          // Auto dismiss after 30 seconds
+          setTimeout(() => {
+            setShowAssignmentPopup(false);
+            setShowAssignmentModal(false);
+          }, 30000);
+        }
+      })
+      .subscribe((status) => {
+        console.log('Assignment subscription status:', status);
+      });
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [currentUser, supabase]);
 
   const toggleStatus = async (newStatus: "Tersedia" | "Sibuk" | "Istirahat") => {
     setStatusText(newStatus);

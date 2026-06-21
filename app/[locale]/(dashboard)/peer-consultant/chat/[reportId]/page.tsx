@@ -339,7 +339,12 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
     } catch (err: unknown) {
       const error = err as Error;
       if (error.name === 'NotAllowedError') {
-        alert('Izin mikrofon ditolak. Silakan izinkan akses mikrofon di pengaturan browser.');
+        const confirmed = window.confirm(
+          'Izin mikrofon ditolak.\n\nKlik OK untuk membuka pengaturan browser dan izinkan akses mikrofon.'
+        );
+        if (confirmed) {
+          window.open('chrome://settings/content/microphone', '_blank');
+        }
       } else if (error.name === 'NotFoundError') {
         alert('Mikrofon tidak ditemukan di perangkat ini.');
       } else {

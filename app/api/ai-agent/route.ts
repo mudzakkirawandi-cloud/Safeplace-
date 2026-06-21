@@ -111,19 +111,17 @@ export async function POST(req: NextRequest) {
         if (msg.message_type === 'image' && msg.attachment_url) {
             try {
                 const response = await fetch(msg.attachment_url);
-                if (response.ok) {
-                    const arrayBuffer = await response.arrayBuffer();
-                    const base64 = Buffer.from(arrayBuffer).toString('base64');
-                    const mimeType = response.headers.get('content-type') || 'image/jpeg';
-                    parts.push({
-                        inlineData: {
-                            mimeType,
-                            data: base64
-                        }
-                    });
-                }
-            } catch (e) {
-                console.error("Failed to fetch image", e);
+                const arrayBuffer = await response.arrayBuffer();
+                const base64 = Buffer.from(arrayBuffer).toString('base64');
+                const mimeType = response.headers.get('content-type') || 'image/jpeg';
+                parts.push({
+                    inlineData: {
+                        mimeType: mimeType,
+                        data: base64
+                    }
+                });
+            } catch {
+                parts.push({ text: '[User mengirimkan gambar]' });
             }
         } else if (msg.attachment_url && (msg.message_type === 'file' || msg.message_type === 'audio' || msg.message_type === 'video')) {
             parts.push({ text: `[Sistem: User mengirimkan sebuah attachment berjenis ${msg.message_type} bernama "${msg.attachment_name || 'file'}" dengan URL: ${msg.attachment_url}. Analisa konteks berdasarkan teks pesan jika ada.]` });

@@ -6,7 +6,6 @@ import { useRouter, usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   FolderOpen,
-  MessageCircle,
   User,
   LogOut,
   Menu,
@@ -70,11 +69,6 @@ export default function PeerConsultantLayout({
       href: "/peer-consultant/messages",
       icon: FolderOpen,
       labelKey: "nav_cases",
-    },
-    {
-      href: "/peer-consultant/messages",
-      icon: MessageCircle,
-      labelKey: "nav_messages",
     },
     {
       href: "/peer-consultant/profile",

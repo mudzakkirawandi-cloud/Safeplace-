@@ -186,6 +186,8 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
       isMounted = false;
       if (messagesSub) supabase.removeChannel(messagesSub);
       if (reportSub) supabase.removeChannel(reportSub);
+      if (presenceChannel) supabase.removeChannel(presenceChannel);
+      clearTimeout(typingTimeoutRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId, router, supabase]);
@@ -206,12 +208,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     };
   }, [report?.assigned_consultant_id, supabase]);
 
-  useEffect(() => {
-    return () => {
-      if (presenceChannel) supabase.removeChannel(presenceChannel);
-      clearTimeout(typingTimeoutRef.current);
-    };
-  }, [presenceChannel, supabase]);
+
 
   useEffect(() => {
     return () => {

@@ -38,9 +38,12 @@ export default function PeerConsultantMessagesPage() {
 
         const { data: reportData, error: reportError } = await supabase
           .from("reports")
-          .select("id, tracking_code, incident_type, status, created_at, reporter_id, emergency")
+          .select("id, tracking_code, incident_type, status, created_at, reporter_id, emergency, assigned_consultant_id")
           .eq("assigned_consultant_id", user.id)
           .order("created_at", { ascending: false });
+
+        console.log('Current user id:', user.id);
+        console.log('Reports found:', reportData);
 
         if (reportError) throw reportError;
 
@@ -141,7 +144,7 @@ export default function PeerConsultantMessagesPage() {
         <div className="divide-y divide-gray-100">
           {reports.length === 0 ? (
             <div className="p-8 text-center text-gray-500">
-              Belum ada pesan atau kasus yang ditugaskan kepada Anda.
+              Belum ada kasus yang ditugaskan kepada Anda.
             </div>
           ) : (
             reports.map((report) => (

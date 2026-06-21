@@ -8,7 +8,7 @@ import Image from "next/image";
 import { 
   ArrowLeft, Paperclip, Mic, Send, Square, 
   ShieldAlert, AlertTriangle, FileText,
-  User, Check, CheckCheck, Download, MessageCircle
+  User, Check, CheckCheck, MessageCircle, X
 } from "lucide-react";
 
 interface ReportItem {
@@ -25,7 +25,7 @@ interface Message {
   report_id: string;
   sender_id: string | null;
   content: string;
-  message_type: 'text'|'audio'|'image'|'file';
+  message_type: 'text'|'audio'|'image'|'file'|'video';
   attachment_url?: string;
   attachment_type?: string;
   attachment_name?: string;
@@ -67,10 +67,14 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
 
   const [inputMessage, setInputMessage] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+  const [pendingFileUrl, setPendingFileUrl] = useState<string | null>(null);
+  const [pendingFileType, setPendingFileType] = useState<string | null>(null);
+  const [pendingAudio, setPendingAudio] = useState<Blob | null>(null);
+  const [pendingAudioUrl, setPendingAudioUrl] = useState<string | null>(null);
   
   // Audio Recording
   const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
@@ -183,6 +187,14 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   }, [reportId, router, supabase]);
 
   useEffect(() => {
+    return () => {
+      if (pendingFileUrl) URL.revokeObjectURL(pendingFileUrl);
+      if (pendingAudioUrl) URL.revokeObjectURL(pendingAudioUrl);
+    };
+  }, [pendingFileUrl, pendingAudioUrl]);
+
+
+  useEffect(() => {
     scrollToBottom();
   }, [messages]);
 
@@ -201,76 +213,103 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
 
   const handleSendMessage = async () => {
     if (!currentUser) return;
-    if ((!inputMessage.trim() && !audioBlob) || isSending) return;
+    if ((!inputMessage.trim() && !pendingFile && !pendingAudio) || isSending) return;
     setIsSending(true);
 
     try {
-      let attachmentUrl = null;
-      let attachmentType = null;
-      let attachmentName = null;
+      let attachmentUrl: string | null = null;
+      let attachmentType: string | null = null;
+      let attachmentName: string | null = null;
       let messageType = "text";
+      
+      if (pendingFile) {
+        if (pendingFileType?.startsWith('image/')) messageType = 'image';
+        else if (pendingFileType?.startsWith('audio/')) messageType = 'audio';
+        else if (pendingFileType?.startsWith('video/')) messageType = 'video';
+        else messageType = 'file';
+      } else if (pendingAudio) {
+        messageType = 'audio';
+      }
+      
+      const messageContent = inputMessage || (pendingAudio ? "Voice Note" : pendingFile ? pendingFile.name : "");
 
-      if (audioBlob) {
+      const msgId = crypto.randomUUID();
+      const optimisticMsg: Message = {
+        id: msgId,
+        report_id: reportId,
+        sender_id: currentUser.id,
+        content: messageContent,
+        message_type: messageType as "text" | "audio" | "image" | "file" | "video",
+        attachment_url: pendingFileUrl || pendingAudioUrl || undefined,
+        attachment_name: pendingFile?.name,
+        is_read: false,
+        created_at: new Date().toISOString(),
+      };
+
+      setMessages(prev => [...prev, optimisticMsg]);
+      setInputMessage("");
+      
+      const fileToUpload = pendingFile;
+      const audioToUpload = pendingAudio;
+      
+      setPendingFile(null);
+      setPendingFileUrl(null);
+      setPendingFileType(null);
+      setPendingAudio(null);
+      setPendingAudioUrl(null);
+
+      if (audioToUpload) {
         const fileName = `chat/${reportId}/${Date.now()}_audio.webm`;
-        const { error } = await supabase.storage.from("chat-media").upload(fileName, audioBlob);
+        const { error } = await supabase.storage.from("chat-media").upload(fileName, audioToUpload);
         if (!error) {
           const { data } = supabase.storage.from("chat-media").getPublicUrl(fileName);
           attachmentUrl = data.publicUrl;
           attachmentType = "audio/webm";
           attachmentName = "Voice Note";
-          messageType = "audio";
+        }
+      } else if (fileToUpload) {
+        const fileName = `chat/${reportId}/${Date.now()}_${fileToUpload.name}`;
+        const { error } = await supabase.storage.from("chat-media").upload(fileName, fileToUpload);
+        if (!error) {
+          const { data } = supabase.storage.from("chat-media").getPublicUrl(fileName);
+          attachmentUrl = data.publicUrl;
+          attachmentType = fileToUpload.type;
+          attachmentName = fileToUpload.name;
         }
       }
 
+      if (attachmentUrl) {
+        setMessages(prev => prev.map(m => m.id === msgId ? { ...m, attachment_url: attachmentUrl as string, attachment_type: attachmentType as string, attachment_name: attachmentName as string } : m));
+      }
+
       await supabase.from("messages").insert({
+        id: msgId,
         report_id: reportId,
         sender_id: currentUser.id,
-        content: inputMessage || "Voice Note",
+        content: messageContent,
         message_type: messageType,
         attachment_url: attachmentUrl,
         attachment_type: attachmentType,
         attachment_name: attachmentName,
       });
-
-      setInputMessage("");
-      setAudioBlob(null);
-    } catch {
-      // ignore
+    } catch (err) {
+      console.error(err);
     } finally {
       setIsSending(false);
     }
   };
 
-  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (!currentUser) return;
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (file.size > 50 * 1024 * 1024) return alert("File terlalu besar (Max 50MB)");
-
-    setIsSending(true);
-    try {
-      const fileName = `chat/${reportId}/${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage.from("chat-media").upload(fileName, file);
-      if (!error) {
-        const { data } = supabase.storage.from("chat-media").getPublicUrl(fileName);
-        const msgType = file.type.startsWith("image/") ? "image" : "file";
-        
-        await supabase.from("messages").insert({
-          report_id: reportId,
-          sender_id: currentUser.id,
-          content: "Mengirim file",
-          message_type: msgType,
-          attachment_url: data.publicUrl,
-          attachment_type: file.type,
-          attachment_name: file.name,
-        });
-      }
-    } catch {
-      // ignore
-    } finally {
-      setIsSending(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-    }
+    
+    if (pendingFileUrl) URL.revokeObjectURL(pendingFileUrl);
+    setPendingFile(file);
+    setPendingFileUrl(URL.createObjectURL(file));
+    setPendingFileType(file.type);
+    
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const startRecording = async () => {
@@ -286,7 +325,9 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
 
       mediaRecorder.onstop = () => {
         const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        setAudioBlob(blob);
+        if (pendingAudioUrl) URL.revokeObjectURL(pendingAudioUrl);
+        setPendingAudio(blob);
+        setPendingAudioUrl(URL.createObjectURL(blob));
       };
 
       mediaRecorder.start();
@@ -488,21 +529,32 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
                       {isAI && <span className="text-[10px] font-bold text-[#4A90B8] mb-1 ml-1">🤖 AI Pendamping</span>}
                       
                       <div className={`px-4 py-3 shadow-sm ${bubbleClass} text-[15px] leading-relaxed relative group`}>
-                        {msg.message_type === 'image' && msg.attachment_url && (
-                          <a href={msg.attachment_url} target="_blank" rel="noreferrer" className="block relative w-[200px] md:w-[300px] h-[200px] mb-2 rounded-lg overflow-hidden">
-                            <Image src={msg.attachment_url} alt="Attachment" fill className="object-cover" />
-                          </a>
-                        )}
-                        {msg.message_type === 'audio' && msg.attachment_url && (
-                          <audio src={msg.attachment_url} controls className="max-w-[200px] md:max-w-[260px] h-10 mb-2" />
-                        )}
-                        {msg.message_type === 'file' && msg.attachment_url && (
-                          <a href={msg.attachment_url} target="_blank" rel="noreferrer" className="flex items-center gap-2 bg-black/10 p-2 rounded-lg mb-2 text-sm hover:bg-black/20 transition-colors">
-                            <FileText size={16} /> {msg.attachment_name || "Download File"} <Download size={14} className="ml-2" />
-                          </a>
-                        )}
-                        
-                        <p>{msg.content.replace('[AI]:', '')}</p>
+                                          {msg.message_type === 'image' && msg.attachment_url && (
+                    <div className="relative w-48 h-36 rounded-xl overflow-hidden cursor-pointer mt-2" onClick={() => window.open(msg.attachment_url, '_blank')}>
+                      <Image src={msg.attachment_url} alt="attachment" fill className="object-cover hover:opacity-90 transition" />
+                    </div>
+                  )}
+                  {msg.message_type === 'audio' && msg.attachment_url && (
+                    <div className="flex items-center gap-2 bg-white/20 rounded-xl p-2 mt-2 min-w-[200px]">
+                      <div className="w-8 h-8 bg-white/30 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Mic className="w-4 h-4" />
+                      </div>
+                      <audio controls src={msg.attachment_url} className="flex-1 h-8" style={{ minWidth: '150px' }} />
+                    </div>
+                  )}
+                  {msg.message_type === 'file' && msg.attachment_url && (
+                    <a href={msg.attachment_url} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 bg-white/20 rounded-xl p-3 mt-2 hover:bg-white/30 transition">
+                      <FileText className="w-6 h-6 flex-shrink-0" />
+                      <div>
+                        <p className="text-sm font-medium truncate max-w-[150px]">{msg.attachment_name || 'File'}</p>
+                        <p className="text-xs opacity-70">Tap untuk buka</p>
+                      </div>
+                    </a>
+                  )}
+                  {msg.message_type === 'video' && msg.attachment_url && (
+                    <video controls src={msg.attachment_url} className="w-48 rounded-xl mt-2 max-h-36 object-cover" />
+                  )}
+                  <p>{msg.content.replace('[AI]:', '')}</p>
                         
                         <div className={`text-[10px] mt-1 flex items-center justify-end gap-1 ${isMe ? 'text-blue-200' : 'text-gray-400'}`}>
                           {formatTimestamp(msg.created_at)}
@@ -518,56 +570,101 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
 
             {/* Input Area */}
             <div className="bg-white border-t border-[#E7E9EB] p-4">
-              {audioBlob ? (
-                <div className="flex items-center justify-between bg-gray-50 p-3 rounded-2xl border border-gray-200">
-                  <audio src={URL.createObjectURL(audioBlob)} controls className="h-10 flex-1 mr-4" />
-                  <div className="flex gap-2">
-                    <button onClick={() => setAudioBlob(null)} className="p-2 text-red-500 hover:bg-red-50 rounded-full"><Square size={18} /></button>
-                    <button onClick={handleSendMessage} disabled={isSending} className="bg-[#1B4F72] text-white p-2 px-4 rounded-full font-bold text-sm hover:bg-[#123650]">Kirim</button>
-                  </div>
-                </div>
-              ) : (
-                <div className="flex items-end gap-2 relative">
-                  <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
-                  
-                  <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl flex items-center p-1 focus-within:border-[#1B4F72] transition-colors shadow-sm">
-                    <button onClick={() => fileInputRef.current?.click()} className="p-2 text-gray-400 hover:text-[#1B4F72] hover:bg-gray-100 rounded-full transition-colors">
-                      <Paperclip size={20} />
-                    </button>
-                    
-                    <textarea 
-                      value={inputMessage}
-                      onChange={(e) => setInputMessage(e.target.value)}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                          e.preventDefault();
-                          handleSendMessage();
-                        }
-                      }}
-                      placeholder="Ketik pesan..."
-                      className="flex-1 bg-transparent border-none outline-none resize-none max-h-32 min-h-[40px] px-2 py-2.5 text-[15px]"
-                      rows={1}
-                    />
-                    
-                    {!inputMessage.trim() ? (
-                      <button 
-                        onMouseDown={startRecording}
-                        onMouseUp={stopRecording}
-                        onMouseLeave={stopRecording}
-                        onTouchStart={startRecording}
-                        onTouchEnd={stopRecording}
-                        className={`p-2 rounded-full transition-colors ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'text-gray-400 hover:text-[#1B4F72] hover:bg-gray-100'}`}
-                      >
-                        {isRecording ? <Square size={20} className="fill-current" /> : <Mic size={20} />}
+              {(pendingFile || pendingAudio) && (
+                <div className="px-4 py-3 border-t bg-gray-50 mb-2 rounded-xl">
+                  {pendingFile && (
+                    <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm">
+                      {pendingFileType?.startsWith('image/') && pendingFileUrl && (
+                        <div className="relative w-16 h-16 rounded-lg overflow-hidden flex-shrink-0">
+                          <Image src={pendingFileUrl} alt="preview" fill className="object-cover" />
+                        </div>
+                      )}
+                      {!pendingFileType?.startsWith('image/') && (
+                        <div className="w-12 h-12 bg-teal-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                          <FileText className="w-6 h-6 text-teal-600" />
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-800 truncate">{pendingFile.name}</p>
+                        <p className="text-xs text-gray-500">{(pendingFile.size / 1024 / 1024).toFixed(2)} MB</p>
+                      </div>
+                      <button onClick={() => {
+                        setPendingFile(null)
+                        setPendingFileUrl(null)
+                        setPendingFileType(null)
+                      }} className="p-1 hover:bg-gray-100 rounded-full">
+                        <X className="w-4 h-4 text-gray-500" />
                       </button>
-                    ) : (
-                      <button onClick={handleSendMessage} disabled={isSending} className="p-2 bg-[#1B4F72] text-white rounded-full hover:bg-[#123650] transition-colors disabled:opacity-50 mx-1">
-                        <Send size={18} className="ml-0.5" />
-                      </button>
-                    )}
-                  </div>
+                    </div>
+                  )}
+                  {pendingAudio && pendingAudioUrl && (
+                    <div className="flex items-center gap-3 bg-white rounded-xl p-3 shadow-sm">
+                      <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center flex-shrink-0">
+                        <Mic className="w-5 h-5 text-white" />
+                      </div>
+                      <div className="flex-1">
+                        <audio controls src={pendingAudioUrl} className="w-full h-8" />
+                        <p className="text-xs text-gray-500 mt-1">Voice note</p>
+                      </div>
+                      <div className="flex gap-2">
+                        <button onClick={() => {
+                          setPendingAudio(null)
+                          setPendingAudioUrl(null)
+                        }} className="text-xs text-gray-500 hover:text-red-500">
+                          Rekam ulang
+                        </button>
+                        <button onClick={() => {
+                          setPendingAudio(null)
+                          setPendingAudioUrl(null)
+                        }} className="p-1 hover:bg-gray-100 rounded-full">
+                          <X className="w-4 h-4 text-gray-500" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
+
+              <div className="flex items-end gap-2 relative">
+                <input type="file" ref={fileInputRef} className="hidden" onChange={handleFileUpload} />
+                
+                <div className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl flex items-center p-1 focus-within:border-[#1B4F72] transition-colors shadow-sm">
+                  <button onClick={() => fileInputRef.current?.click()} className="p-2 text-gray-400 hover:text-[#1B4F72] hover:bg-gray-100 rounded-full transition-colors">
+                    <Paperclip size={20} />
+                  </button>
+                  
+                  <textarea 
+                    value={inputMessage}
+                    onChange={(e) => setInputMessage(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && !e.shiftKey) {
+                        e.preventDefault();
+                        handleSendMessage();
+                      }
+                    }}
+                    placeholder="Ketik pesan..."
+                    className="flex-1 bg-transparent border-none outline-none resize-none max-h-32 min-h-[40px] px-2 py-2.5 text-[15px]"
+                    rows={1}
+                  />
+                  
+                  {(!inputMessage.trim() && !pendingFile && !pendingAudio) ? (
+                    <button 
+                      onMouseDown={startRecording}
+                      onMouseUp={stopRecording}
+                      onMouseLeave={stopRecording}
+                      onTouchStart={startRecording}
+                      onTouchEnd={stopRecording}
+                      className={`p-2 rounded-full transition-colors ${isRecording ? 'bg-red-500 text-white animate-pulse' : 'text-gray-400 hover:text-[#1B4F72] hover:bg-gray-100'}`}
+                    >
+                      {isRecording ? <Square size={20} className="fill-current" /> : <Mic size={20} />}
+                    </button>
+                  ) : (
+                    <button onClick={handleSendMessage} disabled={isSending} className="p-2 bg-[#1B4F72] text-white rounded-full hover:bg-[#123650] transition-colors disabled:opacity-50 mx-1">
+                      <Send size={18} className="ml-0.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
             </div>
           </>
         )}

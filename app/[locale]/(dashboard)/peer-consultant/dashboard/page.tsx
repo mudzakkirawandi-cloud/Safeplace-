@@ -144,7 +144,7 @@ export default function PeerConsultantDashboardPage() {
   }, [router, supabase]);
 
   useEffect(() => {
-    if (!currentUser) return;
+    if (!currentUser?.id) return;
     
     console.log('Setting up assignment listener for:', currentUser.id);
     
@@ -156,7 +156,7 @@ export default function PeerConsultantDashboardPage() {
         table: 'assignment_notifications',
         filter: `peer_consultant_id=eq.${currentUser.id}`
       }, async (payload) => {
-        console.log('New assignment received:', payload);
+        console.log('🔔 New assignment received:', payload.new);
         const notif = payload.new as AssignmentNotification;
         if (notif.status === 'pending') {
           setNewAssignment(notif);
@@ -179,12 +179,64 @@ export default function PeerConsultantDashboardPage() {
       })
       .subscribe((status) => {
         console.log('Assignment subscription status:', status);
+        if (status === 'CHANNEL_ERROR') {
+          console.error('Channel error - reconnecting...');
+        }
       });
 
     return () => {
+      console.log('Cleaning up assignment channel');
       supabase.removeChannel(channel);
     };
-  }, [currentUser, supabase]);
+  }, [currentUser?.id, supabase]);
+
+  // Polling fallback
+  useEffect(() => {
+    if (!currentUser?.id) return;
+    
+    const pollAssignments = async () => {
+      const { data } = await supabase
+        .from('assignment_notifications')
+        .select('*')
+        .eq('peer_consultant_id', currentUser.id)
+        .eq('status', 'pending')
+        .order('created_at', { ascending: false })
+        .limit(1);
+      
+      if (data && data.length > 0) {
+        const latest = data[0];
+        // Cek apakah ini notifikasi baru (dalam 30 detik terakhir)
+        const isRecent = new Date().getTime() - 
+          new Date(latest.created_at).getTime() < 30000;
+        
+        if (isRecent && !showAssignmentPopup) {
+          console.log('📊 Polling found new assignment:', latest);
+          setNewAssignment(latest);
+          setShowAssignmentPopup(true);
+          
+          // Fetch report details for modal
+          const { data: repData } = await supabase
+            .from('reports')
+            .select('incident_type, emergency')
+            .eq('id', latest.report_id)
+            .maybeSingle();
+          if (repData) setAssignmentDetails(repData);
+
+          // Auto dismiss after 30 seconds
+          setTimeout(() => {
+            setShowAssignmentPopup(false);
+            setShowAssignmentModal(false);
+          }, 30000);
+        }
+      }
+    };
+    
+    // Poll setiap 10 detik sebagai fallback
+    const pollInterval = setInterval(pollAssignments, 10000);
+    pollAssignments(); // Jalankan sekali langsung
+    
+    return () => clearInterval(pollInterval);
+  }, [currentUser?.id, showAssignmentPopup, supabase]);
 
   const toggleStatus = async (newStatus: "Tersedia" | "Sibuk" | "Istirahat") => {
     setStatusText(newStatus);

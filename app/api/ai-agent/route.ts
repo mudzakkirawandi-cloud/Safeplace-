@@ -40,7 +40,7 @@ Selalu akhiri respons dengan reminder: "Jika kamu membutuhkan pendampingan langs
 
 Halaman-halaman di SafePlace yang perlu kamu ketahui:
 - /report/start → mulai pelaporan
-- /report/track → lacak laporan anonim
+- /report/dashboard → lacak laporan anonim
 - /pendampingan → daftar konsultan
 - /edukasi → konten edukasi
 - /komunitas → forum komunitas (segera hadir)
@@ -65,7 +65,7 @@ Always end your response with the reminder: "If you need direct support, our con
 
 SafePlace pages you need to know:
 - /report/start → start reporting
-- /report/track → track anonymous report
+- /report/dashboard → track anonymous report
 - /pendampingan → list of consultants
 - /edukasi → educational content
 - /komunitas → community forum (coming soon)

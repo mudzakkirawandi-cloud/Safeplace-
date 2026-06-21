@@ -3,7 +3,7 @@
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { CheckCircle, Copy, FileText, ArrowRight } from "lucide-react";
+import { CheckCircle, Copy, FileText } from "lucide-react";
 
 export default function ConfirmationPage() {
   const searchParams = useSearchParams();
@@ -50,10 +50,6 @@ export default function ConfirmationPage() {
             <Link href="/report/dashboard" className="flex items-center justify-center gap-2 w-full py-4 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg">
               <FileText size={20} />
               Kembali ke Dashboard
-            </Link>
-            <Link href="/report/track" className="flex items-center justify-center gap-2 w-full py-4 bg-card hover:bg-muted border border-border text-primary font-bold rounded-xl transition-all">
-              Mulai Lacak Status
-              <ArrowRight size={20} />
             </Link>
           </div>
         </div>

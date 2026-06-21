@@ -218,7 +218,7 @@ export default function ConfirmationPage() {
           className="flex flex-col sm:flex-row gap-3 mt-2"
         >
           <button
-            onClick={() => router.push("/report/track")}
+            onClick={() => router.push("/report/dashboard")}
             className="flex-1 bg-primary hover:bg-[#3a7da8] text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-md active:scale-95"
           >
             {t("track_button")}

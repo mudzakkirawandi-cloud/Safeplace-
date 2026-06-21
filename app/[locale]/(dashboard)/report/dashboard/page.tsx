@@ -9,7 +9,6 @@ import {
   Bell, 
   LogOut, 
   PlusCircle, 
-  Search, 
   MessageCircle, 
   Clock, 
   CheckCircle, 
@@ -368,14 +367,10 @@ export default function ReportDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-10">
-          <Link href="/report/start" className="flex items-center justify-center gap-2 bg-primary text-white py-4 px-6 rounded-xl hover:bg-[#123650] transition-colors shadow-md hover:shadow-lg font-medium">
+        <div className="flex mb-10">
+          <Link href="/report/start" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white py-4 px-8 rounded-xl hover:bg-[#123650] transition-colors shadow-md hover:shadow-lg font-medium">
             <PlusCircle size={20} />
             {t("btn_new_report")}
-          </Link>
-          <Link href="/report/track" className="flex items-center justify-center gap-2 bg-card border border-border text-primary py-4 px-6 rounded-xl hover:bg-muted transition-colors font-medium">
-            <Search size={20} />
-            {t("btn_track_anon")}
           </Link>
         </div>
 

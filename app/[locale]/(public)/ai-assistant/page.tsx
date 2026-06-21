@@ -132,7 +132,7 @@ export default function AIAssistantPage() {
 
   const quickActions = [
     { href: `/${locale}/report/start`, icon: FileText, label: t("qa_report_start") },
-    { href: `/${locale}/report/track`, icon: Search, label: t("qa_report_track") },
+    { href: `/${locale}/report/dashboard`, icon: Search, label: t("qa_report_track") },
     { href: `/${locale}/pendampingan`, icon: Users, label: t("qa_consultant") },
     { href: `/${locale}/edukasi`, icon: BookOpen, label: t("qa_education") },
     { href: `/${locale}/report/resources`, icon: Phone, label: t("qa_emergency") },

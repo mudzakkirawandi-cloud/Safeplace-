@@ -206,13 +206,51 @@ export default function ReportFormPage() {
         location_detail: data.locationDetail || null,
         perpetrator_relationship: data.relationship || null,
         safety_status: data.safety || null,
-      }).select().single();
+      }).select().maybeSingle();
 
       if (insertError) {
         console.error("Error inserting report:", insertError);
         alert("Gagal mengirim laporan. " + insertError.message);
         setIsSubmitting(false);
         return;
+      }
+
+      if (newReport) {
+        // Cari peer consultant yang online & paling sedikit kasus
+        const { data: availableConsultants } = await supabase
+          .from('users')
+          .select('id')
+          .eq('role', 'peer_consultant')
+          .eq('is_online', true);
+
+        if (availableConsultants && availableConsultants.length > 0) {
+          // Hitung kasus aktif per consultant
+          const consultantLoads = await Promise.all(
+            availableConsultants.map(async (c) => {
+              const { count } = await supabase
+                .from('reports')
+                .select('*', { count: 'exact', head: true })
+                .eq('assigned_consultant_id', c.id)
+                .neq('status', 'closed');
+              return { id: c.id, count: count || 0 };
+            })
+          );
+          
+          // Pilih yang paling sedikit kasusnya
+          const selected = consultantLoads.sort((a, b) => a.count - b.count)[0];
+          
+          // Assign ke laporan
+          await supabase.from('reports')
+            .update({ assigned_consultant_id: selected.id })
+            .eq('id', newReport.id);
+          
+          // Buat assignment notification
+          await supabase.from('assignment_notifications').insert({
+            report_id: newReport.id,
+            peer_consultant_id: selected.id,
+            status: 'pending'
+          });
+        }
       }
 
       if (audioPath && newReport) {

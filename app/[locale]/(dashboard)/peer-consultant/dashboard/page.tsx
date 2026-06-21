@@ -296,6 +296,15 @@ export default function PeerConsultantDashboardPage() {
         .update({ active_cases_count: (currentUser.active_cases_count || 0) + 1 })
         .eq('id', currentUser.id);
 
+      // Insert pesan sistem ke chat
+      await supabase.from('messages').insert({
+        report_id: newAssignment.report_id,
+        sender_id: null,
+        content: '[SISTEM]: Peer Consultant telah menerima pendampinganmu. Kamu sekarang bisa mulai chat.',
+        message_type: 'text',
+        is_read: false
+      });
+
       setShowAssignmentPopup(false);
       setShowAssignmentModal(false);
       router.push(`/peer-consultant/chat/${newAssignment.report_id}`);
@@ -307,22 +316,38 @@ export default function PeerConsultantDashboardPage() {
   const handleSkipAssignment = async () => {
     if (!newAssignment) return;
     try {
+      // Update status assignment saat ini ke 'skipped'
       await supabase.from('assignment_notifications')
         .update({ status: 'skipped', responded_at: new Date().toISOString() })
         .eq('id', newAssignment.id);
         
-      // Cek peer consultant lain yang pending
-      const { data: pendingOthers } = await supabase.from('assignment_notifications')
+      // Cari peer consultant lain yang online
+      const { data: others } = await supabase
+        .from('users')
         .select('id')
-        .eq('report_id', newAssignment.report_id)
-        .eq('status', 'pending');
+        .eq('role', 'peer_consultant')
+        .eq('is_online', true)
+        .neq('id', currentUser?.id ?? '');
 
-      if (!pendingOthers || pendingOthers.length === 0) {
-        // Panggil ulang API assignment
-        fetch('/api/assign-consultant', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ report_id: newAssignment.report_id })
+      if (others && others.length > 0) {
+        const next = others[0];
+        await supabase.from('reports')
+          .update({ assigned_consultant_id: next.id })
+          .eq('id', newAssignment.report_id);
+        
+        await supabase.from('assignment_notifications').insert({
+          report_id: newAssignment.report_id,
+          peer_consultant_id: next.id,
+          status: 'pending'
+        });
+      } else {
+        // Tidak ada consultant lain, insert pesan sistem
+        await supabase.from('messages').insert({
+          report_id: newAssignment.report_id,
+          sender_id: null,
+          content: '[SISTEM]: Sedang mencari peer consultant lain yang tersedia. Mohon tunggu.',
+          message_type: 'text',
+          is_read: false
         });
       }
       

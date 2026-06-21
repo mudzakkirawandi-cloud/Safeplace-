@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -58,6 +58,39 @@ export default function PeerConsultantLayout({
     await supabase.auth.signOut();
     router.push("/");
   };
+
+  useEffect(() => {
+    const handleOffline = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        await supabase.from('users')
+          .update({ is_online: false })
+          .eq('id', data.user.id);
+      }
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        handleOffline();
+      } else {
+        supabase.auth.getUser().then(({ data }) => {
+          if (data.user) {
+            supabase.from('users')
+              .update({ is_online: true })
+              .eq('id', data.user.id);
+          }
+        });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleOffline);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleOffline);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [supabase]);
 
   const navItems = [
     {

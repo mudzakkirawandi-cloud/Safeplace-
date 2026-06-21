@@ -164,14 +164,15 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
               .some(p => p.typing === true && p.userId !== user.id)
           );
           if (isMounted) setIsPeerTyping(typing);
-        }).subscribe();
+        });
         
+        pChannel.subscribe();
         if (isMounted) setPresenceChannel(pChannel);
         reportSub = supabase
           .channel(`reporter-rep-${reportId}-${Date.now()}`)
           .on("postgres_changes", { event: "UPDATE", schema: "public", table: "reports", filter: `id=eq.${reportId}` }, async () => {
              if (!isMounted) return;
-             const { data: updatedRep } = await supabase.from("reports").select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)").eq("id", reportId).single();
+             const { data: updatedRep } = await supabase.from("reports").select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)").eq("id", reportId).maybeSingle();
              setReport(updatedRep);
              if (updatedRep?.assigned_consultant) {
                setPeerConsultant(updatedRep.assigned_consultant);

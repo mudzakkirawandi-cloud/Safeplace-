@@ -246,21 +246,7 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reportId, router, supabase]);
 
-  useEffect(() => {
-    if (!reportId) return;
-    
-    const fetchMessages = async () => {
-      const { data: msgs } = await supabase
-        .from('messages')
-        .select('*, sender:users!messages_sender_id_fkey(full_name, role, avatar_url)')
-        .eq('report_id', reportId)
-        .order('created_at', { ascending: true });
-      
-      if (msgs) setMessages(msgs);
-    };
-    
-    fetchMessages();
-  }, [reportId, supabase]);
+
 
   useEffect(() => {
     return () => {

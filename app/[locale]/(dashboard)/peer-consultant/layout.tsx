@@ -39,6 +39,32 @@ export default function PeerConsultantLayout({
   const [statusDropdown, setStatusDropdown] = useState(false);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+
+  const assignWaitingReports = async (userId: string) => {
+    const { data: waiting } = await supabase
+      .from('assignment_notifications')
+      .select('report_id')
+      .eq('status', 'waiting')
+      .is('peer_consultant_id', null)
+      .limit(1);
+    
+    if (waiting && waiting.length > 0) {
+      for (const w of waiting) {
+        await supabase.from('reports')
+          .update({ assigned_consultant_id: userId })
+          .eq('id', w.report_id);
+        
+        await supabase.from('assignment_notifications')
+          .update({ 
+            peer_consultant_id: userId,
+            status: 'pending'
+          })
+          .eq('report_id', w.report_id)
+          .eq('status', 'waiting');
+      }
+    }
+  };
 
   const handleStatusChange = async (newStatus: OnlineStatus) => {
     setStatus(newStatus);
@@ -51,13 +77,26 @@ export default function PeerConsultantLayout({
 
   const confirmLogout = async () => {
     setIsLoggingOut(true);
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      await supabase.from('users').update({ is_online: false }).eq('id', data.user.id);
+    if (currentUserId) {
+      await supabase.from('users').update({ is_online: false }).eq('id', currentUserId);
     }
     await supabase.auth.signOut();
     router.push("/");
   };
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setCurrentUserId(data.user.id);
+        supabase.from('users').update({ is_online: true }).eq('id', data.user.id);
+      }
+    });
+  }, [supabase]);
+
+  useEffect(() => {
+    if (!currentUserId) return;
+    assignWaitingReports(currentUserId);
+  }, [currentUserId]);
 
   useEffect(() => {
     const handleOffline = async () => {
@@ -73,13 +112,26 @@ export default function PeerConsultantLayout({
       if (document.visibilityState === 'hidden') {
         handleOffline();
       } else {
-        supabase.auth.getUser().then(({ data }) => {
-          if (data.user) {
-            supabase.from('users')
-              .update({ is_online: true })
-              .eq('id', data.user.id);
-          }
-        });
+        if (currentUserId) {
+          supabase.from('users')
+            .update({ is_online: true })
+            .eq('id', currentUserId)
+            .then(() => {
+              assignWaitingReports(currentUserId);
+            });
+        } else {
+          supabase.auth.getUser().then(({ data }) => {
+            if (data.user) {
+              setCurrentUserId(data.user.id);
+              supabase.from('users')
+                .update({ is_online: true })
+                .eq('id', data.user.id)
+                .then(() => {
+                  assignWaitingReports(data.user.id);
+                });
+            }
+          });
+        }
       }
     };
 

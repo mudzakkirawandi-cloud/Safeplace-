@@ -250,6 +250,15 @@ export default function ReportFormPage() {
             peer_consultant_id: selected.id,
             status: 'pending'
           });
+        } else {
+          // Fallback: tidak ada peer consultant online
+          // Simpan assignment_notifications dengan status 'waiting'
+          // nanti akan di-assign saat ada yang online
+          await supabase.from('assignment_notifications').insert({
+            report_id: newReport.id,
+            peer_consultant_id: null,
+            status: 'waiting'
+          });
         }
       }
 

@@ -275,35 +275,55 @@ export default function PeerConsultantDashboardPage() {
   const handleAcceptAssignment = async () => {
     if (!newAssignment || !currentUser) return;
     try {
-      await supabase.from('assignment_notifications')
+      const { error: notifError } = await supabase.from('assignment_notifications')
         .update({ status: 'accepted', responded_at: new Date().toISOString() })
         .eq('id', newAssignment.id);
+      if (notifError) {
+        console.error('Failed to update assignment notification:', notifError);
+        return;
+      }
 
-      await supabase.from('reports')
+      const { error: updateError } = await supabase.from('reports')
         .update({ 
           assigned_consultant_id: currentUser.id,
           assignment_status: 'assigned'
         })
         .eq('id', newAssignment.report_id);
+      if (updateError) {
+        console.error('Failed to update report:', updateError);
+        return;
+      }
 
-      await supabase.from('assignment_notifications')
+      const { error: expireError } = await supabase.from('assignment_notifications')
         .update({ status: 'expired' })
         .eq('report_id', newAssignment.report_id)
         .neq('id', newAssignment.id)
         .eq('status', 'pending');
+      if (expireError) {
+        console.error('Failed to expire other notifications:', expireError);
+        return;
+      }
 
-      await supabase.from('users')
+      const { error: userError } = await supabase.from('users')
         .update({ active_cases_count: (currentUser.active_cases_count || 0) + 1 })
         .eq('id', currentUser.id);
+      if (userError) {
+        console.error('Failed to update user active cases count:', userError);
+        return;
+      }
 
       // Insert pesan sistem ke chat
-      await supabase.from('messages').insert({
+      const { error: msgError } = await supabase.from('messages').insert({
         report_id: newAssignment.report_id,
         sender_id: null,
         content: '[SISTEM]: Peer Consultant telah menerima pendampinganmu. Kamu sekarang bisa mulai chat.',
         message_type: 'text',
         is_read: false
       });
+      if (msgError) {
+        console.error('Failed to insert system message:', msgError);
+        return;
+      }
 
       setShowAssignmentPopup(false);
       setShowAssignmentModal(false);

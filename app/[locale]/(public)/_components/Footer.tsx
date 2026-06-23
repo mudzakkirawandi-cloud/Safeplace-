@@ -82,7 +82,7 @@ export default function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <MessageCircle size={14} className="text-[#25D366]" />
-                <a href="https://wa.me/628212600129" target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors">{t("emergency_wa")}</a>
+                <a href="https://wa.me/6289532980210" target="_blank" rel="noopener noreferrer" className="hover:text-[#25D366] transition-colors">{t("emergency_wa")}</a>
               </li>
             </ul>
           </div>

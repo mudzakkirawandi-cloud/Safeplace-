@@ -34,7 +34,7 @@ export default function ResourcesPage() {
       title: t("wa_sapa_title"),
       desc: t("wa_sapa_desc"),
       icon: <MessageCircle size={24} />,
-      action: "https://wa.me/628212600129",
+      action: "https://wa.me/6289532980210",
       actionLabel: t("btn_whatsapp"),
       color: "bg-green-50 text-green-600 border-green-200",
       btnColor: "bg-green-600 hover:bg-green-700 text-white"
@@ -44,7 +44,7 @@ export default function ResourcesPage() {
       title: t("wa_humas_title"),
       desc: t("wa_humas_desc"),
       icon: <MessageCircle size={24} />,
-      action: "https://wa.me/6289682333678",
+      action: "https://wa.me/6289532980210",
       actionLabel: t("btn_whatsapp"),
       color: "bg-teal-50 text-teal-600 border-teal-200",
       btnColor: "bg-teal-600 hover:bg-teal-700 text-white"

@@ -24,13 +24,13 @@ export default function EmergencySection() {
     {
       icon: MessageCircle,
       label: t("wa_sapa"),
-      href: "https://wa.me/628212600129",
+      href: "https://wa.me/6289532980210",
       color: "bg-green-100 text-green-600"
     },
     {
       icon: MessageCircle,
       label: t("wa_humas"),
-      href: "https://wa.me/6289682333678",
+      href: "https://wa.me/6289532980210",
       color: "bg-blue-100 text-blue-600"
     }
   ];

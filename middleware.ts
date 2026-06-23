@@ -116,7 +116,7 @@ export async function middleware(request: NextRequest) {
     }
 
     // Redirect jika user berada di auth page, root page, atau mengakses rute terlindungi yang BUKAN milik role-nya
-    if (isAuthPage || isRootPage || (isProtectedRoute && !pathnameWithoutLocale.startsWith(allowedPrefix))) {
+    if (isAuthPage || (isProtectedRoute && !pathnameWithoutLocale.startsWith(allowedPrefix))) {
       if (pathnameWithoutLocale !== defaultPath) {
         // Karena NextResponse.redirect tidak membawa cookies dari response sebelumnya (termasuk next-intl),
         // kita menggunakan response yang ada, lalu menambahkan header Location untuk redirect dan mengubah status.

@@ -158,7 +158,7 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
         // Fetch messages for active report
         const { data: msgs } = await supabase
           .from("messages")
-          .select("*, sender:users!messages_sender_id_fkey(full_name, role, avatar_url)")
+          .select("*")
           .eq("report_id", reportId)
           .order("created_at", { ascending: true });
 

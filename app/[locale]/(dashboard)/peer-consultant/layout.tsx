@@ -96,6 +96,7 @@ export default function PeerConsultantLayout({
   useEffect(() => {
     if (!currentUserId) return;
     assignWaitingReports(currentUserId);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currentUserId]);
 
   useEffect(() => {
@@ -142,6 +143,7 @@ export default function PeerConsultantLayout({
       window.removeEventListener('beforeunload', handleOffline);
       document.removeEventListener('visibilitychange', handleVisibility);
     };
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [supabase]);
 
   const navItems = [

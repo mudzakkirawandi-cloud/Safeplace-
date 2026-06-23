@@ -1,24 +1,17 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
 import { createClient } from "../../../../../lib/supabase/client";
 import { User } from "@supabase/supabase-js";
 import { 
-  Bell, 
-  LogOut, 
-  PlusCircle, 
   MessageCircle, 
-  Clock, 
-  CheckCircle, 
   AlertCircle,
-  MoreVertical,
-  X
+  X,
+  RefreshCw
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
-import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 import LogoutConfirmModal from "../../../_components/LogoutConfirmModal";
 
 interface Report {
@@ -46,20 +39,26 @@ interface UserProfile extends User {
   role?: string;
 }
 
+interface Journal {
+  id: string;
+  title: string | null;
+  content: string;
+  mood: string;
+  image_url: string | null;
+  created_at: string;
+}
+
 export default function ReportDashboardPage() {
-  const t = useTranslations("report.dashboard");
   const router = useRouter();
   const supabase = createClient();
 
   const [user, setUser] = useState<UserProfile | null>(null);
   const [reports, setReports] = useState<Report[]>([]);
-  const [notifications, setNotifications] = useState<Notification[]>([]);
-  const [showNotifications, setShowNotifications] = useState(false);
+  const [, setNotifications] = useState<Notification[]>([]);
   const [loading, setLoading] = useState(true);
   const [fetchError, setFetchError] = useState<string | null>(null);
   const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
   const [isLoggingOut, setIsLoggingOut] = useState(false);
-  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
 
   const [newMsgNotif, setNewMsgNotif] = useState<{
     reportId: string
@@ -67,6 +66,46 @@ export default function ReportDashboardPage() {
     trackingCode: string
   } | null>(null);
   const [showMsgNotifPopup, setShowMsgNotifPopup] = useState(false);
+
+  const [aiReminder, setAiReminder] = useState<string>('')
+  const [loadingReminder, setLoadingReminder] = useState(false)
+  const [recentJournals, setRecentJournals] = useState<Journal[]>([])
+
+  const fetchAiReminder = async (currentUser?: UserProfile, currentReports?: Report[]) => {
+    const activeUser = currentUser || user;
+    const activeReports = currentReports || reports;
+    if (!activeUser || !activeReports?.length) return
+    setLoadingReminder(true)
+    try {
+      const activeReport = activeReports.find(r => 
+        r.status !== 'closed' && r.status !== 'selesai' && r.status !== 'ditutup'
+      )
+      const hour = new Date().getHours()
+      const timeOfDay = hour < 12 ? 'pagi' : hour < 17 ? 'siang' : 'malam'
+      const daysSince = activeReport ? Math.floor(
+        (Date.now() - new Date(activeReport.created_at).getTime()) 
+        / (1000 * 60 * 60 * 24)
+      ) : 0
+
+      const res = await fetch('/api/ai-reminder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          incidentType: activeReport?.incident_type || '',
+          daysSinceReport: daysSince,
+          lastMessage: '',
+          consultantName: 'Peer Consultant',
+          timeOfDay
+        })
+      })
+      const data = await res.json()
+      setAiReminder(data.message)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
+    } finally {
+      setLoadingReminder(false)
+    }
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -124,6 +163,19 @@ export default function ReportDashboardPage() {
             })
           );
           setReports(enhancedReports);
+
+          const { data: journalsData } = await supabase
+            .from('journals')
+            .select('*')
+            .eq('user_id', currentUser.id)
+            .order('created_at', { ascending: false })
+            .limit(3)
+          
+          if (journalsData && isMounted) {
+            setRecentJournals(journalsData)
+          }
+
+          fetchAiReminder(currentUser, enhancedReports)
         }
 
         // Fetch notifications
@@ -201,11 +253,8 @@ export default function ReportDashboardPage() {
       if (reportSub) supabase.removeChannel(reportSub);
       if (notifSub) supabase.removeChannel(notifSub);
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router, supabase]);
-
-  const handleLogoutClick = () => {
-    setIsLogoutModalOpen(true);
-  };
 
   const confirmLogout = async () => {
     setIsLoggingOut(true);
@@ -217,36 +266,7 @@ export default function ReportDashboardPage() {
     router.push("/");
   };
 
-  const markAsRead = async (notifId: string) => {
-    // Optimistic UI update
-    setNotifications(prev => prev.map(n => n.id === notifId ? { ...n, is_read: true } : n));
-    
-    // Update in database
-    await supabase.from("notifications").update({ is_read: true }).eq("id", notifId);
-  };
-
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "diterima": return "bg-yellow-100 text-yellow-700 border-yellow-200";
-      case "diproses": return "bg-blue-100 text-blue-700 border-blue-200";
-      case "selesai": return "bg-green-100 text-green-700 border-green-200";
-      case "ditutup": return "bg-gray-100 text-card-foreground border-border";
-      default: return "bg-gray-100 text-card-foreground border-border";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "diterima": return t("status_received");
-      case "diproses": return t("status_in_review");
-      case "selesai": return t("status_done");
-      case "ditutup": return t("status_closed");
-      default: return status;
-    }
-  };
-
   const activeReports = reports.filter(r => r.status !== "selesai" && r.status !== "ditutup");
-  const unreadNotifs = notifications.filter(n => !n.is_read).length;
 
   if (loading) {
     return (
@@ -280,237 +300,158 @@ export default function ReportDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <header className="bg-card border-b border-border sticky top-0 z-30">
-        <div className="container mx-auto px-6 h-16 flex items-center justify-between max-w-6xl">
-          <SafePlaceLogo iconSize={24} textSize="text-lg" textColor="text-primary" />
-          <div className="flex items-center gap-4">
-            <div className="relative">
-              <button 
-                onClick={() => setShowNotifications(!showNotifications)}
-                className="p-2 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors relative"
-              >
-                <Bell size={20} />
-                {unreadNotifs > 0 && (
-                  <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full"></span>
-                )}
-              </button>
-              
-              <AnimatePresence>
-                {showNotifications && (
-                  <motion.div
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: 10 }}
-                    className="absolute right-0 mt-2 w-80 bg-card rounded-xl shadow-lg border border-border overflow-hidden"
-                  >
-                    <div className="p-4 border-b border-border font-semibold text-card-foreground">
-                      {t("notifications_title")}
-                    </div>
-                    <div className="max-h-80 overflow-y-auto">
-                      {notifications.length === 0 ? (
-                        <div className="p-4 text-center text-muted-foreground text-sm">
-                          {t("notifications_empty")}
-                        </div>
-                      ) : (
-                        notifications.map((notif) => (
-                          <div 
-                            key={notif.id} 
-                            onClick={() => !notif.is_read && markAsRead(notif.id)}
-                            className={`p-4 border-b border-border text-sm transition-colors ${notif.is_read ? 'bg-card' : 'bg-blue-50/50 hover:bg-blue-50 cursor-pointer'}`}
-                          >
-                            <p className="font-semibold text-card-foreground mb-1">{notif.title}</p>
-                            <p className="text-muted-foreground mb-2">{notif.message}</p>
-                            <p className="text-xs text-muted-foreground">
-                              {new Date(notif.created_at).toLocaleDateString()}
-                            </p>
-                          </div>
-                        ))
-                      )}
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+    <div className="min-h-screen bg-[#FDF6EC] font-sans pb-24">
+      {/* 1. SECTION AI REMINDER (paling atas) */}
+      <div className="container mx-auto px-6 max-w-2xl pt-8">
+        <div className="bg-gradient-to-br from-[#4A9B8E]/10 to-[#C9847A]/10 rounded-3xl p-6 mb-6 border border-[#4A9B8E]/20 relative shadow-sm">
+          <div className="flex items-start gap-4">
+            <div className="w-12 h-12 bg-[#4A9B8E] rounded-2xl flex items-center justify-center flex-shrink-0 text-xl shadow-inner">
+              🌿
             </div>
-            
+            <div className="flex-1">
+              <p className="text-xs text-[#4A9B8E] font-medium mb-1 tracking-wide uppercase">
+                Untukmu hari ini
+              </p>
+              {loadingReminder ? (
+                <div className="animate-pulse h-4 bg-[#C9847A]/20 rounded w-3/4 mb-2 mt-2"/>
+              ) : (
+                <p className="text-[#2D3748] leading-relaxed italic font-serif">
+                  &ldquo;{aiReminder || 'Kamu sudah sangat berani hari ini.'}&rdquo;
+                </p>
+              )}
+            </div>
             <button 
-              onClick={handleLogoutClick}
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+              onClick={() => fetchAiReminder()} 
+              className="text-[#4A9B8E] hover:opacity-70 transition p-2 bg-white/50 rounded-full"
             >
-              <LogOut size={16} />
-              <span className="hidden sm:inline">Logout</span>
+              <RefreshCw size={16} />
             </button>
           </div>
         </div>
-      </header>
 
-      <main className="container mx-auto px-6 py-8 max-w-6xl">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
-        >
-          <h2 className="text-3xl font-bold text-primary mb-2">
-            {t("title", { name: user?.full_name?.split(' ')[0] || 'User' })}
-          </h2>
-          <p className="text-muted-foreground">{t("subtitle")}</p>
-        </motion.div>
-
-        {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-              <AlertCircle size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">{t("stat_total")}</p>
-              <p className="text-2xl font-bold text-card-foreground">{reports.length}</p>
-            </div>
-          </div>
-          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-yellow-50 flex items-center justify-center text-yellow-600">
-              <Clock size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">{t("stat_active")}</p>
-              <p className="text-2xl font-bold text-card-foreground">{activeReports.length}</p>
-            </div>
-          </div>
-          <div className="bg-card p-6 rounded-2xl border border-border shadow-sm flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center text-green-600">
-              <CheckCircle size={24} />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground mb-1">{t("stat_done")}</p>
-              <p className="text-2xl font-bold text-card-foreground">{reports.length - activeReports.length}</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Quick Actions */}
-        <div className="flex mb-10">
-          <Link href="/report/start" className="w-full sm:w-auto flex items-center justify-center gap-2 bg-primary text-white py-4 px-8 rounded-xl hover:bg-[#123650] transition-colors shadow-md hover:shadow-lg font-medium">
-            <PlusCircle size={20} />
-            {t("btn_new_report")}
-          </Link>
-        </div>
-
-        {/* Reports Sections */}
-        <div className="space-y-10">
-          {activeReports.length > 0 && (
-            <section>
-              <h3 className="text-xl font-bold text-card-foreground mb-4">{t("active_reports_title")}</h3>
-              <div className="grid gap-4 md:grid-cols-2">
-                {activeReports.map(report => (
-                  <div key={report.id} className="bg-card p-6 rounded-2xl border-2 border-[#EBF5FB] shadow-sm relative overflow-hidden group">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-primary"></div>
-                    <div className="flex justify-between items-start mb-4">
-                      <div>
-                        <p className="text-sm text-muted-foreground mb-1">ID: {report.tracking_code}</p>
-                        <h4 className="font-semibold text-card-foreground">{report.incident_type}</h4>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <span className={`px-3 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                          {getStatusText(report.status)}
-                        </span>
-                        <div className="relative">
-                          <button 
-                            onClick={() => setActiveDropdown(activeDropdown === report.id ? null : report.id)}
-                            className="p-1 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors"
-                          >
-                            <MoreVertical size={20} />
-                          </button>
-                          {activeDropdown === report.id && (
-                            <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border overflow-hidden z-20">
-                              <Link href={`/report/dashboard/${report.id}`} className="block px-4 py-3 text-sm text-card-foreground hover:bg-muted transition-colors">
-                                Lihat Detail
-                              </Link>
-                            </div>
-                          )}
-                        </div>
-                      </div>
+        {/* 2. SECTION PENDAMPINGAN */}
+        <div className="mb-8">
+          <h2 className="font-semibold text-[#2D3748] mb-3">💬 Pendampingan Aktif</h2>
+          {activeReports.length > 0 ? (
+            <div className="grid gap-3">
+              {activeReports.map(report => (
+                <div key={report.id} className="bg-white rounded-2xl p-4 shadow-sm border border-[#4A9B8E]/10 hover:shadow-md transition">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#4A9B8E]/10 rounded-full flex items-center justify-center">
+                      💬
                     </div>
-                    <p className="text-xs text-muted-foreground mb-6">
-                      Dilaporkan pada: {new Date(report.created_at).toLocaleDateString()}
-                    </p>
-                    <div className="flex flex-col gap-2">
-                      <Link href={`/report/chat/${report.id}`} className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-[#1B4F72] text-white rounded-lg text-sm font-semibold hover:bg-[#123650] transition-colors relative">
-                        <MessageCircle size={16} />
-                        {t("continue_chat")}
-                        {report.unreadCount ? (
-                          <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-[10px] font-bold text-white shadow-sm ring-2 ring-white">
-                            {report.unreadCount}
-                          </span>
-                        ) : null}
-                      </Link>
+                    <div className="flex-1">
+                      <p className="font-semibold text-[#2D3748] text-sm">
+                        Peer Consultant
+                      </p>
+                      <p className="text-xs text-gray-500 capitalize">
+                        {report.incident_type} • {report.unreadCount ? `${report.unreadCount} pesan baru` : 'Tidak ada pesan baru'}
+                      </p>
                     </div>
+                    {report.unreadCount ? (
+                      <span className="bg-[#C9847A] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
+                        {report.unreadCount}
+                      </span>
+                    ) : null}
                   </div>
-                ))}
-              </div>
-            </section>
+                  <button 
+                    onClick={() => router.push(`/report/chat/${report.id}`)}
+                    className="mt-3 w-full bg-[#4A9B8E] text-white py-2 rounded-xl text-sm font-medium hover:bg-[#3D8A7D] transition shadow-sm"
+                  >
+                    Lanjut Chat →
+                  </button>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100">
+              <p className="text-sm text-gray-500 mb-3">Belum ada laporan aktif.</p>
+              <Link href="/report/start" className="inline-block bg-[#4A9B8E] text-white py-2 px-6 rounded-xl text-sm font-medium hover:bg-[#3D8A7D] transition">
+                Mulai Konsultasi
+              </Link>
+            </div>
           )}
-
-          <section>
-            <h3 className="text-xl font-bold text-card-foreground mb-4">{t("history_title")}</h3>
-            {reports.length === 0 ? (
-              <div className="bg-card p-12 rounded-3xl border border-border text-center">
-                <div className="w-16 h-16 bg-muted rounded-full flex items-center justify-center mx-auto mb-4 text-muted-foreground">
-                  <AlertCircle size={32} />
-                </div>
-                <p className="text-muted-foreground">{t("empty_state")}</p>
-              </div>
-            ) : (
-              <div className="bg-card rounded-2xl border border-border overflow-hidden shadow-sm">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-sm text-muted-foreground">
-                    <thead className="bg-muted text-card-foreground uppercase text-xs">
-                      <tr>
-                        <th className="px-6 py-4 font-semibold">Tracking Code</th>
-                        <th className="px-6 py-4 font-semibold">Jenis</th>
-                        <th className="px-6 py-4 font-semibold">Tanggal</th>
-                        <th className="px-6 py-4 font-semibold">Status</th>
-                        <th className="px-6 py-4 font-semibold text-right">Aksi</th>
-                      </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                      {reports.map((report) => (
-                        <tr key={report.id} className="hover:bg-muted transition-colors">
-                          <td className="px-6 py-4 font-medium text-card-foreground">{report.tracking_code}</td>
-                          <td className="px-6 py-4 capitalize">{report.incident_type}</td>
-                          <td className="px-6 py-4">{new Date(report.created_at).toLocaleDateString()}</td>
-                          <td className="px-6 py-4">
-                            <span className={`px-2.5 py-1 rounded-full text-xs font-medium border ${getStatusColor(report.status)}`}>
-                              {getStatusText(report.status)}
-                            </span>
-                          </td>
-                          <td className="px-6 py-4 text-right">
-                            <div className="relative inline-block text-left">
-                              <button 
-                                onClick={() => setActiveDropdown(activeDropdown === `table-${report.id}` ? null : `table-${report.id}`)}
-                                className="p-1 text-muted-foreground hover:text-primary hover:bg-muted rounded-full transition-colors"
-                              >
-                                <MoreVertical size={20} />
-                              </button>
-                              {activeDropdown === `table-${report.id}` && (
-                                <div className="absolute right-0 mt-2 w-48 bg-card rounded-xl shadow-lg border border-border overflow-hidden z-20 text-left">
-                                  <Link href={`/report/dashboard/${report.id}`} className="block px-4 py-3 text-sm text-card-foreground hover:bg-muted transition-colors">
-                                    Lihat Detail
-                                  </Link>
-                                </div>
-                              )}
-                            </div>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            )}
-          </section>
         </div>
-      </main>
+
+        {/* 3. SECTION JURNAL */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-semibold text-[#2D3748]">📖 Jurnalku</h2>
+            <Link href="/report/jurnal" className="text-xs text-[#4A9B8E] hover:underline font-medium">
+              Lihat semua →
+            </Link>
+          </div>
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
+            {/* Tombol tulis baru */}
+            <button 
+              onClick={() => router.push('/report/jurnal')}
+              className="flex-shrink-0 w-24 h-28 bg-[#4A9B8E]/5 border-2 border-dashed border-[#4A9B8E]/30 rounded-2xl flex flex-col items-center justify-center gap-1 hover:bg-[#4A9B8E]/10 transition"
+            >
+              <span className="text-2xl">✏️</span>
+              <span className="text-xs text-[#4A9B8E] font-medium mt-1">Tulis</span>
+            </button>
+            {recentJournals.map(journal => (
+              <div 
+                key={journal.id} 
+                onClick={() => router.push('/report/jurnal')}
+                className="flex-shrink-0 w-24 h-28 bg-white border border-[#C9847A]/20 rounded-2xl p-3 cursor-pointer hover:shadow-md transition flex flex-col items-center justify-center gap-2"
+              >
+                <span className="text-3xl">{journal.mood || '📝'}</span>
+                <p className="text-[10px] text-gray-500 text-center line-clamp-2 leading-tight font-serif italic">
+                  {journal.content?.substring(0, 30)}...
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* 4. SECTION EDUKASI */}
+        <div className="mb-8">
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="font-semibold text-[#2D3748]">📚 Untukmu</h2>
+            <Link href="/edukasi" className="text-xs text-[#4A9B8E] hover:underline font-medium">
+              Lihat semua →
+            </Link>
+          </div>
+          <div className="grid grid-cols-1 gap-2">
+            {[
+              { title: 'Kamu Tidak Sendiri', desc: 'Memahami bahwa pengalaman ini bukan salahmu', icon: '🤝' },
+              { title: 'Langkah Kecil itu Penting', desc: 'Pemulihan tidak harus sempurna', icon: '🌱' },
+              { title: 'Mengenal Traumamu', desc: 'Memahami respons tubuh dan pikiran', icon: '💙' }
+            ].map((article, i) => (
+              <Link key={i} href="/edukasi" className="flex items-center gap-3 bg-white rounded-xl p-3 hover:shadow-sm transition border border-gray-100">
+                <div className="w-10 h-10 bg-[#FDF6EC] rounded-lg flex items-center justify-center text-xl shrink-0">
+                  {article.icon}
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-[#2D3748]">{article.title}</p>
+                  <p className="text-xs text-gray-500 mt-0.5">{article.desc}</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+
+        {/* 5. SECTION DARURAT */}
+        <div className="bg-[#C9847A]/10 rounded-2xl p-5 border border-[#C9847A]/20">
+          <p className="text-sm font-semibold text-[#C9847A] mb-3 flex items-center gap-2">
+            <span>🆘</span> Bantuan Darurat
+          </p>
+          <div className="grid grid-cols-2 gap-3">
+            {[
+              { name: 'Polri', number: '110' },
+              { name: 'KEMENPPPA', number: '119 ext 8' },
+              { name: 'Komnas Perempuan', number: '021-7884-5555' },
+              { name: 'SAPA 129', number: '1500-454' }
+            ].map((contact, i) => (
+              <a key={i} href={`tel:${contact.number.replace(/\D/g,'')}`} className="bg-white rounded-xl p-3 text-center hover:shadow-sm transition border border-[#C9847A]/10 flex flex-col justify-center">
+                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">{contact.name}</p>
+                <p className="text-sm text-[#C9847A] font-bold">{contact.number}</p>
+              </a>
+            ))}
+          </div>
+        </div>
+      </div>
 
       <LogoutConfirmModal
         isOpen={isLogoutModalOpen}
@@ -528,7 +469,7 @@ export default function ReportDashboardPage() {
             className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-xl p-4 z-50 max-w-sm border border-teal-100"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-[#4A9B8E] rounded-full flex items-center justify-center flex-shrink-0">
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
@@ -552,7 +493,7 @@ export default function ReportDashboardPage() {
                   router.push(`/report/chat/${newMsgNotif.reportId}`);
                   setShowMsgNotifPopup(false);
                 }}
-                className="flex-1 bg-teal-600 text-white text-xs py-2 rounded-xl hover:bg-teal-700 transition font-medium"
+                className="flex-1 bg-[#4A9B8E] text-white text-xs py-2 rounded-xl hover:bg-[#3D8A7D] transition font-medium"
               >
                 Buka Chat
               </button>

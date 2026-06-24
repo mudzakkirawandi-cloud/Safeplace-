@@ -59,7 +59,7 @@ export default function CollaborationCarousel() {
                 alt={partner.name}
                 width={140}
                 height={56}
-                className="object-contain h-14 w-auto"
+                className="object-contain h-14 w-auto border-2 border-red-500 bg-yellow-200"
               />
             </div>
           ))}

@@ -95,6 +95,51 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
 
   const [isEscalateModalOpen, setIsEscalateModalOpen] = useState(false);
   const [escalateReason, setEscalateReason] = useState("");
+  const [escalateTo, setEscalateTo] = useState<'consultant' | 'satgas' | 'both'>('consultant')
+  const [availableConsultants, setAvailableConsultants] = useState<{id: string, full_name: string, active_cases: number}[]>([])
+  const [availableSatgas, setAvailableSatgas] = useState<{id: string, full_name: string}[]>([])
+  const [selectedConsultantId, setSelectedConsultantId] = useState<string>('')
+  const [selectedSatgasId, setSelectedSatgasId] = useState<string>('')
+  const [isEscalating, setIsEscalating] = useState(false)
+
+  const fetchAvailableHandlers = async () => {
+    // Fetch consultants online
+    const { data: consultants } = await supabase
+      .from('users')
+      .select('id, full_name')
+      .eq('role', 'consultant')
+      .eq('is_online', true)
+    
+    // Hitung kasus aktif per consultant
+    if (consultants) {
+      const withLoad = await Promise.all(
+        consultants.map(async (c) => {
+          const { count } = await supabase
+            .from('reports')
+            .select('*', { count: 'exact', head: true })
+            .eq('assigned_consultant_id', c.id)
+            .neq('status', 'closed')
+          return { ...c, active_cases: count || 0 }
+        })
+      )
+      // Sort by least cases
+      withLoad.sort((a, b) => a.active_cases - b.active_cases)
+      setAvailableConsultants(withLoad)
+      if (withLoad.length > 0) setSelectedConsultantId(withLoad[0].id)
+    }
+
+    // Fetch satgas online
+    const { data: satgasList } = await supabase
+      .from('users')
+      .select('id, full_name')
+      .eq('role', 'satgas')
+      .eq('is_online', true)
+    
+    if (satgasList) {
+      setAvailableSatgas(satgasList)
+      if (satgasList.length > 0) setSelectedSatgasId(satgasList[0].id)
+    }
+  }
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
   const [showInfoPanel, setShowInfoPanel] = useState(false);
   const [showAIPanel, setShowAIPanel] = useState(false);
@@ -500,12 +545,72 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   };
 
   const handleEscalate = async () => {
-    await supabase.from("reports").update({ status: 'escalated' }).eq("id", reportId);
-    // Log escalation reason in case_notes or similar
-    setIsEscalateModalOpen(false);
-    alert("Kasus berhasil diekskalasi ke Satgas");
-    router.refresh();
-  };
+    if (!escalateReason.trim()) return
+    if (!currentUser) return
+    setIsEscalating(true)
+    
+    try {
+      // Update report dengan info eskalasi
+      const updateData: Record<string, unknown> = {
+        escalation_reason: escalateReason,
+        escalated_to: escalateTo,
+        escalated_at: new Date().toISOString(),
+        escalation_approved_by_reporter: false
+      }
+      
+      if (escalateTo === 'consultant' || escalateTo === 'both') {
+        updateData.assigned_consultant_id = selectedConsultantId || null
+      }
+      if (escalateTo === 'satgas' || escalateTo === 'both') {
+        updateData.assigned_satgas_id = selectedSatgasId || null
+      }
+      
+      await supabase.from('reports').update(updateData).eq('id', reportId)
+      
+      // Kirim notifikasi eskalasi ke tabel escalation_notifications
+      if (escalateTo === 'consultant' || escalateTo === 'both') {
+        await supabase.from('escalation_notifications').insert({
+          report_id: reportId,
+          from_peer_consultant_id: currentUser.id,
+          to_user_id: selectedConsultantId,
+          to_role: 'consultant',
+          status: 'waiting_reporter_approval',
+          message: escalateReason
+        })
+      }
+      if (escalateTo === 'satgas' || escalateTo === 'both') {
+        await supabase.from('escalation_notifications').insert({
+          report_id: reportId,
+          from_peer_consultant_id: currentUser.id,
+          to_user_id: selectedSatgasId,
+          to_role: 'satgas',
+          status: 'waiting_reporter_approval',
+          message: escalateReason
+        })
+      }
+      
+      // Kirim pesan sistem ke chat untuk minta persetujuan pelapor
+      await supabase.from('messages').insert({
+        report_id: reportId,
+        sender_id: null,
+        content: `[ESKALASI]: Peer Consultant ingin meneruskan pendampinganmu ke ${
+          escalateTo === 'consultant' ? 'Konselor Profesional' :
+          escalateTo === 'satgas' ? 'Satgas Kampus' :
+          'Konselor Profesional dan Satgas Kampus'
+        }. Alasan: ${escalateReason}. Apakah kamu menyetujui?`,
+        message_type: 'text',
+        is_read: false
+      })
+      
+      setIsEscalateModalOpen(false)
+      setEscalateReason('')
+      setIsEscalating(false)
+      
+    } catch (err) {
+      console.error('Escalation error:', err)
+      setIsEscalating(false)
+    }
+  }
 
   const handleEmergency = async () => {
     await supabase.from("reports").update({ emergency: true }).eq("id", reportId);
@@ -603,7 +708,10 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
                 </div>
               </div>
               <div className="flex items-center gap-2">
-                <button onClick={() => setIsEscalateModalOpen(true)} className="px-3 py-1.5 rounded-lg border border-[#1B4F72] text-[#1B4F72] text-xs font-bold hover:bg-[#F0F7FC] transition-colors">
+                <button onClick={() => {
+                  setIsEscalateModalOpen(true)
+                  fetchAvailableHandlers()
+                }} className="px-3 py-1.5 rounded-lg border border-[#1B4F72] text-[#1B4F72] text-xs font-bold hover:bg-[#F0F7FC] transition-colors">
                   ⬆️ Eskalasi
                 </button>
                 <button onClick={() => setIsEmergencyModalOpen(true)} className="px-3 py-1.5 rounded-lg bg-red-50 text-red-600 border border-red-200 text-xs font-bold hover:bg-red-100 transition-colors">
@@ -825,18 +933,142 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
       {/* Modals */}
       <AnimatePresence>
         {isEscalateModalOpen && (
-          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-            <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }} className="bg-white rounded-2xl p-6 w-full max-w-md shadow-xl">
-              <h3 className="text-lg font-bold text-[#1B4F72] mb-4">Eskalasi Kasus ke Satgas</h3>
-              <textarea 
-                value={escalateReason} 
-                onChange={(e) => setEscalateReason(e.target.value)}
-                placeholder="Jelaskan alasan mengapa kasus ini perlu diteruskan ke Satgas..." 
-                className="w-full p-3 border border-gray-200 rounded-xl mb-4 h-32 resize-none focus:border-[#1B4F72] outline-none" 
-              />
+          <div className="fixed inset-0 z-50 flex items-center 
+            justify-center bg-black/50 p-4">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }} 
+              animate={{ scale: 1, opacity: 1 }} 
+              exit={{ scale: 0.9, opacity: 0 }} 
+              className="bg-white rounded-2xl p-6 w-full 
+                max-w-md shadow-xl max-h-[90vh] overflow-y-auto">
+              
+              <h3 className="text-lg font-bold text-[#1B4F72] mb-2">
+                Eskalasi Kasus
+              </h3>
+              <p className="text-sm text-gray-500 mb-4">
+                Teruskan pendampingan ke tenaga profesional yang lebih sesuai
+              </p>
+              
+              {/* Pilih tujuan eskalasi */}
+              <div className="mb-4">
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Teruskan ke:
+                </p>
+                <div className="flex gap-2 flex-wrap">
+                  {[
+                    { value: 'consultant', label: '👨‍⚕️ Konselor' },
+                    { value: 'satgas', label: '🛡️ Satgas' },
+                    { value: 'both', label: '👥 Keduanya' }
+                  ].map(opt => (
+                    <button key={opt.value}
+                      onClick={() => setEscalateTo(opt.value as 'consultant' | 'satgas' | 'both')}
+                      className={`px-3 py-1.5 rounded-xl text-sm font-medium transition ${
+                        escalateTo === opt.value 
+                          ? 'bg-[#1B4F72] text-white' 
+                          : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                      }`}>
+                      {opt.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Pilih Consultant */}
+              {(escalateTo === 'consultant' || escalateTo === 'both') && (
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    Pilih Konselor:
+                  </p>
+                  {availableConsultants.length === 0 ? (
+                    <p className="text-sm text-orange-500 bg-orange-50 
+                      p-3 rounded-xl">
+                      Tidak ada konselor yang online saat ini
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {availableConsultants.map(c => (
+                        <button key={c.id}
+                          onClick={() => setSelectedConsultantId(c.id)}
+                          className={`w-full flex items-center justify-between 
+                            p-3 rounded-xl border text-sm transition ${
+                            selectedConsultantId === c.id
+                              ? 'border-[#1B4F72] bg-[#F0F7FC]'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}>
+                          <span className="font-medium">{c.full_name}</span>
+                          <span className="text-xs text-gray-500">
+                            {c.active_cases} kasus aktif
+                            {availableConsultants[0].id === c.id && 
+                              <span className="ml-1 text-teal-600">(Rekomendasi)</span>
+                            }
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Pilih Satgas */}
+              {(escalateTo === 'satgas' || escalateTo === 'both') && (
+                <div className="mb-4">
+                  <p className="text-sm font-semibold text-gray-700 mb-2">
+                    Pilih Satgas:
+                  </p>
+                  {availableSatgas.length === 0 ? (
+                    <p className="text-sm text-orange-500 bg-orange-50 
+                      p-3 rounded-xl">
+                      Tidak ada satgas yang online saat ini
+                    </p>
+                  ) : (
+                    <div className="space-y-2">
+                      {availableSatgas.map(s => (
+                        <button key={s.id}
+                          onClick={() => setSelectedSatgasId(s.id)}
+                          className={`w-full flex items-center p-3 
+                            rounded-xl border text-sm transition ${
+                            selectedSatgasId === s.id
+                              ? 'border-[#1B4F72] bg-[#F0F7FC]'
+                              : 'border-gray-200 hover:border-gray-300'
+                          }`}>
+                          <span className="font-medium">{s.full_name}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+              
+              {/* Alasan eskalasi */}
+              <div className="mb-4">
+                <p className="text-sm font-semibold text-gray-700 mb-2">
+                  Alasan Eskalasi:
+                </p>
+                <textarea 
+                  value={escalateReason} 
+                  onChange={(e) => setEscalateReason(e.target.value)}
+                  placeholder="Jelaskan kondisi yang memerlukan eskalasi..." 
+                  className="w-full p-3 border border-gray-200 rounded-xl 
+                    h-28 resize-none focus:border-[#1B4F72] outline-none 
+                    text-sm" 
+                />
+              </div>
+              
               <div className="flex justify-end gap-3">
-                <button onClick={() => setIsEscalateModalOpen(false)} className="px-4 py-2 text-gray-500 font-semibold hover:bg-gray-100 rounded-xl">Batal</button>
-                <button onClick={handleEscalate} disabled={!escalateReason.trim()} className="px-4 py-2 bg-[#1B4F72] text-white font-bold rounded-xl hover:bg-[#123650] disabled:opacity-50">Ya, Eskalasi</button>
+                <button 
+                  onClick={() => setIsEscalateModalOpen(false)} 
+                  className="px-4 py-2 text-gray-500 font-semibold 
+                    hover:bg-gray-100 rounded-xl text-sm">
+                  Batal
+                </button>
+                <button 
+                  onClick={handleEscalate} 
+                  disabled={!escalateReason.trim() || isEscalating}
+                  className="px-4 py-2 bg-[#1B4F72] text-white font-bold 
+                    rounded-xl hover:bg-[#123650] disabled:opacity-50 
+                    text-sm">
+                  {isEscalating ? 'Memproses...' : 'Kirim Permintaan'}
+                </button>
               </div>
             </motion.div>
           </div>

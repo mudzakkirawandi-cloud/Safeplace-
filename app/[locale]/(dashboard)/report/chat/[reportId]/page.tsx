@@ -62,6 +62,13 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
   const [isEmergencyModalOpen, setIsEmergencyModalOpen] = useState(false);
   const [showMicModal, setShowMicModal] = useState(false);
 
+  const [escalationRequest, setEscalationRequest] = useState<{
+    id: string
+    to_role: string
+    message: string
+  } | null>(null)
+  const [showEscalationApproval, setShowEscalationApproval] = useState(false)
+
   useEffect(() => {
     let isMounted = true;
     let messagesSub: ReturnType<typeof supabase.channel> | null = null;
@@ -128,6 +135,18 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           });
         }
 
+        const { data: pendingEscalation } = await supabase
+          .from('escalation_notifications')
+          .select('*')
+          .eq('report_id', reportId)
+          .eq('status', 'waiting_reporter_approval')
+          .maybeSingle()
+
+        if (pendingEscalation && isMounted) {
+          setEscalationRequest(pendingEscalation)
+          setShowEscalationApproval(true)
+        }
+
         if (!isMounted) return;
 
         messagesSub = supabase
@@ -149,6 +168,20 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
              if (!isMounted) return;
              const newMsg = payload.new as Message;
              setMessages(prev => prev.map(m => m.id === newMsg.id ? { ...m, ...newMsg } : m));
+          })
+          .on('postgres_changes', {
+            event: 'INSERT',
+            schema: 'public',
+            table: 'escalation_notifications',
+            filter: `report_id=eq.${reportId}`
+          }, (payload) => {
+            const notif = payload.new as {
+              id: string, to_role: string, message: string, status: string
+            }
+            if (notif.status === 'waiting_reporter_approval') {
+              setEscalationRequest(notif)
+              setShowEscalationApproval(true)
+            }
           })
           .subscribe((status) => {
             console.log('Chat realtime status:', status);
@@ -450,6 +483,51 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     setIsEmergencyModalOpen(false);
   };
 
+  const handleEscalationApprove = async () => {
+    if (!escalationRequest) return
+    
+    // Update escalation notification status
+    await supabase.from('escalation_notifications')
+      .update({ status: 'approved' })
+      .eq('id', escalationRequest.id)
+    
+    // Update report
+    await supabase.from('reports')
+      .update({ escalation_approved_by_reporter: true })
+      .eq('id', reportId)
+    
+    // Kirim pesan sistem
+    await supabase.from('messages').insert({
+      report_id: reportId,
+      sender_id: null,
+      content: '[SISTEM]: Kamu telah menyetujui eskalasi. Pendampingan akan diteruskan. Histori chatmu tetap tersimpan.',
+      message_type: 'text',
+      is_read: false
+    })
+    
+    setShowEscalationApproval(false)
+    setEscalationRequest(null)
+  }
+
+  const handleEscalationReject = async () => {
+    if (!escalationRequest) return
+    
+    await supabase.from('escalation_notifications')
+      .update({ status: 'rejected' })
+      .eq('id', escalationRequest.id)
+    
+    await supabase.from('messages').insert({
+      report_id: reportId,
+      sender_id: null,
+      content: '[SISTEM]: Kamu menolak eskalasi. Peer Consultant akan tetap mendampingimu.',
+      message_type: 'text',
+      is_read: false
+    })
+    
+    setShowEscalationApproval(false)
+    setEscalationRequest(null)
+  }
+
   return (
     <div className="h-screen flex flex-col bg-[#F4FAF8] max-w-4xl mx-auto md:border-x border-[#E7E9EB] shadow-sm">
       {/* Header */}
@@ -727,6 +805,57 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           </div>
         )}
       </AnimatePresence>
+
+      {showEscalationApproval && escalationRequest && (
+        <div className="fixed inset-0 z-50 flex items-center 
+          justify-center bg-black/50 p-4">
+          <div className="bg-white rounded-2xl p-6 w-full 
+            max-w-sm shadow-xl">
+            <div className="text-center mb-4">
+              <span className="text-4xl">🤝</span>
+              <h3 className="font-bold text-gray-800 mt-2">
+                Permintaan Eskalasi
+              </h3>
+            </div>
+            <p className="text-sm text-gray-600 mb-3 text-center">
+              Peer Consultant ingin meneruskan pendampinganmu ke{' '}
+              <strong>
+                {escalationRequest.to_role === 'consultant' 
+                  ? 'Konselor Profesional' 
+                  : escalationRequest.to_role === 'satgas'
+                  ? 'Satgas Kampus'
+                  : 'Konselor & Satgas'}
+              </strong>
+            </p>
+            <div className="bg-gray-50 rounded-xl p-3 mb-4">
+              <p className="text-xs text-gray-500 mb-1">Alasan:</p>
+              <p className="text-sm text-gray-700">
+                {escalationRequest.message}
+              </p>
+            </div>
+            <p className="text-xs text-gray-500 text-center mb-4">
+              Histori chatmu akan tetap tersimpan dan 
+              bisa dilihat oleh pendamping baru.
+            </p>
+            <div className="flex gap-3">
+              <button
+                onClick={handleEscalationReject}
+                className="flex-1 py-2.5 border border-gray-300 
+                  text-gray-600 rounded-xl text-sm font-medium 
+                  hover:bg-gray-50 transition">
+                Tidak Sekarang
+              </button>
+              <button
+                onClick={handleEscalationApprove}
+                className="flex-1 py-2.5 bg-[#1B4F72] text-white 
+                  rounded-xl text-sm font-bold 
+                  hover:bg-[#123650] transition">
+                Ya, Setuju
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

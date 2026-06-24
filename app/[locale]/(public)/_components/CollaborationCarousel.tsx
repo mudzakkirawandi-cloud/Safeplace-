@@ -45,7 +45,7 @@ export default function CollaborationCarousel() {
               key={index}
               className="inline-flex items-center mx-16 opacity-60 hover:opacity-100 transition-opacity cursor-default"
             >
-              <div className="h-12 w-[180px] flex-shrink-0 flex items-center justify-center">
+              <div className="h-16 w-[220px] flex-shrink-0 flex items-center justify-center">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={partner.src}

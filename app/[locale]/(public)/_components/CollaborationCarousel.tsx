@@ -54,14 +54,14 @@ export default function CollaborationCarousel() {
               key={index}
               className="inline-flex items-center mx-16 opacity-60 hover:opacity-100 transition-opacity cursor-default"
             >
-              <Image
-                src={partner.src}
-                alt={partner.name}
-                width={0}
-                height={0}
-                sizes="(max-width: 768px) 100px, 140px"
-                className="object-contain h-14 w-auto"
-              />
+              <div className="relative h-14 w-[140px]">
+                <Image
+                  src={partner.src}
+                  alt={partner.name}
+                  fill
+                  className="object-contain"
+                />
+              </div>
             </div>
           ))}
         </div>

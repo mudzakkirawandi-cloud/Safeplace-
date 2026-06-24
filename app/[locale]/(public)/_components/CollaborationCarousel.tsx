@@ -57,9 +57,10 @@ export default function CollaborationCarousel() {
               <Image
                 src={partner.src}
                 alt={partner.name}
-                width={140}
-                height={56}
-                className="object-contain h-14 w-auto border-2 border-red-500 bg-yellow-200"
+                width={0}
+                height={0}
+                sizes="(max-width: 768px) 100px, 140px"
+                className="object-contain h-14 w-auto"
               />
             </div>
           ))}

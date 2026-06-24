@@ -579,5 +579,84 @@
     "form_error_content_length": "Konten post minimal 50 karakter",
     "form_error_login": "Anda harus login untuk membuat post",
     "form_error_submit": "Gagal membuat post: "
+  },
+  "tentang": {
+    "meta": {
+      "title": "Tentang Kami",
+      "description": "Mengenal SafePlace — platform pelaporan dan pendampingan kekerasan seksual yang aman, rahasia, dan berpihak pada korban. Dimulai dari ULBI, menuju seluruh Indonesia."
+    },
+    "hero": {
+      "eyebrow": "Mengenal SafePlace",
+      "title": "Ruang aman untuk mereka yang berani bersuara",
+      "subtitle": "SafePlace lahir dari kepedulian nyata terhadap maraknya kasus kekerasan dan pelecehan seksual. Kami hadir sebagai jembatan antara keberanian untuk bersuara dan dukungan nyata yang layak diterima setiap korban — tanpa rasa takut, tanpa stigma."
+    },
+    "visimisi": {
+      "eyebrow": "Arah & Tujuan",
+      "section_title": "Visi & Misi Kami",
+      "visi_title": "Visi",
+      "visi_content": "Mewujudkan ekosistem digital yang inklusif dan aman bagi setiap individu — dimulai dari ULBI, berkembang ke seluruh Indonesia — di mana setiap orang dapat melaporkan, mendapat pendampingan, dan pulih dari pengalaman kekerasan seksual tanpa rasa takut dan stigma.",
+      "misi_title": "Misi",
+      "misi_items": [
+        "Menyediakan platform pelaporan yang aman, anonim, dan mudah diakses oleh siapa saja.",
+        "Menghubungkan pelapor dengan peer consultant terlatih yang siap mendampingi secara empati.",
+        "Memanfaatkan teknologi AI untuk memberikan pendampingan awal yang responsif 24/7.",
+        "Membangun kesadaran melalui program edukasi, pelatihan, dan webinar publik.",
+        "Mendorong perluasan dampak dari ULBI ke seluruh Indonesia melalui kolaborasi lintas institusi."
+      ]
+    },
+    "filosofi": {
+      "eyebrow": "Filosofi",
+      "section_title": "Makna di balik SafePlace",
+      "meaning": "\"SafePlace\" — Tempat Aman — bukan sekadar nama. Ini adalah sebuah janji. Janji bahwa di sini, tidak ada yang akan dihakimi, tidak ada cerita yang dianggap terlalu kecil, dan tidak ada korban yang harus berjuang sendirian. SafePlace dirancang sebagai ruang yang secara aktif melindungi, bukan sekadar menerima laporan.",
+      "tagline": "Karena setiap orang berhak atas ruang yang benar-benar aman.",
+      "values": [
+        {
+          "title": "Keamanan tanpa kompromi",
+          "desc": "Identitas dan data pelapor dilindungi di setiap tahap. Kerahasiaan bukan fitur — itu adalah fondasi."
+        },
+        {
+          "title": "Empati sebagai metode",
+          "desc": "Setiap interaksi dirancang untuk mengurangi beban psikologis, bukan menambahnya."
+        },
+        {
+          "title": "Berpihak pada korban",
+          "desc": "Setiap keputusan sistem mengutamakan keselamatan dan kenyamanan pelapor di atas segalanya."
+        },
+        {
+          "title": "Kolaborasi nyata",
+          "desc": "Perubahan sejati terjadi bersama — dengan komunitas, institusi, dan para ahli yang satu visi."
+        }
+      ]
+    },
+    "program": {
+      "eyebrow": "Program Kami",
+      "section_title": "Aksi nyata, bukan sekadar platform",
+      "subtitle": "SafePlace tidak berhenti di teknologi. Kami membangun komunitas dan ekosistem perlindungan yang berdampak langsung.",
+      "items": [
+        {
+          "title": "Sahabat Tangguh — Batch 1",
+          "badge": "Sudah Berjalan",
+          "desc": "Program volunteer pelatihan intensif bagi individu yang ingin menjadi peer consultant — mencakup pendampingan sebaya, respons pertama, dan pemahaman mendalam tentang kekerasan seksual.",
+          "detail": "Berkolaborasi bersama Smart Insight, ULBI, dan mitra lainnya"
+        },
+        {
+          "title": "Sahabat Tangguh — Batch 2",
+          "badge": "Segera Hadir",
+          "desc": "Membuka lebih banyak relawan baru untuk bergabung dan memperluas jangkauan pendampingan SafePlace ke lebih banyak individu yang membutuhkan.",
+          "detail": "Pendaftaran akan segera dibuka"
+        },
+        {
+          "title": "Webinar Edukasi Publik",
+          "badge": "Akan Datang",
+          "desc": "Seri webinar terbuka tentang isu kekerasan seksual, hak-hak korban, cara mendukung orang terdekat, dan membangun lingkungan yang lebih aman.",
+          "detail": "Terbuka untuk umum — segera hadir"
+        }
+      ]
+    },
+    "kolaborasi": {
+      "eyebrow": "Kolaborasi",
+      "title": "Bersama menuju perubahan",
+      "subtitle": "SafePlace tumbuh bersama mitra-mitra yang memiliki visi yang sama untuk Indonesia yang lebih aman."
+    }
   }
 }

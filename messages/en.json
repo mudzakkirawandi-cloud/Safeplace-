@@ -540,5 +540,84 @@
     "form_error_content_length": "Post content must be at least 50 characters",
     "form_error_login": "You must be logged in to create a post",
     "form_error_submit": "Failed to create post: "
+  },
+  "tentang": {
+    "meta": {
+      "title": "About Us",
+      "description": "Meet SafePlace — a safe, confidential platform for reporting and supporting survivors of sexual violence."
+    },
+    "hero": {
+      "eyebrow": "About SafePlace",
+      "title": "A Safe Space for Every Story",
+      "subtitle": "SafePlace bridges the gap between the courage to speak up and the real support every survivor deserves. We believe everyone has the right to a truly safe place."
+    },
+    "visimisi": {
+      "eyebrow": "Direction & Purpose",
+      "section_title": "Our Vision & Mission",
+      "visi_title": "Vision",
+      "visi_content": "To become a trusted platform that fosters a campus and community ecosystem free from sexual violence — where every individual feels safe, heard, and receives justice.",
+      "misi_title": "Mission",
+      "misi_items": [
+        "Provide a safe, confidential, and accessible reporting platform for all members of the academic community.",
+        "Connect survivors with trained professional consultants and companions.",
+        "Build awareness and education about sexual violence through quality programs and content.",
+        "Foster a bystander culture of mutual protection within campus environments.",
+        "Collaborate with institutions, communities, and organizations to expand the reach of protection."
+      ]
+    },
+    "filosofi": {
+      "eyebrow": "Philosophy",
+      "section_title": "The Meaning Behind SafePlace",
+      "meaning": "\"SafePlace\" is not just a name — it is a promise. A promise that here, no one will be judged, no story is too small, and no survivor has to fight alone. SafePlace is designed as a space that actively protects, not merely receives.",
+      "tagline": "Because everyone deserves a space that is truly safe.",
+      "values": [
+        {
+          "title": "Unconditional Empathy",
+          "desc": "Every report and story is received with full empathy, without judgment."
+        },
+        {
+          "title": "Absolute Confidentiality",
+          "desc": "Reporter identities and data are protected with the highest security standards."
+        },
+        {
+          "title": "Survivor-Centered",
+          "desc": "Every decision and system design prioritizes the safety and comfort of survivors."
+        },
+        {
+          "title": "Real Collaboration",
+          "desc": "Real change happens together — with communities, institutions, and experts."
+        }
+      ]
+    },
+    "program": {
+      "eyebrow": "Our Programs",
+      "section_title": "Real Steps We Have Taken",
+      "subtitle": "Since its founding, SafePlace has not just been a digital platform — we are building a real protection ecosystem.",
+      "items": [
+        {
+          "title": "Sahabat Tangguh",
+          "badge": "Main Program",
+          "desc": "A volunteer training program for individuals who want to become peer companions — active listeners, first responders, and agents of change in their environment.",
+          "detail": "✓ Batch 1 completed · Batch 2 coming soon"
+        },
+        {
+          "title": "Training & Workshop",
+          "badge": "Education",
+          "desc": "Intensive training sessions for Sahabat Tangguh volunteers covering understanding sexual violence, companionship techniques, and self-care for companions.",
+          "detail": "✓ Completed in Batch 1"
+        },
+        {
+          "title": "Webinar & Seminar",
+          "badge": "Coming Soon",
+          "desc": "A public webinar series on sexual violence issues, survivor rights, and how to build safe environments — open to the public.",
+          "detail": "◷ Coming soon"
+        }
+      ]
+    },
+    "kolaborasi": {
+      "eyebrow": "Collaboration",
+      "title": "Together Toward Change",
+      "subtitle": "SafePlace grows alongside partners who share the same vision."
+    }
   }
 }

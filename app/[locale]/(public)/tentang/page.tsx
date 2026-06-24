@@ -5,7 +5,10 @@ import AboutHeroSection from "./_components/AboutHeroSection";
 import VisiMisiSection from "./_components/VisiMisiSection";
 import FilosofiSection from "./_components/FilosofiSection";
 import ProgramSection from "./_components/ProgramSection";
+import StatsSection from "./_components/StatsSection";
+import TimelineSection from "./_components/TimelineSection";
 import AboutCollaborationSection from "./_components/AboutCollaborationSection";
+import AboutCTASection from "./_components/AboutCTASection";
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
   const t = await getTranslations({ locale, namespace: "tentang.meta" });
@@ -21,10 +24,13 @@ export default function TentangPage() {
       <Navbar />
       <main className="flex-1">
         <AboutHeroSection />
+        <StatsSection />
         <VisiMisiSection />
         <FilosofiSection />
+        <TimelineSection />
         <ProgramSection />
         <AboutCollaborationSection />
+        <AboutCTASection />
       </main>
       <Footer />
     </div>

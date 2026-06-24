@@ -8,14 +8,13 @@ import {
   Files,
   Users,
   User,
-  LogOut,
+  Home,
   Menu,
   MessageSquare
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
-import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function OperatorLayout({
@@ -29,22 +28,6 @@ export default function OperatorLayout({
   const supabase = createClient();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleLogoutClick = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const confirmLogout = async () => {
-    setIsLoggingOut(true);
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      await supabase.from('users').update({ is_online: false }).eq('id', data.user.id);
-    }
-    await supabase.auth.signOut();
-    router.push("/");
-  };
 
   const navItems = [
     { href: "/operator/dashboard", icon: LayoutDashboard, labelKey: "nav_dashboard" },
@@ -92,11 +75,11 @@ export default function OperatorLayout({
       {/* Logout */}
       <div className="px-3 py-4 border-t border-[#8c6ebf]">
         <button
-          onClick={handleLogoutClick}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-200 hover:bg-red-500/20 hover:text-red-100 transition-all"
+          onClick={() => router.push("/")}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition-all"
         >
-          <LogOut size={18} />
-          {t("nav_logout")}
+          <Home size={18} />
+          Kembali ke Beranda
         </button>
       </div>
     </div>
@@ -169,12 +152,6 @@ export default function OperatorLayout({
         </main>
       </div>
 
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
-        isLoggingOut={isLoggingOut}
-      />
     </div>
   );
 }

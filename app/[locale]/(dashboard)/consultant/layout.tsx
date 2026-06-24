@@ -8,13 +8,12 @@ import {
   FolderOpen,
   MessageCircle,
   User,
-  LogOut,
+  Home,
   Menu,
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
-import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 type OnlineStatus = "online" | "busy" | "offline";
@@ -38,8 +37,6 @@ export default function ConsultantLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [status, setStatus] = useState<OnlineStatus>("online");
   const [statusDropdown, setStatusDropdown] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
 
   const handleStatusChange = async (newStatus: OnlineStatus) => {
     setStatus(newStatus);
@@ -48,19 +45,7 @@ export default function ConsultantLayout({
     // await supabase.from("users").update({ online_status: newStatus }).eq("id", userId);
   };
 
-  const handleLogoutClick = () => {
-    setIsLogoutModalOpen(true);
-  };
 
-  const confirmLogout = async () => {
-    setIsLoggingOut(true);
-    const { data } = await supabase.auth.getUser();
-    if (data.user) {
-      await supabase.from('users').update({ is_online: false }).eq('id', data.user.id);
-    }
-    await supabase.auth.signOut();
-    router.push("/");
-  };
 
   const navItems = [
     {
@@ -180,11 +165,11 @@ export default function ConsultantLayout({
       {/* Logout */}
       <div className="px-3 py-4 border-t border-border">
         <button
-          onClick={handleLogoutClick}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-red-50 hover:text-red-600 transition-all"
+          onClick={() => router.push("/")}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition-all"
         >
-          <LogOut size={18} />
-          {t("nav_logout")}
+          <Home size={18} />
+          Kembali ke Beranda
         </button>
       </div>
     </div>
@@ -255,12 +240,6 @@ export default function ConsultantLayout({
         <main className="flex-1 overflow-y-auto">{children}</main>
       </div>
 
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
-        isLoggingOut={isLoggingOut}
-      />
     </div>
   );
 }

@@ -8,6 +8,7 @@ import { Menu, X, ChevronDown, LayoutDashboard, MessageCircle, LogOut } from "lu
 import LanguageSwitcher from "./LanguageSwitcher";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 import { createClient } from "@/lib/supabase/client";
+import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
 
 export default function Navbar() {
   const t = useTranslations("homepage.navbar");
@@ -19,7 +20,27 @@ export default function Navbar() {
     role: string | null
   } | null>(null);
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const supabase = createClient();
+
+  const handleLogoutClick = () => {
+    setShowDropdown(false);
+    setIsMobileMenuOpen(false);
+    setIsLogoutModalOpen(true);
+  };
+
+  const confirmLogout = async () => {
+    setIsLoggingOut(true);
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      await supabase.from('users').update({ is_online: false }).eq('id', data.user.id);
+    }
+    await supabase.auth.signOut();
+    setUserSession(null);
+    setIsLoggingOut(false);
+    window.location.href = '/';
+  };
 
   useEffect(() => {
     const checkSession = async () => {
@@ -131,15 +152,7 @@ export default function Navbar() {
                     </Link>
                     <hr className="my-1" />
                     <button
-                      onClick={async () => {
-                        await supabase.from('users')
-                          .update({ is_online: false })
-                          .eq('id', (await supabase.auth.getUser()).data.user?.id || '')
-                        await supabase.auth.signOut()
-                        setUserSession(null)
-                        setShowDropdown(false)
-                        window.location.href = '/'
-                      }}
+                      onClick={handleLogoutClick}
                       className="flex items-center gap-2 px-3 py-2 text-sm rounded-lg hover:bg-red-50 text-red-600 w-full text-left"
                     >
                       <LogOut size={16} />
@@ -236,15 +249,7 @@ export default function Navbar() {
                   {userSession.role === 'reporter' ? 'Chat Saya' : 'Pesan'}
                 </Link>
                 <button
-                  onClick={async () => {
-                    await supabase.from('users')
-                      .update({ is_online: false })
-                      .eq('id', (await supabase.auth.getUser()).data.user?.id || '')
-                    await supabase.auth.signOut()
-                    setUserSession(null)
-                    setIsMobileMenuOpen(false)
-                    window.location.href = '/'
-                  }}
+                  onClick={handleLogoutClick}
                   className="flex items-center gap-3 w-full px-4 py-3 text-lg font-medium text-red-600 bg-red-50 rounded-xl transition-colors text-left"
                 >
                   <LogOut size={20} />
@@ -272,6 +277,13 @@ export default function Navbar() {
           </div>
         </div>
       </div>
+
+      <LogoutConfirmModal
+        isOpen={isLogoutModalOpen}
+        onClose={() => setIsLogoutModalOpen(false)}
+        onConfirm={confirmLogout}
+        isLoggingOut={isLoggingOut}
+      />
     </>
   );
 }

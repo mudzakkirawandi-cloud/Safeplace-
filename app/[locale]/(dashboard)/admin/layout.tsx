@@ -13,7 +13,7 @@ import {
   Settings,
   Download,
   Activity,
-  LogOut,
+  Home,
   Menu,
   Shield,
   BookOpen
@@ -21,7 +21,6 @@ import {
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
-import LogoutConfirmModal from "../../_components/LogoutConfirmModal";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function AdminLayout({
@@ -35,18 +34,6 @@ export default function AdminLayout({
   const supabase = createClient();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState(false);
-  const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-  const handleLogoutClick = () => {
-    setIsLogoutModalOpen(true);
-  };
-
-  const confirmLogout = async () => {
-    setIsLoggingOut(true);
-    await supabase.auth.signOut();
-    router.push("/");
-  };
 
   const navItems = [
     { href: "/admin/dashboard", icon: LayoutDashboard, labelKey: "nav_dashboard" },
@@ -101,11 +88,11 @@ export default function AdminLayout({
       {/* Logout */}
       <div className="px-3 py-4 border-t border-[#3b5082]">
         <button
-          onClick={handleLogoutClick}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-red-300 hover:bg-red-500/20 hover:text-red-200 transition-all"
+          onClick={() => router.push("/")}
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition-all"
         >
-          <LogOut size={18} />
-          {t("nav_logout")}
+          <Home size={18} />
+          Kembali ke Beranda
         </button>
       </div>
     </div>
@@ -179,12 +166,6 @@ export default function AdminLayout({
         </main>
       </div>
 
-      <LogoutConfirmModal
-        isOpen={isLogoutModalOpen}
-        onClose={() => setIsLogoutModalOpen(false)}
-        onConfirm={confirmLogout}
-        isLoggingOut={isLoggingOut}
-      />
     </div>
   );
 }

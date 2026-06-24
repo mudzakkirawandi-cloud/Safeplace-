@@ -108,7 +108,7 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
       .from('users')
       .select('id, full_name')
       .eq('role', 'consultant')
-      .eq('is_online', true)
+      .order('is_online', { ascending: false })
     
     // Hitung kasus aktif per consultant
     if (consultants) {
@@ -133,7 +133,7 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
       .from('users')
       .select('id, full_name')
       .eq('role', 'satgas')
-      .eq('is_online', true)
+      .order('is_online', { ascending: false })
     
     if (satgasList) {
       setAvailableSatgas(satgasList)
@@ -547,6 +547,22 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   const handleEscalate = async () => {
     if (!escalateReason.trim()) return
     if (!currentUser) return
+
+    if (escalateTo === 'consultant' || escalateTo === 'both') {
+      if (!selectedConsultantId) {
+        alert('Pilih konselor terlebih dahulu')
+        setIsEscalating(false)
+        return
+      }
+    }
+    if (escalateTo === 'satgas' || escalateTo === 'both') {
+      if (!selectedSatgasId) {
+        alert('Pilih satgas terlebih dahulu')
+        setIsEscalating(false)
+        return
+      }
+    }
+
     setIsEscalating(true)
     
     try {
@@ -565,11 +581,15 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
         updateData.assigned_satgas_id = selectedSatgasId || null
       }
       
-      await supabase.from('reports').update(updateData).eq('id', reportId)
+      const { error: updateError } = await supabase.from('reports').update(updateData).eq('id', reportId)
+      if (updateError) {
+        console.error('Update report error:', updateError)
+        throw updateError
+      }
       
       // Kirim notifikasi eskalasi ke tabel escalation_notifications
       if (escalateTo === 'consultant' || escalateTo === 'both') {
-        await supabase.from('escalation_notifications').insert({
+        const { error: notifError } = await supabase.from('escalation_notifications').insert({
           report_id: reportId,
           from_peer_consultant_id: currentUser.id,
           to_user_id: selectedConsultantId,
@@ -577,9 +597,13 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
           status: 'waiting_reporter_approval',
           message: escalateReason
         })
+        if (notifError) {
+          console.error('Insert escalation notif error:', notifError)
+          throw notifError
+        }
       }
       if (escalateTo === 'satgas' || escalateTo === 'both') {
-        await supabase.from('escalation_notifications').insert({
+        const { error: notifError } = await supabase.from('escalation_notifications').insert({
           report_id: reportId,
           from_peer_consultant_id: currentUser.id,
           to_user_id: selectedSatgasId,
@@ -587,10 +611,14 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
           status: 'waiting_reporter_approval',
           message: escalateReason
         })
+        if (notifError) {
+          console.error('Insert escalation notif error:', notifError)
+          throw notifError
+        }
       }
       
       // Kirim pesan sistem ke chat untuk minta persetujuan pelapor
-      await supabase.from('messages').insert({
+      const { error: msgError } = await supabase.from('messages').insert({
         report_id: reportId,
         sender_id: null,
         content: `[ESKALASI]: Peer Consultant ingin meneruskan pendampinganmu ke ${
@@ -601,6 +629,10 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
         message_type: 'text',
         is_read: false
       })
+      if (msgError) {
+        console.error('Insert message error:', msgError)
+        throw msgError
+      }
       
       setIsEscalateModalOpen(false)
       setEscalateReason('')

@@ -18,17 +18,17 @@ export default function AboutCTASection() {
           </p>
           <h2 className="text-3xl md:text-4xl font-display font-bold text-white mb-4 leading-tight">
             Kamu tidak harus sendirian.<br />
-            <span className="text-white/70">Dan kami tidak bisa tanpa kamu.</span>
+            <span className="text-white/70">Kami ada di sini untukmu.</span>
           </h2>
           <p className="text-white/60 text-base max-w-md mx-auto mb-10 leading-relaxed">
-            Baik sebagai pelapor yang butuh dukungan, maupun sebagai relawan yang ingin memberikan dampak — SafePlace adalah tempatmu.
+            Baik sebagai pelapor yang butuh dukungan, maupun sebagai individu yang ingin tahu lebih tentang SafePlace, kami terbuka untuk kamu.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Link
-              href="/join"
+              href="/tentang#kolaborasi"
               className="inline-flex items-center justify-center gap-2 bg-white text-[#1B4F72] font-semibold px-8 py-3.5 rounded-xl text-sm hover:bg-white/90 transition-colors"
             >
-              Daftar sebagai Relawan
+              Hubungi Kami
             </Link>
             <Link
               href="/report/start"

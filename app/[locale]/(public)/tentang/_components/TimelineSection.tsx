@@ -11,7 +11,7 @@ const events = [
   {
     period: "18 Juni 2026",
     title: "Batch 1 Sahabat Tangguh",
-    desc: "Program pelatihan relawan pertama berhasil digelar bersama Smart Insight dan ULBI — melahirkan peer consultant pertama SafePlace yang siap mendampingi.",
+    desc: "Program pelatihan relawan pertama berhasil digelar bersama Smart Insight dan ULBI, melahirkan peer consultant pertama SafePlace yang siap mendampingi.",
     status: "done",
   },
   {

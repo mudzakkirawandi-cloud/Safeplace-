@@ -544,80 +544,80 @@
   "tentang": {
     "meta": {
       "title": "About Us",
-      "description": "Meet SafePlace — a safe, confidential platform for reporting and supporting survivors of sexual violence."
+      "description": "Meet SafePlace, a safe and confidential platform for reporting and supporting survivors of sexual violence. Starting from ULBI, reaching all of Indonesia."
     },
     "hero": {
       "eyebrow": "About SafePlace",
-      "title": "A Safe Space for Every Story",
-      "subtitle": "SafePlace bridges the gap between the courage to speak up and the real support every survivor deserves. We believe everyone has the right to a truly safe place."
+      "title": "A safe space for those who dare to speak up",
+      "subtitle": "SafePlace was born from genuine concern over the rise of sexual harassment and violence cases across campuses. We bridge the gap between the courage to speak up and the real support every survivor deserves, without fear and without stigma."
     },
     "visimisi": {
       "eyebrow": "Direction & Purpose",
-      "section_title": "Our Vision & Mission",
+      "section_title": "Our Vision and Mission",
       "visi_title": "Vision",
-      "visi_content": "To become a trusted platform that fosters a campus and community ecosystem free from sexual violence — where every individual feels safe, heard, and receives justice.",
+      "visi_content": "To build an inclusive and safe digital ecosystem for every individual, starting from ULBI and expanding across Indonesia, where anyone can report, receive support, and recover from sexual violence without fear or stigma.",
       "misi_title": "Mission",
       "misi_items": [
-        "Provide a safe, confidential, and accessible reporting platform for all members of the academic community.",
-        "Connect survivors with trained professional consultants and companions.",
-        "Build awareness and education about sexual violence through quality programs and content.",
-        "Foster a bystander culture of mutual protection within campus environments.",
-        "Collaborate with institutions, communities, and organizations to expand the reach of protection."
+        "Provide a safe, anonymous, and accessible reporting platform for everyone.",
+        "Connect reporters with trained peer consultants ready to offer empathetic support.",
+        "Leverage AI technology to provide responsive initial support 24/7.",
+        "Build awareness through education programs, training, and public webinars.",
+        "Drive impact beyond ULBI to all of Indonesia through cross-institutional collaboration."
       ]
     },
     "filosofi": {
       "eyebrow": "Philosophy",
-      "section_title": "The Meaning Behind SafePlace",
-      "meaning": "\"SafePlace\" is not just a name — it is a promise. A promise that here, no one will be judged, no story is too small, and no survivor has to fight alone. SafePlace is designed as a space that actively protects, not merely receives.",
+      "section_title": "The meaning behind SafePlace",
+      "meaning": "SafePlace is not just a name. It is a promise. A promise that here, no one will be judged, no story is too small, and no survivor has to fight alone. SafePlace is designed as a space that actively protects, not merely receives reports.",
       "tagline": "Because everyone deserves a space that is truly safe.",
       "values": [
         {
-          "title": "Unconditional Empathy",
-          "desc": "Every report and story is received with full empathy, without judgment."
+          "title": "Safety without compromise",
+          "desc": "Reporter identities and data are protected at every step. Confidentiality is not a feature, it is the foundation."
         },
         {
-          "title": "Absolute Confidentiality",
-          "desc": "Reporter identities and data are protected with the highest security standards."
+          "title": "Empathy as a method",
+          "desc": "Every interaction is designed to reduce psychological burden, not add to it."
         },
         {
-          "title": "Survivor-Centered",
-          "desc": "Every decision and system design prioritizes the safety and comfort of survivors."
+          "title": "Survivor-centered",
+          "desc": "Every system decision prioritizes the safety and comfort of reporters above all else."
         },
         {
-          "title": "Real Collaboration",
-          "desc": "Real change happens together — with communities, institutions, and experts."
+          "title": "Real collaboration",
+          "desc": "Real change happens together, with communities, institutions, and like-minded experts."
         }
       ]
     },
     "program": {
       "eyebrow": "Our Programs",
-      "section_title": "Real Steps We Have Taken",
-      "subtitle": "Since its founding, SafePlace has not just been a digital platform — we are building a real protection ecosystem.",
+      "section_title": "Action, not just a platform",
+      "subtitle": "SafePlace goes beyond technology. We are building a community and protection ecosystem with real, direct impact.",
       "items": [
         {
-          "title": "Sahabat Tangguh",
-          "badge": "Main Program",
-          "desc": "A volunteer training program for individuals who want to become peer companions — active listeners, first responders, and agents of change in their environment.",
-          "detail": "✓ Batch 1 completed · Batch 2 coming soon"
+          "title": "Sahabat Tangguh, Batch 1",
+          "badge": "Completed",
+          "desc": "An intensive volunteer training program for individuals who want to become peer consultants, covering peer support, first response, and a deep understanding of sexual violence.",
+          "detail": "In collaboration with Smart Insight, ULBI, and other partners"
         },
         {
-          "title": "Training & Workshop",
-          "badge": "Education",
-          "desc": "Intensive training sessions for Sahabat Tangguh volunteers covering understanding sexual violence, companionship techniques, and self-care for companions.",
-          "detail": "✓ Completed in Batch 1"
-        },
-        {
-          "title": "Webinar & Seminar",
+          "title": "Sahabat Tangguh, Batch 2",
           "badge": "Coming Soon",
-          "desc": "A public webinar series on sexual violence issues, survivor rights, and how to build safe environments — open to the public.",
-          "detail": "◷ Coming soon"
+          "desc": "Opening a second wave of volunteers to expand SafePlace's reach and support more individuals in need.",
+          "detail": "Registration opening soon"
+        },
+        {
+          "title": "Public Education Webinar",
+          "badge": "Upcoming",
+          "desc": "An open webinar series on sexual violence, survivor rights, how to support loved ones, and building safer environments.",
+          "detail": "Open to the public, coming soon"
         }
       ]
     },
     "kolaborasi": {
       "eyebrow": "Collaboration",
-      "title": "Together Toward Change",
-      "subtitle": "SafePlace grows alongside partners who share the same vision."
+      "title": "Together toward change",
+      "subtitle": "SafePlace grows alongside partners who share the same vision for a safer Indonesia."
     }
   }
 }

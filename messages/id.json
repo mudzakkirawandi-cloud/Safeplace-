@@ -583,18 +583,18 @@
   "tentang": {
     "meta": {
       "title": "Tentang Kami",
-      "description": "Mengenal SafePlace — platform pelaporan dan pendampingan kekerasan seksual yang aman, rahasia, dan berpihak pada korban. Dimulai dari ULBI, menuju seluruh Indonesia."
+      "description": "Mengenal SafePlace, platform pelaporan dan pendampingan kekerasan seksual yang aman, rahasia, dan berpihak pada korban. Dimulai dari ULBI, menuju seluruh Indonesia."
     },
     "hero": {
       "eyebrow": "Mengenal SafePlace",
       "title": "Ruang aman untuk mereka yang berani bersuara",
-      "subtitle": "SafePlace lahir dari kepedulian nyata terhadap maraknya kasus kekerasan dan pelecehan seksual. Kami hadir sebagai jembatan antara keberanian untuk bersuara dan dukungan nyata yang layak diterima setiap korban — tanpa rasa takut, tanpa stigma."
+      "subtitle": "SafePlace lahir dari kepedulian nyata terhadap maraknya kasus kekerasan dan pelecehan seksual. Kami hadir sebagai jembatan antara keberanian untuk bersuara dan dukungan nyata yang layak diterima setiap korban, tanpa rasa takut, tanpa stigma."
     },
     "visimisi": {
       "eyebrow": "Arah & Tujuan",
       "section_title": "Visi & Misi Kami",
       "visi_title": "Visi",
-      "visi_content": "Mewujudkan ekosistem digital yang inklusif dan aman bagi setiap individu — dimulai dari ULBI, berkembang ke seluruh Indonesia — di mana setiap orang dapat melaporkan, mendapat pendampingan, dan pulih dari pengalaman kekerasan seksual tanpa rasa takut dan stigma.",
+      "visi_content": "Mewujudkan ekosistem digital yang inklusif dan aman bagi setiap individu, dimulai dari ULBI, berkembang ke seluruh Indonesia, di mana setiap orang dapat melaporkan, mendapat pendampingan, dan pulih dari pengalaman kekerasan seksual tanpa rasa takut dan stigma.",
       "misi_title": "Misi",
       "misi_items": [
         "Menyediakan platform pelaporan yang aman, anonim, dan mudah diakses oleh siapa saja.",
@@ -607,12 +607,12 @@
     "filosofi": {
       "eyebrow": "Filosofi",
       "section_title": "Makna di balik SafePlace",
-      "meaning": "\"SafePlace\" — Tempat Aman — bukan sekadar nama. Ini adalah sebuah janji. Janji bahwa di sini, tidak ada yang akan dihakimi, tidak ada cerita yang dianggap terlalu kecil, dan tidak ada korban yang harus berjuang sendirian. SafePlace dirancang sebagai ruang yang secara aktif melindungi, bukan sekadar menerima laporan.",
+      "meaning": "\"SafePlace\", Tempat Aman, bukan sekadar nama. Ini adalah sebuah janji. Janji bahwa di sini, tidak ada yang akan dihakimi, tidak ada cerita yang dianggap terlalu kecil, dan tidak ada korban yang harus berjuang sendirian. SafePlace dirancang sebagai ruang yang secara aktif melindungi, bukan sekadar menerima laporan.",
       "tagline": "Karena setiap orang berhak atas ruang yang benar-benar aman.",
       "values": [
         {
           "title": "Keamanan tanpa kompromi",
-          "desc": "Identitas dan data pelapor dilindungi di setiap tahap. Kerahasiaan bukan fitur — itu adalah fondasi."
+          "desc": "Identitas dan data pelapor dilindungi di setiap tahap. Kerahasiaan bukan fitur, itu adalah fondasi."
         },
         {
           "title": "Empati sebagai metode",
@@ -624,7 +624,7 @@
         },
         {
           "title": "Kolaborasi nyata",
-          "desc": "Perubahan sejati terjadi bersama — dengan komunitas, institusi, dan para ahli yang satu visi."
+          "desc": "Perubahan sejati terjadi bersama, dengan komunitas, institusi, dan para ahli yang satu visi."
         }
       ]
     },
@@ -634,13 +634,13 @@
       "subtitle": "SafePlace tidak berhenti di teknologi. Kami membangun komunitas dan ekosistem perlindungan yang berdampak langsung.",
       "items": [
         {
-          "title": "Sahabat Tangguh — Batch 1",
+          "title": "Sahabat Tangguh, Batch 1",
           "badge": "Sudah Berjalan",
-          "desc": "Program volunteer pelatihan intensif bagi individu yang ingin menjadi peer consultant — mencakup pendampingan sebaya, respons pertama, dan pemahaman mendalam tentang kekerasan seksual.",
+          "desc": "Program volunteer pelatihan intensif bagi individu yang ingin menjadi peer consultant, mencakup pendampingan sebaya, respons pertama, dan pemahaman mendalam tentang kekerasan seksual.",
           "detail": "Berkolaborasi bersama Smart Insight, ULBI, dan mitra lainnya"
         },
         {
-          "title": "Sahabat Tangguh — Batch 2",
+          "title": "Sahabat Tangguh, Batch 2",
           "badge": "Segera Hadir",
           "desc": "Membuka lebih banyak relawan baru untuk bergabung dan memperluas jangkauan pendampingan SafePlace ke lebih banyak individu yang membutuhkan.",
           "detail": "Pendaftaran akan segera dibuka"
@@ -649,7 +649,7 @@
           "title": "Webinar Edukasi Publik",
           "badge": "Akan Datang",
           "desc": "Seri webinar terbuka tentang isu kekerasan seksual, hak-hak korban, cara mendukung orang terdekat, dan membangun lingkungan yang lebih aman.",
-          "detail": "Terbuka untuk umum — segera hadir"
+          "detail": "Terbuka untuk umum, segera hadir"
         }
       ]
     },

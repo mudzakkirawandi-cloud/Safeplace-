@@ -8,7 +8,6 @@ export default function ImpactSection() {
 
   const stats = [
     { value: t("stat1_value"), label: t("stat1_label") },
-    { value: t("stat2_value"), label: t("stat2_label") },
     { value: t("stat3_value"), label: t("stat3_label") },
   ];
 
@@ -24,7 +23,7 @@ export default function ImpactSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 divide-y md:divide-y-0 md:divide-x divide-[#2C3E6B]">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 divide-y md:divide-y-0 md:divide-x divide-[#2C3E6B]">
           {stats.map((stat, index) => (
             <motion.div
               key={index}

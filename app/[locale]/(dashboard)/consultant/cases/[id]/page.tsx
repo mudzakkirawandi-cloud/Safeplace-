@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import { createClient } from "../../../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatWindow from "../../../../_components/ChatWindow";
@@ -13,38 +13,11 @@ import {
   NotebookPen,
   ChevronDown,
   Clock,
-  MapPin,
   User,
-  Shield,
   Save,
 } from "lucide-react";
 
 type TabKey = "info" | "chat" | "notes";
-
-// Data dummy — di produksi fetch dari Supabase berdasarkan params.id
-const CASE = {
-  id: "1",
-  code: "RPT-0047",
-  status: "in_consultation",
-  intent: "consult",
-  type: "Pelecehan Verbal",
-  date: "10 Juni 2024",
-  location: "Gedung A, Lantai 3",
-  campus: "Universitas SafePlace",
-  relationship: "Rekan kerja / teman sekelas",
-  safety: "Aman",
-  description:
-    "Kejadian berlangsung di lingkungan kampus. Pelapor merasa tidak nyaman dengan perilaku yang diterima secara berulang.",
-  attachments: 2,
-  notes: [
-    {
-      id: "n1",
-      content:
-        "Pelapor tampak masih dalam kondisi stres. Perlu pendekatan yang hati-hati dan sabar.",
-      timestamp: "12 Jun 2024, 10:30",
-    },
-  ],
-};
 
 const STATUS_OPTIONS = [
   { value: "in_review", label: "Sedang Ditinjau" },
@@ -56,21 +29,74 @@ const STATUS_OPTIONS = [
 export default function CaseDetailPage() {
   const t = useTranslations("consultant");
   const router = useRouter();
+  const params = useParams();
 
   const [activeTab, setActiveTab] = useState<TabKey>("info");
-  const [status, setStatus] = useState(CASE.status);
+  
+  const [report, setReport] = useState<{
+    id: string
+    tracking_code: string
+    incident_type: string
+    description: string
+    status: string
+    assigned_consultant_id: string
+    created_at: string
+    reporter?: { full_name: string }
+  } | null>(null)
+  
+  const [loading, setLoading] = useState(true)
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null)
+  
   const [statusDropdown, setStatusDropdown] = useState(false);
   const [newNote, setNewNote] = useState("");
-  const [notes, setNotes] = useState(CASE.notes);
+  // NOTE: Ideally notes should also be fetched from Supabase, but keeping it local state for now as instructed.
+  const [notes, setNotes] = useState<{id: string, content: string, timestamp: string}[]>([]);
   const [savingNote, setSavingNote] = useState(false);
-  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  
   const supabase = createClient();
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data?.user) setCurrentUserId(data.user.id);
-    });
-  }, [supabase.auth]);
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    
+    const fetchData = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return router.push('/login')
+      setCurrentUserId(user.id)
+      
+      const { data: reportData } = await supabase
+        .from('reports')
+        .select('*, reporter:users!reports_reporter_id_fkey(full_name)')
+        .eq('id', params.id as string)
+        .eq('assigned_consultant_id', user.id)
+        .maybeSingle()
+      
+      if (reportData) setReport(reportData)
+      setLoading(false)
+
+      channel = supabase
+        .channel(`escalation-consultant-${user.id}`)
+        .on('postgres_changes', {
+          event: 'INSERT',
+          schema: 'public',
+          table: 'escalation_notifications',
+          filter: `to_user_id=eq.${user.id}`
+        }, (payload) => {
+          const notif = payload.new as {
+            report_id: string, to_role: string, message: string, status: string
+          }
+          if (notif.status === 'approved' || notif.status === 'waiting_reporter_approval') {
+            alert(`Kasus baru dieskalasi kepada Anda. Buka halaman Cases untuk melihat.`)
+            router.push('/consultant/cases')
+          }
+        })
+        .subscribe()
+    }
+    fetchData()
+
+    return () => {
+      if (channel) supabase.removeChannel(channel)
+    }
+  }, [params.id, router, supabase])
 
   const handleSaveNote = async () => {
     if (!newNote.trim()) return;
@@ -94,8 +120,24 @@ export default function CaseDetailPage() {
     setSavingNote(false);
   };
 
+  const handleStatusChange = async (newStatus: string) => {
+    if (!report) return;
+    // update status locally and to supabase
+    setReport(prev => prev ? { ...prev, status: newStatus } : null);
+    setStatusDropdown(false);
+    await supabase.from('reports').update({ status: newStatus }).eq('id', report.id);
+  }
+
+  if (loading) {
+    return <div className="p-8 text-center text-muted-foreground">Memuat detail kasus...</div>;
+  }
+
+  if (!report) {
+    return <div className="p-8 text-center text-muted-foreground">Kasus tidak ditemukan atau Anda tidak memiliki akses.</div>;
+  }
+
   const currentStatusLabel =
-    STATUS_OPTIONS.find((s) => s.value === status)?.label ?? status;
+    STATUS_OPTIONS.find((s) => s.value === report.status)?.label ?? report.status;
 
   const tabs: { key: TabKey; labelKey: string; icon: React.ElementType }[] = [
     { key: "info", labelKey: "tab_info", icon: FileText },
@@ -122,9 +164,9 @@ export default function CaseDetailPage() {
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <h1 className="text-xl font-bold text-primary font-mono">
-              #{CASE.code}
+              #{report.tracking_code || report.id.substring(0,8)}
             </h1>
-            <p className="text-sm text-muted-foreground mt-0.5">{CASE.type}</p>
+            <p className="text-sm text-muted-foreground mt-0.5">{report.incident_type?.replace(/_/g, " ")}</p>
           </div>
 
           {/* Dropdown status */}
@@ -148,12 +190,9 @@ export default function CaseDetailPage() {
                   {STATUS_OPTIONS.map((opt) => (
                     <button
                       key={opt.value}
-                      onClick={() => {
-                        setStatus(opt.value);
-                        setStatusDropdown(false);
-                      }}
+                      onClick={() => handleStatusChange(opt.value)}
                       className={`w-full text-left px-4 py-2.5 text-sm hover:bg-muted transition-colors ${
-                        status === opt.value
+                        report.status === opt.value
                           ? "font-semibold text-primary"
                           : "text-muted-foreground"
                       }`}
@@ -205,20 +244,8 @@ export default function CaseDetailPage() {
               icon={FileText}
               title={t("info_incident")}
               items={[
-                { label: t("info_type"), value: CASE.type },
-                { label: t("info_date"), value: CASE.date },
-                {
-                  label: t("info_attachments"),
-                  value: `${CASE.attachments} file`,
-                },
-              ]}
-            />
-            <InfoCard
-              icon={MapPin}
-              title={t("info_location")}
-              items={[
-                { label: t("info_location_detail"), value: CASE.location },
-                { label: t("info_campus"), value: CASE.campus },
+                { label: t("info_type"), value: report.incident_type?.replace(/_/g, " ") },
+                { label: t("info_date"), value: new Date(report.created_at).toLocaleDateString("id-ID") },
               ]}
             />
             <InfoCard
@@ -226,24 +253,18 @@ export default function CaseDetailPage() {
               title={t("info_perpetrator")}
               items={[
                 {
-                  label: t("info_relationship"),
-                  value: CASE.relationship,
+                  label: "Pelapor",
+                  value: report.reporter?.full_name || "Anonim",
                 },
               ]}
             />
-            <InfoCard
-              icon={Shield}
-              title={t("info_safety")}
-              items={[{ label: t("info_safety_status"), value: CASE.safety }]}
-            />
-
             {/* Deskripsi */}
             <div className="bg-card rounded-2xl border border-border p-5">
               <h3 className="font-semibold text-primary text-sm mb-3">
                 {t("info_description")}
               </h3>
               <p className="text-sm text-muted-foreground leading-relaxed">
-                {CASE.description}
+                {report.description || "Tidak ada deskripsi."}
               </p>
             </div>
           </motion.div>
@@ -260,7 +281,7 @@ export default function CaseDetailPage() {
           >
             {currentUserId ? (
               <ChatWindow 
-                reportId={CASE.id}
+                reportId={report.id}
                 currentUserId={currentUserId}
                 userRole="consultant"
               />

@@ -81,9 +81,9 @@ export default function SatgasCaseDetailPage() {
       // 1. Fetch Report
       const { data: reportData } = await supabase
         .from("reports")
-        .select(`*, reporter:reporter_id(full_name), consultant:assigned_consultant_id(full_name)`)
+        .select(`*, reporter:users!reports_reporter_id_fkey(full_name), consultant:users!reports_assigned_consultant_id_fkey(full_name)`)
         .eq("id", reportId)
-        .single();
+        .maybeSingle();
       
       setReport(reportData);
 
@@ -124,6 +124,21 @@ export default function SatgasCaseDetailPage() {
       })
       .subscribe();
       
+    const escalationSub = supabase
+      .channel(`escalation-satgas-${session?.user.id}`)
+      .on('postgres_changes', {
+        event: 'UPDATE',
+        schema: 'public',
+        table: 'escalation_notifications',
+        filter: `to_user_id=eq.${session?.user.id}`
+      }, (payload) => {
+        const notif = payload.new as { status: string, report_id: string }
+        if (notif.status === 'approved') {
+          alert('Pelapor menyetujui eskalasi. Kasus siap ditangani.')
+        }
+      })
+      .subscribe();
+
     const invSub = supabase.channel('satgas_inv')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'satgas_investigations', filter: `report_id=eq.${reportId}` }, () => {
         fetchInvestigations();
@@ -138,6 +153,7 @@ export default function SatgasCaseDetailPage() {
 
     return () => {
       supabase.removeChannel(msgSub);
+      supabase.removeChannel(escalationSub);
       supabase.removeChannel(invSub);
       supabase.removeChannel(docSub);
     };

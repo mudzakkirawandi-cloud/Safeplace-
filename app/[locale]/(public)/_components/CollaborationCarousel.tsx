@@ -3,18 +3,9 @@
 
 
 const partners = [
-  {
-    name: "SafePlace",
-    src: "/images/logo-safeplace.svg",
-  },
-  {
-    name: "Sahabat Tangguh",
-    src: "/images/sahabat_tangguh.png",
-  },
-  {
-    name: "Smart Insight",
-    src: "/images/smart_insight.png",
-  },
+  { name: "SafePlace", src: "/images/logosafeplace.png" },
+  { name: "Sahabat Tangguh", src: "/images/logosahabattangguh.png" },
+  { name: "Smart Insight", src: "/images/logosmartinsight.png" },
 ];
 
 const repeated = [

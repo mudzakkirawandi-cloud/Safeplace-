@@ -301,7 +301,7 @@ export default function ReportDashboardPage() {
 
   return (
     <div className="min-h-full bg-[#F8FAFB] pb-10">
-      <div className="hidden md:flex items-center justify-between px-8 py-5 bg-card border-b border-border">
+      <div className="hidden md:flex items-center justify-between px-8 py-5 bg-card border-b border-border sticky top-0 z-10">
         <div>
           <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
           <p className="text-sm text-muted-foreground">Kamu aman di sini 🌿</p>

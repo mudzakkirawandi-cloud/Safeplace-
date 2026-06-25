@@ -173,7 +173,7 @@ export default function SatgasLayout({
         </div>
 
         {/* Topbar Desktop */}
-        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-card border-b border-border z-10 relative shadow-sm">
+        <header className="hidden md:flex items-center justify-end px-6 py-4 bg-card border-b border-border sticky top-0 z-10 shadow-sm">
           <div className="flex items-center gap-4">
             <NotificationBell />
             <div className="h-8 w-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm">

@@ -23,6 +23,7 @@ export interface Consultant {
   email: string;
   role: string;
   is_active: boolean;
+  is_online: boolean;
   show_public?: boolean;
   metadata?: UserMetadata;
 }
@@ -89,7 +90,7 @@ export default function ConsultationPage() {
 
   const filteredConsultants = activeFilter === "all" 
     ? consultants 
-    : consultants.filter(c => (c as any).is_online === true);
+    : consultants.filter(c => c.is_online === true);
 
   const getInitials = (name: string) => {
     if (!name) return "CS";
@@ -224,7 +225,7 @@ export default function ConsultationPage() {
                       <p className="text-muted-foreground text-sm font-medium mb-1">
                         {consultant.metadata?.specialization || "Konsultan Pendamping"}
                       </p>
-                      {(consultant as any).is_online ? (
+                      {consultant.is_online ? (
                         <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-md font-medium">
                           <Globe size={12} /> Tersedia Online
                         </span>

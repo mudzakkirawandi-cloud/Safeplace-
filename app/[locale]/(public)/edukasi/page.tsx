@@ -144,8 +144,7 @@ export default function EducationPage() {
                     </div>
                   ) : item.content_type === "artikel" && item.file_path ? (
                     <div className="relative aspect-video w-full bg-gray-100 overflow-hidden">
-                      {/* eslint-disable-next-line @next/next/no-img-element */}
-                      <img src={item.file_path} alt={item.title} className="w-full h-full object-cover" />
+                      <Image src={item.file_path} alt={item.title} fill sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" className="object-cover" loading="lazy" />
                     </div>
                   ) : item.content_type === "pdf" ? (
                     <div className="aspect-video w-full bg-blue-50 flex flex-col items-center justify-center text-primary">

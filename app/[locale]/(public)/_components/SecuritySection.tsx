@@ -69,7 +69,7 @@ export default function SecuritySection() {
                 <div className={`w-14 h-14 ${feature.color} rounded-xl flex items-center justify-center mb-5 shadow-sm`}>
                   {feature.icon}
                 </div>
-                <h4 className="font-bold text-primary mb-2">{feature.title}</h4>
+                <h3 className="font-bold text-primary mb-2">{feature.title}</h3>
                 <p className="text-sm text-muted-foreground leading-relaxed">{feature.desc}</p>
               </motion.div>
             ))}

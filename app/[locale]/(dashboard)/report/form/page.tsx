@@ -8,6 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { 
   ArrowLeft, ArrowRight, ShieldAlert, UploadCloud, 
   Phone, Mic, Square, RotateCcw, Check, HeartHandshake, ShieldCheck
@@ -689,7 +690,8 @@ export default function ReportFormPage() {
                             <div key={idx} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2">
                               <div className="flex items-center gap-3 min-w-0">
                                 {file.type.startsWith('image/') ? (
-                                  <img src={URL.createObjectURL(file)} alt={file.name}
+                                  <Image src={URL.createObjectURL(file)} alt={file.name}
+                                    width={40} height={40} unoptimized loading="lazy"
                                     className="w-10 h-10 object-cover rounded-lg flex-shrink-0" />
                                 ) : file.type.startsWith('video/') ? (
                                   <video src={URL.createObjectURL(file)}

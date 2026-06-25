@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
 import { Paperclip, X, Download } from "lucide-react";
+import Image from "next/image";
 
 interface Attachment {
   id: string;
@@ -61,7 +62,7 @@ export default function AttachmentsButton({ reportId }: { reportId: string }) {
                 <div key={att.id} className="border rounded-xl overflow-hidden bg-gray-50">
                   {att.file_type?.startsWith("image/") ? (
                     <a href={att.file_url} target="_blank" rel="noopener noreferrer">
-                      <img src={att.file_url} alt="Lampiran" className="w-full h-32 object-cover" />
+                      <Image src={att.file_url} alt="Lampiran" width={300} height={128} className="w-full h-32 object-cover" loading="lazy" />
                     </a>
                   ) : att.file_type?.startsWith("video/") ? (
                     <video src={att.file_url} controls className="w-full h-32 object-cover" />
@@ -88,3 +89,4 @@ export default function AttachmentsButton({ reportId }: { reportId: string }) {
     </>
   );
 }
+

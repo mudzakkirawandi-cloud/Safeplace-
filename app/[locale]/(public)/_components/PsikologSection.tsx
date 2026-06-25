@@ -4,7 +4,7 @@ import Link from "next/link";
 
 const psikolog = [
   {
-    id: "6fb2a618-5334-4a3a-9408-182cc32dd533",
+    id: "6fb2a618-5334-4a3a-9408-152cc32dd533",
     name: "RR. Sri Rusmawati",
     title: "S.Psi., Psikolog",
     photo: "/images/psikolog/sri-rusmawati.png",

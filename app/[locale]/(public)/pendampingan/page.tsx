@@ -36,10 +36,13 @@ export default function ConsultationPage() {
   const [activeFilter, setActiveFilter] = useState("all");
 
   const fetchConsultants = useCallback(async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("users")
       .select("*")
       .eq("role", "consultant");
+
+    console.log("DATA:", JSON.stringify(data));
+    console.log("ERROR:", JSON.stringify(error));
 
     if (data) {
       const typedData = data as Consultant[];

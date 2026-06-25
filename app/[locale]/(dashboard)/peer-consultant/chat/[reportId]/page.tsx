@@ -547,99 +547,51 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
   const handleEscalate = async () => {
     if (!escalateReason.trim()) return
     if (!currentUser) return
-
+    
     if (escalateTo === 'consultant' || escalateTo === 'both') {
       if (!selectedConsultantId) {
         alert('Pilih konselor terlebih dahulu')
-        setIsEscalating(false)
         return
       }
     }
     if (escalateTo === 'satgas' || escalateTo === 'both') {
       if (!selectedSatgasId) {
         alert('Pilih satgas terlebih dahulu')
-        setIsEscalating(false)
         return
       }
     }
-
+    
     setIsEscalating(true)
     
     try {
-      // Update report dengan info eskalasi
-      const updateData: Record<string, unknown> = {
-        escalation_reason: escalateReason,
-        escalated_to: escalateTo,
-        escalated_at: new Date().toISOString(),
-        escalation_approved_by_reporter: false
-      }
-      
-      if (escalateTo === 'consultant' || escalateTo === 'both') {
-        updateData.assigned_consultant_id = selectedConsultantId || null
-      }
-      if (escalateTo === 'satgas' || escalateTo === 'both') {
-        updateData.assigned_satgas_id = selectedSatgasId || null
-      }
-      
-      const { error: updateError } = await supabase.from('reports').update(updateData).eq('id', reportId)
-      if (updateError) {
-        console.error('Update report error:', updateError)
-        throw updateError
-      }
-      
-      // Kirim notifikasi eskalasi ke tabel escalation_notifications
-      if (escalateTo === 'consultant' || escalateTo === 'both') {
-        const { error: notifError } = await supabase.from('escalation_notifications').insert({
-          report_id: reportId,
-          from_peer_consultant_id: currentUser.id,
-          to_user_id: selectedConsultantId,
-          to_role: 'consultant',
-          status: 'waiting_reporter_approval',
-          message: escalateReason
+      const res = await fetch('/api/escalate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          reportId,
+          escalateTo,
+          selectedConsultantId,
+          selectedSatgasId,
+          escalateReason,
+          fromPeerConsultantId: currentUser.id
         })
-        if (notifError) {
-          console.error('Insert escalation notif error:', notifError)
-          throw notifError
-        }
-      }
-      if (escalateTo === 'satgas' || escalateTo === 'both') {
-        const { error: notifError } = await supabase.from('escalation_notifications').insert({
-          report_id: reportId,
-          from_peer_consultant_id: currentUser.id,
-          to_user_id: selectedSatgasId,
-          to_role: 'satgas',
-          status: 'waiting_reporter_approval',
-          message: escalateReason
-        })
-        if (notifError) {
-          console.error('Insert escalation notif error:', notifError)
-          throw notifError
-        }
-      }
-      
-      // Kirim pesan sistem ke chat untuk minta persetujuan pelapor
-      const { error: msgError } = await supabase.from('messages').insert({
-        report_id: reportId,
-        sender_id: null,
-        content: `[ESKALASI]: Peer Consultant ingin meneruskan pendampinganmu ke ${
-          escalateTo === 'consultant' ? 'Konselor Profesional' :
-          escalateTo === 'satgas' ? 'Satgas Kampus' :
-          'Konselor Profesional dan Satgas Kampus'
-        }. Alasan: ${escalateReason}. Apakah kamu menyetujui?`,
-        message_type: 'text',
-        is_read: false
       })
-      if (msgError) {
-        console.error('Insert message error:', msgError)
-        throw msgError
+      
+      const data = await res.json()
+      
+      if (!res.ok) {
+        console.error('Escalation failed:', data.error)
+        alert('Gagal mengeskalasi: ' + data.error)
+        return
       }
       
       setIsEscalateModalOpen(false)
       setEscalateReason('')
-      setIsEscalating(false)
       
     } catch (err) {
       console.error('Escalation error:', err)
+      alert('Terjadi kesalahan saat eskalasi')
+    } finally {
       setIsEscalating(false)
     }
   }

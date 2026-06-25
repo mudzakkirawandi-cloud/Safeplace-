@@ -186,9 +186,9 @@ export default function ChatWindow({
     const newMsgData = {
       report_id: reportId,
       sender_id: currentUserId,
-      sender_tracking_code: trackingCode,
       content,
-      is_read: false
+      is_read: false,
+      message_type: 'text'
     };
 
     const { error } = await supabase
@@ -196,7 +196,8 @@ export default function ChatWindow({
       .insert([newMsgData]);
 
     if (error) {
-      console.error("Error sending message:", error);
+      console.error('ChatWindow send error:', error);
+      alert('Gagal kirim pesan: ' + error.message);
     }
   };
 

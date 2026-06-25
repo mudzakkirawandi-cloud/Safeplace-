@@ -77,7 +77,7 @@ export default function ConsultantDashboardPage() {
           to_role: string
           status: string
         }
-        if (notif.status === 'waiting_reporter_approval') {
+        if (notif.status === 'approved') {
           setNewEscalationNotif(notif.report_id)
           setShowEscalationPopup(true)
           setTimeout(() => setShowEscalationPopup(false), 8000)

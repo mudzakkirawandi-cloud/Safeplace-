@@ -263,7 +263,32 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   };
 
+  useEffect(() => {
+    if (showEscalationApproval) return
+    
+    const poll = async () => {
+      const { data } = await supabase
+        .from('escalation_notifications')
+        .select('*')
+        .eq('report_id', reportId)
+        .eq('status', 'waiting_reporter_approval')
+        .maybeSingle()
+      
+      if (data) {
+        setEscalationRequest(data)
+        setShowEscalationApproval(true)
+      }
+    }
+    
+    const interval = setInterval(poll, 5000)
+    poll() // langsung cek sekali
+    
+    return () => clearInterval(interval)
+  }, [reportId, showEscalationApproval, supabase])
+
   const callAIAgent = async (userMessage: string, attachmentUrl?: string | null, messageType?: string | null, attachmentName?: string | null) => {
+    // Hanya panggil AI jika belum ada peer consultant
+    if (peerConsultant) return;
     setIsAITyping(true);
     try {
       const res = await fetch("/api/ai-agent", {
@@ -545,7 +570,9 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
             </div>
             <div>
               <h2 className="font-bold text-[#1B4F72] leading-tight">
-                {peerConsultant?.full_name || "Mencari Peer Consultant..."}
+                {peerConsultant?.full_name 
+                  ? `Sahabat Tangguh - ${peerConsultant.full_name}`
+                  : "Mencari Sahabat Tangguh..."}
               </h2>
               {isPeerTyping ? (
                 <p className="text-xs text-teal-500 font-medium animate-pulse">
@@ -555,7 +582,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
                 <p className={`text-xs font-medium flex items-center gap-1 ${
                   peerConsultant?.is_online ? 'text-green-500' : 'text-gray-400'
                 }`}>
-                  {peerConsultant ? (peerConsultant.is_online ? 'Online' : 'Offline') : 'Harap tunggu...'}
+                  {peerConsultant ? (peerConsultant.is_online ? 'Online' : 'Offline') : 'Sahabat Tangguh sedang dicari...'}
                 </p>
               )}
             </div>

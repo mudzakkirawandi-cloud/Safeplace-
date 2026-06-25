@@ -1,9 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Search, Filter, MoreVertical, MailWarning, Loader2 } from "lucide-react";
+import { 
+  Plus, 
+  Search, 
+  Filter, 
+  MoreVertical, 
+  MailWarning, 
+  Loader2, 
+  ArrowLeft, 
+  UserPlus 
+} from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { v4 as uuidv4 } from "uuid";
+import { useRouter } from "next/navigation";
 
 // Note: In a real app, you would fetch these from the database
 const CAMPUSES = [
@@ -22,6 +32,7 @@ interface PeerConsultant {
 }
 
 export default function AdminPeerConsultantsPage() {
+  const router = useRouter();
   const [consultants, setConsultants] = useState<PeerConsultant[]>([]);
   const [loading, setLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -83,8 +94,8 @@ export default function AdminPeerConsultantsPage() {
     });
   };
 
-  const resendInvite = (id: string) => {
-    alert(`Mengirim ulang undangan ke peer consultant ID: ${id}`);
+  const handleResendInvite = async (id: string) => {
+    alert(`Mengirim ulang undangan ke Sahabat Tangguh ID: ${id}`);
     setConsultants(consultants.map(c => c.id === id ? { ...c, status: "Undangan Terkirim" } : c));
   };
 
@@ -101,16 +112,21 @@ export default function AdminPeerConsultantsPage() {
   return (
     <div className="p-6 max-w-6xl mx-auto">
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
-        <div>
-          <h1 className="text-2xl font-bold text-primary">Manajemen Peer Consultant</h1>
-          <p className="text-sm text-muted-foreground mt-1">Kelola akses dan data peer consultant (konselor sebaya).</p>
+        <div className="flex items-center gap-4">
+          <button onClick={() => router.back()} className="text-muted-foreground hover:text-primary transition-colors">
+            <ArrowLeft size={24} />
+          </button>
+          <div>
+            <h1 className="text-2xl font-bold text-primary">Manajemen Sahabat Tangguh</h1>
+            <p className="text-sm text-muted-foreground mt-1">Kelola akses dan data Sahabat Tangguh (konselor sebaya).</p>
+          </div>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
           className="bg-primary hover:bg-[#1a2540] text-white px-4 py-2 rounded-xl flex items-center gap-2 text-sm font-semibold transition-colors"
         >
           <Plus size={16} />
-          Undang Peer Consultant Baru
+          Undang Sahabat Tangguh Baru
         </button>
       </div>
 
@@ -157,7 +173,7 @@ export default function AdminPeerConsultantsPage() {
                   <td className="px-6 py-4 text-right">
                     <div className="flex justify-end gap-2">
                       {c.status === "Undangan Expired" && (
-                        <button onClick={() => resendInvite(c.id)} className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg" title="Kirim Ulang Undangan">
+                        <button onClick={() => handleResendInvite(c.id)} className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg" title="Kirim Ulang Undangan">
                           <MailWarning size={16} />
                         </button>
                       )}
@@ -179,8 +195,15 @@ export default function AdminPeerConsultantsPage() {
             <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsModalOpen(false)} />
             <motion.div initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 0.95 }} className="bg-card rounded-2xl shadow-xl w-full max-w-2xl relative z-10 max-h-[90vh] flex flex-col">
               <div className="p-6 border-b border-border">
-                <h2 className="text-lg font-bold text-primary">Undang Peer Consultant Baru</h2>
-                <p className="text-sm text-muted-foreground">Kirim undangan akses dashboard peer consultant.</p>
+                <div className="flex items-center gap-3 mb-6">
+                  <div className="w-10 h-10 bg-[#EAF3EE] rounded-full flex items-center justify-center text-primary">
+                    <UserPlus size={20} />
+                  </div>
+                  <div>
+                    <h2 className="text-lg font-bold text-primary">Undang Sahabat Tangguh Baru</h2>
+                    <p className="text-sm text-muted-foreground">Kirim undangan akses dashboard Sahabat Tangguh.</p>
+                  </div>
+                </div>
               </div>
               <div className="p-6 overflow-y-auto">
                 <form id="invite-form" onSubmit={handleInvite} className="space-y-4">

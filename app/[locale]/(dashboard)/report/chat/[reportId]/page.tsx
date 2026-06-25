@@ -68,6 +68,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     message: string
   } | null>(null)
   const [showEscalationApproval, setShowEscalationApproval] = useState(false)
+  const [noPCAvailable, setNoPCAvailable] = useState(false)
 
   useEffect(() => {
     let isMounted = true;
@@ -91,6 +92,18 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           if (repDetail.assigned_consultant) {
             setPeerConsultant(repDetail.assigned_consultant);
           }
+          if (!repDetail.assigned_consultant_id) {
+            // Cek apakah ada PC online
+            const { count } = await supabase
+              .from('users')
+              .select('*', { count: 'exact', head: true })
+              .eq('role', 'peer_consultant')
+              .eq('is_online', true)
+            
+            if (count === 0) {
+              setNoPCAvailable(true)
+            }
+          }
         }
 
         const { data: msgs } = await supabase
@@ -105,7 +118,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
           if (!repDetail?.assigned_consultant_id) {
             const hasAIMessage = msgs.some((m: Message) => m.sender_id === null || m.content.startsWith('[AI]'));
             if (!hasAIMessage) {
-              const greeting = "[AI]: Halo, aku AI Pendamping SafePlace 💙\nPeer consultant kami sedang dalam perjalanan.\nAku di sini bersamamu dulu ya —\nceritakan apa yang kamu rasakan sekarang?";
+              const greeting = "[AI]: Halo, aku AI Pendamping SafePlace 💙\nSahabat Tangguh kami sedang dalam perjalanan.\nAku di sini bersamamu dulu ya —\nceritakan apa yang kamu rasakan sekarang?";
               await supabase.from("messages").insert({
                 report_id: reportId,
                 sender_id: null,
@@ -544,7 +557,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
     await supabase.from('messages').insert({
       report_id: reportId,
       sender_id: null,
-      content: '[SISTEM]: Kamu menolak eskalasi. Peer Consultant akan tetap mendampingimu.',
+      content: '[SISTEM]: Kamu menolak eskalasi. Sahabat Tangguh akan tetap mendampingimu.',
       message_type: 'text',
       is_read: false
     })
@@ -594,10 +607,50 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
       </header>
 
       {/* Banner Wait for Consultant */}
-      {!report?.assigned_consultant_id && (
+      {!report?.assigned_consultant_id && !noPCAvailable && (
         <div className="bg-[#E1F0FA] p-3 text-center border-b border-[#BDE0F5] shrink-0">
-          <p className="text-sm font-semibold text-[#1B4F72]">⏳ Peer consultant sedang menuju...</p>
+          <p className="text-sm font-semibold text-[#1B4F72]">⏳ Sahabat Tangguh sedang menuju...</p>
           <p className="text-xs text-[#4A90B8]">AI Pendamping akan menemanimu sementara waktu.</p>
+        </div>
+      )}
+
+      {noPCAvailable && (
+        <div className="bg-amber-50 border-b border-amber-200 px-4 py-3">
+          <div className="flex items-start gap-3">
+            <span className="text-amber-500 text-lg flex-shrink-0">⏳</span>
+            <div className="flex-1">
+              <p className="text-sm font-semibold text-amber-800">
+                Sahabat Tangguh sedang tidak tersedia
+              </p>
+              <p className="text-xs text-amber-600 mt-0.5">
+                Semua Sahabat Tangguh sedang offline. 
+                Sementara itu, AI Pendamping siap menemanimu.
+                Kamu juga bisa menghubungi bantuan darurat jika diperlukan.
+              </p>
+            </div>
+            <button
+              onClick={() => setNoPCAvailable(false)}
+              className="text-amber-400 hover:text-amber-600 flex-shrink-0">
+              <X size={16} />
+            </button>
+          </div>
+          <div className="flex gap-2 mt-2 ml-8">
+            <a href="tel:119" 
+              className="text-xs bg-amber-100 text-amber-700 px-3 py-1 
+                rounded-full hover:bg-amber-200 transition font-medium">
+              119 ext 8
+            </a>
+            <a href="tel:110"
+              className="text-xs bg-amber-100 text-amber-700 px-3 py-1 
+                rounded-full hover:bg-amber-200 transition font-medium">
+              Polri 110
+            </a>
+            <a href="tel:1500454"
+              className="text-xs bg-amber-100 text-amber-700 px-3 py-1 
+                rounded-full hover:bg-amber-200 transition font-medium">
+              SAPA 1500-454
+            </a>
+          </div>
         </div>
       )}
 
@@ -844,22 +897,19 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
                 Permintaan Eskalasi
               </h3>
             </div>
-            <p className="text-sm text-gray-600 mb-3 text-center">
-              Peer Consultant ingin meneruskan pendampinganmu ke{' '}
-              <strong>
-                {escalationRequest.to_role === 'consultant' 
-                  ? 'Konselor Profesional' 
-                  : escalationRequest.to_role === 'satgas'
-                  ? 'Satgas Kampus'
-                  : 'Konselor & Satgas'}
-              </strong>
-            </p>
-            <div className="bg-gray-50 rounded-xl p-3 mb-4">
-              <p className="text-xs text-gray-500 mb-1">Alasan:</p>
-              <p className="text-sm text-gray-700">
-                {escalationRequest.message}
+            <p className="text-gray-700 leading-relaxed text-sm mb-6 bg-gray-50 p-4 rounded-xl">
+                Sahabat Tangguh ingin meneruskan pendampinganmu ke{' '}
+                <span className="font-bold text-[#1B4F72]">
+                  {escalationRequest.to_role === 'consultant' 
+                    ? 'Konselor Profesional'
+                    : escalationRequest.to_role === 'satgas'
+                      ? 'Satgas Kampus'
+                      : 'Konselor Profesional dan Satgas Kampus'}
+                </span>
+                <br /><br />
+                <span className="text-xs text-gray-500 uppercase tracking-wider font-bold">ALASAN:</span><br/>
+                <span className="font-medium">{escalationRequest.message}</span>
               </p>
-            </div>
             <p className="text-xs text-gray-500 text-center mb-4">
               Histori chatmu akan tetap tersimpan dan 
               bisa dilihat oleh pendamping baru.

@@ -327,9 +327,12 @@ export default function ReportFormPage() {
             <p className="text-3xl font-mono font-bold text-[#1B4F72] tracking-wider">{trackingCode}</p>
           </div>
 
-          <p className="text-gray-600 mb-8 max-w-md mx-auto">
-            Peer consultant akan menghubungimu segera. Biasanya dalam 2-5 menit jika ada yang online.
-          </p>
+          <div className="bg-[#E1F0FA] rounded-2xl p-6 text-center shadow-sm mb-8">
+            <h3 className="text-[#1B4F72] font-bold text-lg mb-2">Kasus Berhasil Dilaporkan</h3>
+            <p className="text-sm text-[#4A90B8]">
+              Sahabat Tangguh akan menghubungimu segera. Biasanya dalam 2-5 menit jika ada yang online.
+            </p>
+          </div>
 
           <div className="flex flex-col items-center gap-4">
             <button onClick={() => router.push("/report/dashboard")} className="w-full sm:w-auto bg-[#1B4F72] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-[#123650] transition-colors shadow-md">
@@ -561,8 +564,8 @@ export default function ReportFormPage() {
                 <motion.div key="step5" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="flex-1">
                   <div className="flex justify-between items-start mb-1">
                     <h2 className="text-[24px] font-bold text-[#1B4F72]">Ada bukti yang ingin kamu bagikan? (tidak wajib)</h2>
-                    <div className="bg-[#F0F7FC] text-[#4A90B8] text-xs font-bold px-3 py-1 rounded-full flex items-center gap-1">
-                      <ShieldCheck className="w-3 h-3" /> Hanya bisa diakses peer consultant kamu
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium justify-center mt-3 bg-gray-50 py-1.5 rounded-lg border border-gray-100">
+                      <ShieldCheck className="w-3 h-3" /> Hanya bisa diakses Sahabat Tangguh kamu
                     </div>
                   </div>
                   <p className="text-sm text-gray-400 mb-8">Bukti tidak wajib — laporanmu tetap valid tanpa ini</p>

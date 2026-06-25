@@ -134,12 +134,12 @@ export default function ReportStartPage() {
     
     if (q1 === "A" || q1 === "B") {
       return {
-        title: "Kami rekomendasikan kamu bicara dengan Peer Consultant dulu",
+        title: "Kami rekomendasikan kamu bicara dengan Sahabat Tangguh dulu",
         sub: "Mereka adalah teman sebaya yang terlatih dan siap mendengarkan",
       };
     } else if (q1 === "C") {
       return {
-        title: "Kami akan hubungkan kamu dengan Peer Consultant",
+        title: "Kami akan hubungkan kamu dengan Sahabat Tangguh",
         sub: "Yang akan membantu mengarahkan ke penanganan resmi",
       };
     } else {
@@ -215,13 +215,13 @@ export default function ReportStartPage() {
                   </div>
                   <h2 className="text-xl font-bold text-[#1B4F72] mb-3">Lapor dengan Akun</h2>
                   <p className="text-gray-500 leading-relaxed text-sm">
-                    Gunakan akunmu. Memudahkan komunikasi lanjutan dengan peer consultant.
+                    Gunakan akunmu. Memudahkan komunikasi lanjutan dengan Sahabat Tangguh.
                   </p>
                 </button>
               </div>
               <p className="text-center text-sm text-gray-400 mt-4">
                 Kamu bisa tetap anonim meski lapor dengan akun — <br className="md:hidden" />
-                identitasmu hanya diketahui peer consultant kamu
+                identitasmu hanya diketahui Sahabat Tangguh kamu
               </p>
             </motion.div>
           )}
@@ -262,7 +262,7 @@ export default function ReportStartPage() {
                     <MessageCircle className="w-7 h-7 text-[#4A90B8]" />
                   </div>
                   <div>
-                    <h2 className="text-lg font-bold text-[#1B4F72] mb-1">Bicara dengan Peer Consultant</h2>
+                    <h2 className="text-lg font-bold text-[#1B4F72] mb-1">Bicara dengan Sahabat Tangguh</h2>
                     <p className="text-gray-500 text-sm leading-relaxed">
                       Ceritakan ke teman sebaya yang terlatih dan siap mendengarkan.
                     </p>
@@ -279,7 +279,7 @@ export default function ReportStartPage() {
                   <div>
                     <h2 className="text-lg font-bold text-[#1B4F72] mb-1">Laporkan ke Satgas Kampus</h2>
                     <p className="text-gray-500 text-sm leading-relaxed">
-                      Proses resmi dengan Satgas PPKS kampus. Peer consultant akan mendampingimu.
+                      Proses resmi dengan Satgas PPKS kampus. Sahabat Tangguh akan mendampingimu.
                     </p>
                   </div>
                 </button>

@@ -9,6 +9,7 @@ import {
   User,
   Home,
   Menu,
+  HeartHandshake,
 } from "lucide-react";
 import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
@@ -161,14 +162,12 @@ export default function PeerConsultantLayout({
 
       <div className="px-4 py-4 border-b border-border">
         <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-full bg-[#EAF3EE] flex items-center justify-center font-bold text-primary text-sm flex-shrink-0">
-            PC
+          <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center shrink-0">
+            <HeartHandshake className="w-6 h-6 text-primary" />
           </div>
-          <div className="min-w-0">
-            <p className="font-semibold text-sm text-primary truncate">
-              Peer Consultant
-            </p>
-            <p className="text-xs text-muted-foreground">Konselor Sebaya</p>
+          <div>
+            <h1 className="font-bold text-lg text-primary tracking-tight">Portal Sahabat Tangguh</h1>
+            <p className="text-[11px] text-muted-foreground font-medium uppercase tracking-wider">SafePlace Platform</p>
           </div>
         </div>
 

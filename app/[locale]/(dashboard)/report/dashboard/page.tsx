@@ -8,7 +8,8 @@ import {
   MessageCircle, 
   AlertCircle,
   X,
-  RefreshCw
+  RefreshCw,
+  User as UserIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
@@ -94,7 +95,7 @@ export default function ReportDashboardPage() {
           incidentType: activeReport?.incident_type || '',
           daysSinceReport: daysSince,
           lastMessage: '',
-          consultantName: 'Peer Consultant',
+          consultantName: 'Sahabat Tangguh',
           timeOfDay
         })
       })
@@ -349,8 +350,9 @@ export default function ReportDashboardPage() {
                       </p>
                     </div>
                     {report.unreadCount ? (
-                      <span className="bg-[#C9847A] text-white text-xs rounded-full w-5 h-5 flex items-center justify-center font-bold">
-                        {report.unreadCount}
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E1F0FA] text-[#1B4F72] rounded-full text-xs font-semibold whitespace-nowrap">
+                        <UserIcon size={12} className="opacity-70" />
+                        Sahabat Tangguh
                       </span>
                     ) : null}
                   </div>
@@ -473,9 +475,9 @@ export default function ReportDashboardPage() {
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="font-semibold text-gray-800 text-sm">
-                  💬 Pesan dari Peer Consultant
-                </p>
+                <h3 className="font-bold text-[#1B4F72] mb-3 flex items-center gap-2 text-sm md:text-base">
+                  💬 Pesan dari Sahabat Tangguh
+                </h3>
                 <p className="text-xs text-gray-500 mt-0.5">
                   Laporan #{newMsgNotif.trackingCode}
                 </p>

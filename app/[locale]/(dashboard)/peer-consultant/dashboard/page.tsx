@@ -77,12 +77,11 @@ export default function PeerConsultantDashboardPage() {
           .eq("id", user.id)
           .maybeSingle();
 
-        if (isMounted) {
-          setCurrentUser({ id: user.id, name: profile?.full_name || "Peer Consultant", active_cases_count: profile?.active_cases_count || 0 });
-          if (profile?.is_online !== undefined) {
+        if (profile) {
+          setCurrentUser({ id: user.id, name: profile?.full_name || "Sahabat Tangguh", active_cases_count: profile?.active_cases_count || 0 });
+        }  if (profile?.is_online !== undefined) {
             setStatusText(profile.is_online ? "Tersedia" : "Istirahat");
           }
-        }
 
         // Fetch reports assigned to this consultant
         const { data: reportData, error: reportError } = await supabase
@@ -316,7 +315,7 @@ export default function PeerConsultantDashboardPage() {
       const { error: msgError } = await supabase.from('messages').insert({
         report_id: newAssignment.report_id,
         sender_id: null,
-        content: '[SISTEM]: Peer Consultant telah menerima pendampinganmu. Kamu sekarang bisa mulai chat.',
+        content: '[SISTEM]: Sahabat Tangguh telah menerima pendampinganmu. Kamu sekarang bisa mulai chat.',
         message_type: 'text',
         is_read: false
       });
@@ -365,7 +364,7 @@ export default function PeerConsultantDashboardPage() {
         await supabase.from('messages').insert({
           report_id: newAssignment.report_id,
           sender_id: null,
-          content: '[SISTEM]: Sedang mencari peer consultant lain yang tersedia. Mohon tunggu.',
+          content: '[SISTEM]: Sedang mencari Sahabat Tangguh lain yang tersedia. Mohon tunggu.',
           message_type: 'text',
           is_read: false
         });
@@ -422,7 +421,7 @@ export default function PeerConsultantDashboardPage() {
       >
         <div>
           <h1 className="text-2xl font-bold text-primary">
-            Halo, {currentUser?.name?.split(' ')[0] || "Peer Consultant"} 👋
+            Halo, {currentUser?.name?.split(' ')[0] || "Sahabat Tangguh"} 👋
           </h1>
           <p className="text-muted-foreground text-sm mt-1">Ini adalah ringkasan kasus yang Anda dampingi hari ini.</p>
         </div>

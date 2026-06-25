@@ -93,10 +93,9 @@ export default function PeerConsultantProfilePage() {
         initial={{ opacity: 0, y: -12 }}
         animate={{ opacity: 1, y: 0 }}
       >
-        <h1 className="text-2xl font-bold text-primary">
-          Profil Peer Consultant
-        </h1>
-        <p className="text-muted-foreground text-sm mt-1">Kelola informasi pribadi dan pengaturan keamanan Anda.</p>
+        <h1 className="text-2xl font-bold text-primary mb-2">Profil Sahabat Tangguh</h1>
+        <p className="text-sm text-muted-foreground">
+          Kelola profil dan status kesediaanmu mendampingi.aturan keamanan Anda.</p>
       </motion.div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

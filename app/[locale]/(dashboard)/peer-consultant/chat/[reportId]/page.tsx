@@ -10,6 +10,7 @@ import {
   ShieldAlert, AlertTriangle, FileText,
   User, Check, CheckCheck, MessageCircle, X
 } from "lucide-react";
+import AttachmentsButton from "@/components/AttachmentsButton";
 
 interface ReportItem {
   id: string;
@@ -718,6 +719,7 @@ export default function PeerConsultantChatPage({ params }: { params: { reportId:
               >
                 <FileText size={14} /> Ringkasan AI
               </button>
+              <AttachmentsButton reportId={activeReport.id} />
             </div>
 
             {/* Expanded Info Panels */}

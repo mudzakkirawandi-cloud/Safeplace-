@@ -283,6 +283,46 @@ export default function ReportFormPage() {
         }
       }
 
+      if (newReport) {
+        for (const file of uploadedFiles) {
+          const filePath = `${user.id}/${tCode}-${Date.now()}-${file.name}`;
+          const { error: uploadErr } = await supabase.storage
+            .from('report-attachments')
+            .upload(filePath, file);
+
+          if (!uploadErr) {
+            const { data: urlData } = supabase.storage
+              .from('report-attachments')
+              .getPublicUrl(filePath);
+
+            await supabase.from('report_attachments').insert({
+              report_id: newReport.id,
+              file_url: urlData.publicUrl,
+              file_type: file.type,
+            });
+          }
+        }
+
+        if (uploadedAudio) {
+          const filePath = `${user.id}/${tCode}-${Date.now()}-${uploadedAudio.name}`;
+          const { error: uploadErr } = await supabase.storage
+            .from('report-attachments')
+            .upload(filePath, uploadedAudio);
+
+          if (!uploadErr) {
+            const { data: urlData } = supabase.storage
+              .from('report-attachments')
+              .getPublicUrl(filePath);
+
+            await supabase.from('report_attachments').insert({
+              report_id: newReport.id,
+              file_url: urlData.publicUrl,
+              file_type: uploadedAudio.type,
+            });
+          }
+        }
+      }
+
       setTrackingCode(tCode);
       setIsSubmitted(true);
       localStorage.removeItem("safeplace_report_draft");

@@ -13,8 +13,7 @@ import {
   Lightbulb,
   Menu,
   X,
-  Home,
-  Search
+  Home
 } from "lucide-react";
 import SafePlaceLogo from "../../_components/SafePlaceLogo";
 
@@ -61,11 +60,6 @@ function SidebarContent({
       label: "Edukasi",
       href: "/edukasi",
       icon: <Lightbulb size={18} />,
-    },
-    {
-      label: "Lacak laporan",
-      href: "/report/Track",
-      icon: <Search size={18} />,
     },
   ];
 

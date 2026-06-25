@@ -56,6 +56,10 @@ export default function ReportFormPage() {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
+  const [uploadedAudio, setUploadedAudio] = useState<File | null>(null);
+  const [micError, setMicError] = useState<string | null>(null);
+
   // Load Draft
   useEffect(() => {
     const draft = localStorage.getItem("safeplace_report_draft");
@@ -89,6 +93,7 @@ export default function ReportFormPage() {
 
   // Handle Audio Recording
   const startRecording = async () => {
+    setMicError(null);
     try {
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       const mediaRecorder = new MediaRecorder(stream);
@@ -100,23 +105,28 @@ export default function ReportFormPage() {
       };
 
       mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
-        const audioUrl = URL.createObjectURL(audioBlob);
-        setAudioBlob(audioBlob);
-        setAudioUrl(audioUrl);
+        const blob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const url = URL.createObjectURL(blob);
+        setAudioBlob(blob);
+        setAudioUrl(url);
       };
 
       mediaRecorder.start();
       setIsRecording(true);
       setRecordingTime(0);
-
       timerRef.current = setInterval(() => {
         setRecordingTime(prev => prev + 1);
       }, 1000);
 
-    } catch (err) {
-      console.error("Gagal akses mikrofon", err);
-      alert("Tidak dapat mengakses mikrofon. Pastikan Anda telah memberikan izin.");
+    } catch (err: unknown) {
+      const error = err as { name?: string };
+      if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+        setMicError('Akses mikrofon ditolak. Izinkan akses mikrofon di pengaturan browser, lalu muat ulang halaman.');
+      } else if (error.name === 'NotFoundError') {
+        setMicError('Mikrofon tidak ditemukan. Pastikan perangkat kamu memiliki mikrofon.');
+      } else {
+        setMicError('Tidak dapat mengakses mikrofon. Coba gunakan browser lain atau periksa pengaturan perangkat.');
+      }
     }
   };
 
@@ -562,23 +572,26 @@ export default function ReportFormPage() {
               {/* STEP 5: Lampiran */}
               {currentStep === 5 && (
                 <motion.div key="step5" variants={slideVariants} initial="initial" animate="animate" exit="exit" className="flex-1">
-                  <div className="flex justify-between items-start mb-1">
-                    <h2 className="text-[24px] font-bold text-[#1B4F72]">Ada bukti yang ingin kamu bagikan? (tidak wajib)</h2>
-                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium justify-center mt-3 bg-gray-50 py-1.5 rounded-lg border border-gray-100">
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start gap-2 mb-1">
+                    <h2 className="text-[22px] md:text-[24px] font-bold text-[#1B4F72]">Ada bukti yang ingin kamu bagikan? (tidak wajib)</h2>
+                    <div className="flex items-center gap-1.5 text-xs text-gray-500 font-medium bg-gray-50 py-1.5 px-3 rounded-lg border border-gray-100 self-start">
                       <ShieldCheck className="w-3 h-3" /> Hanya bisa diakses Sahabat Tangguh kamu
                     </div>
                   </div>
-                  <p className="text-sm text-gray-400 mb-8">Bukti tidak wajib — laporanmu tetap valid tanpa ini</p>
-                  
+                  <p className="text-sm text-gray-400 mb-6">Bukti tidak wajib — laporanmu tetap valid tanpa ini</p>
+
                   <div className="space-y-4">
                     {/* Rekam Suara Langsung */}
-                    <div className="border border-[#E7E9EB] rounded-2xl p-6 hover:border-[#1B4F72]/30 transition-colors bg-gray-50/50">
-                      <h3 className="font-semibold text-gray-800 flex items-center gap-2 mb-4"><Mic className="w-5 h-5 text-primary" /> Rekam suara langsung</h3>
-                      
+                    <div className="border border-[#E7E9EB] rounded-2xl p-5 md:p-6 bg-gray-50/50">
+                      <h3 className="font-semibold text-gray-800 flex items-center gap-2 mb-4">
+                        <Mic className="w-5 h-5 text-primary" /> Rekam suara langsung
+                      </h3>
+
                       {!audioUrl ? (
                         <div className="flex flex-col items-center gap-3">
                           {!isRecording ? (
-                            <button type="button" onClick={startRecording} className="bg-[#1B4F72] text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-[#123650] transition-colors shadow-sm">
+                            <button type="button" onClick={startRecording}
+                              className="bg-[#1B4F72] text-white px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-[#123650] transition-colors shadow-sm w-full sm:w-auto justify-center">
                               <Mic className="w-5 h-5" /> Mulai Rekaman
                             </button>
                           ) : (
@@ -587,18 +600,26 @@ export default function ReportFormPage() {
                                 <span className="w-3 h-3 bg-red-600 rounded-full animate-pulse" />
                                 {formatTime(recordingTime)}
                               </div>
-                              <button type="button" onClick={stopRecording} className="bg-red-100 text-red-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-red-200 transition-colors">
+                              <button type="button" onClick={stopRecording}
+                                className="bg-red-100 text-red-600 px-6 py-3 rounded-full font-semibold flex items-center gap-2 hover:bg-red-200 transition-colors w-full sm:w-auto justify-center">
                                 <Square className="w-5 h-5 fill-current" /> Berhenti Rekam
                               </button>
                             </div>
                           )}
+                          {micError && (
+                            <div className="w-full mt-1 p-3 bg-red-50 border border-red-200 rounded-xl text-sm text-red-700 flex items-start gap-2">
+                              <span className="mt-0.5">⚠️</span>
+                              <span>{micError}</span>
+                            </div>
+                          )}
                         </div>
                       ) : (
-                        <div className="bg-white p-4 rounded-xl border border-gray-200 flex flex-col gap-4">
+                        <div className="bg-white p-4 rounded-xl border border-gray-200 flex flex-col gap-3">
                           <audio src={audioUrl} controls className="w-full" />
-                          <div className="flex gap-3 justify-center">
-                            <button type="button" onClick={resetRecording} className="text-sm text-gray-500 font-medium flex items-center gap-1 hover:text-gray-800">
-                              <RotateCcw className="w-4 h-4" /> Rekam ulang
+                          <div className="flex gap-3 justify-center flex-wrap">
+                            <button type="button" onClick={resetRecording}
+                              className="text-sm text-gray-500 font-medium flex items-center gap-1 hover:text-red-600 transition-colors">
+                              <RotateCcw className="w-4 h-4" /> Hapus rekaman
                             </button>
                             <span className="text-sm text-green-600 font-bold flex items-center gap-1 bg-green-50 px-3 py-1 rounded-full">
                               <Check className="w-4 h-4" /> Siap dilampirkan
@@ -608,18 +629,76 @@ export default function ReportFormPage() {
                       )}
                     </div>
 
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div className="border border-dashed border-gray-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 cursor-pointer relative">
-                        <UploadCloud className="w-8 h-8 text-gray-400 mb-2" />
+                    {/* Upload File/Foto/Video */}
+                    <div className="border border-dashed border-gray-300 rounded-2xl p-5 hover:border-[#1B4F72]/50 transition-colors bg-white">
+                      <label className="flex flex-col items-center justify-center text-center cursor-pointer gap-2">
+                        <UploadCloud className="w-8 h-8 text-gray-400" />
                         <span className="text-sm font-medium text-[#1B4F72]">Upload File/Foto/Video</span>
-                        <input type="file" multiple {...register("attachments")} className="absolute inset-0 opacity-0 cursor-pointer" />
-                      </div>
-                      
-                      <div className="border border-dashed border-gray-300 rounded-2xl p-6 flex flex-col items-center justify-center text-center hover:bg-gray-50 cursor-pointer relative">
-                        <Mic className="w-8 h-8 text-gray-400 mb-2" />
+                        <span className="text-xs text-gray-400">Klik untuk pilih file</span>
+                        <input type="file" multiple accept="image/*,video/*,.pdf,.doc,.docx"
+                          className="hidden"
+                          onChange={(e) => {
+                            const files = Array.from(e.target.files || []);
+                            setUploadedFiles(prev => [...prev, ...files]);
+                          }}
+                        />
+                      </label>
+                      {uploadedFiles.length > 0 && (
+                        <div className="mt-4 flex flex-col gap-2">
+                          {uploadedFiles.map((file, idx) => (
+                            <div key={idx} className="flex items-center justify-between bg-gray-50 border border-gray-200 rounded-xl px-4 py-2">
+                              <div className="flex items-center gap-3 min-w-0">
+                                {file.type.startsWith('image/') ? (
+                                  <img src={URL.createObjectURL(file)} alt={file.name}
+                                    className="w-10 h-10 object-cover rounded-lg flex-shrink-0" />
+                                ) : file.type.startsWith('video/') ? (
+                                  <video src={URL.createObjectURL(file)}
+                                    className="w-10 h-10 object-cover rounded-lg flex-shrink-0" />
+                                ) : (
+                                  <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <span className="text-xs text-blue-600 font-bold">FILE</span>
+                                  </div>
+                                )}
+                                <span className="text-sm text-gray-700 truncate">{file.name}</span>
+                              </div>
+                              <button type="button"
+                                onClick={() => setUploadedFiles(prev => prev.filter((_, i) => i !== idx))}
+                                className="ml-2 text-gray-400 hover:text-red-500 transition-colors flex-shrink-0 text-lg leading-none">
+                                ✕
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Upload File Rekaman (mp3) */}
+                    <div className="border border-dashed border-gray-300 rounded-2xl p-5 hover:border-[#1B4F72]/50 transition-colors bg-white">
+                      <label className="flex flex-col items-center justify-center text-center cursor-pointer gap-2">
+                        <Mic className="w-8 h-8 text-gray-400" />
                         <span className="text-sm font-medium text-[#1B4F72]">Upload File Rekaman (mp3)</span>
-                        <input type="file" accept="audio/*" {...register("attachments")} className="absolute inset-0 opacity-0 cursor-pointer" />
-                      </div>
+                        <span className="text-xs text-gray-400">Klik untuk pilih file audio</span>
+                        <input type="file" accept="audio/*"
+                          className="hidden"
+                          onChange={(e) => {
+                            const file = e.target.files?.[0];
+                            if (file) setUploadedAudio(file);
+                          }}
+                        />
+                      </label>
+                      {uploadedAudio && (
+                        <div className="mt-4 bg-gray-50 border border-gray-200 rounded-xl p-3 flex flex-col gap-2">
+                          <audio src={URL.createObjectURL(uploadedAudio)} controls className="w-full" />
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-gray-600 truncate">{uploadedAudio.name}</span>
+                            <button type="button"
+                              onClick={() => setUploadedAudio(null)}
+                              className="ml-2 text-gray-400 hover:text-red-500 transition-colors text-lg leading-none flex-shrink-0">
+                              ✕
+                            </button>
+                          </div>
+                        </div>
+                      )}
                     </div>
                   </div>
                 </motion.div>

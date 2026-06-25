@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useReportContext } from "../../../_contexts/ReportContext";
-import { Shield, User, AlertCircle, ArrowRight, Heart, Phone, ClipboardList, MessageCircle, Building2 } from "lucide-react";
+import { AlertCircle, ArrowRight, Heart, Phone, ClipboardList, MessageCircle, Building2 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState, useEffect } from "react";
 import { createClient } from "@/lib/supabase/client";
@@ -46,10 +46,10 @@ const waitTexts = [
 
 export default function ReportStartPage() {
   const router = useRouter();
-  const { setPath, setIntent } = useReportContext();
+  const { setIntent } = useReportContext();
   const supabase = createClient();
 
-  const [flowState, setFlowState] = useState<FlowState>("path_selection");
+  const [flowState, setFlowState] = useState<FlowState>("intent_selection");
   const [questionIndex, setQuestionIndex] = useState(0); // 0, 1, 2 mapping to the 3 questions
   const [answers, setAnswers] = useState<string[]>([]);
   
@@ -58,14 +58,13 @@ export default function ReportStartPage() {
 
   // Derive global step index for the 5 dots (0 to 4)
   const getGlobalStepIndex = () => {
-    if (flowState === "path_selection") return 0;
-    if (flowState === "intent_selection") return 1;
-    if (flowState === "assessment") return 2 + questionIndex;
-    return 4; // Max out at 4 for recommendation/waiting
+    if (flowState === "intent_selection") return 0;
+    if (flowState === "assessment") return 1 + questionIndex;
+    return 3;
   };
 
   const globalStep = getGlobalStepIndex();
-  const totalDots = 5;
+  const totalDots = 4;
 
   useEffect(() => {
     if (flowState === "waiting") {
@@ -101,11 +100,6 @@ export default function ReportStartPage() {
       checkOnline();
     }
   }, [flowState, hasCheckedOnline, supabase, router]);
-
-  const handleSelectPath = (path: "anonymous" | "identified") => {
-    setPath(path);
-    setFlowState("intent_selection");
-  };
 
   const handleSelectIntent = (intent: "document" | "consult" | "satgas") => {
     setIntent(intent);
@@ -165,7 +159,7 @@ export default function ReportStartPage() {
       <main className="flex-1 flex flex-col items-center justify-center p-6 container mx-auto max-w-4xl relative z-10 min-h-[80vh]">
         
         {/* Progress Dots */}
-        {(flowState === "path_selection" || flowState === "intent_selection" || flowState === "assessment") && (
+        {(flowState === "intent_selection" || flowState === "assessment") && (
           <div className="flex justify-center gap-2 mb-8 absolute top-10 w-full">
             {[...Array(totalDots)].map((_, idx) => (
               <div
@@ -179,52 +173,6 @@ export default function ReportStartPage() {
         )}
 
         <AnimatePresence mode="wait">
-          
-          {flowState === "path_selection" && (
-            <motion.div
-              key="path_selection"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="w-full max-w-[680px]"
-            >
-              <div className="text-center mb-12">
-                <h1 className="text-[28px] md:text-[32px] font-bold text-[#1B4F72] mb-4">Pilih cara melaporkan</h1>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-6 w-full mb-6">
-                <button
-                  onClick={() => handleSelectPath("anonymous")}
-                  className="bg-white p-8 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex flex-col items-center md:items-start text-center md:text-left"
-                >
-                  <div className="bg-[#F0F7FC] w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <Shield className="w-8 h-8 text-[#4A90B8]" />
-                  </div>
-                  <h2 className="text-xl font-bold text-[#1B4F72] mb-3">Lapor Anonim</h2>
-                  <p className="text-gray-500 leading-relaxed text-sm">
-                    Identitasmu disembunyikan. Kamu dapat kode tracking untuk pantau status.
-                  </p>
-                </button>
-
-                <button
-                  onClick={() => handleSelectPath("identified")}
-                  className="bg-white p-8 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex flex-col items-center md:items-start text-center md:text-left"
-                >
-                  <div className="bg-[#F0F7FC] w-16 h-16 rounded-full flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-                    <User className="w-8 h-8 text-[#4A90B8]" />
-                  </div>
-                  <h2 className="text-xl font-bold text-[#1B4F72] mb-3">Lapor dengan Akun</h2>
-                  <p className="text-gray-500 leading-relaxed text-sm">
-                    Gunakan akunmu. Memudahkan komunikasi lanjutan dengan Sahabat Tangguh.
-                  </p>
-                </button>
-              </div>
-              <p className="text-center text-sm text-gray-400 mt-4">
-                Kamu bisa tetap anonim meski lapor dengan akun — <br className="md:hidden" />
-                identitasmu hanya diketahui Sahabat Tangguh kamu
-              </p>
-            </motion.div>
-          )}
 
           {flowState === "intent_selection" && (
             <motion.div
@@ -438,7 +386,7 @@ export default function ReportStartPage() {
         </AnimatePresence>
       </main>
 
-      {(flowState === "path_selection" || flowState === "intent_selection" || flowState === "assessment") && (
+      {(flowState === "intent_selection" || flowState === "assessment") && (
         <div className="absolute bottom-6 left-6 z-50">
           <button 
             onClick={() => router.push("/id")}

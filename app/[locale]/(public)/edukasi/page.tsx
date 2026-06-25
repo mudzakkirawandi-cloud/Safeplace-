@@ -98,7 +98,7 @@ export default function EducationPage() {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+                className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
                   activeCategory === cat.id
                     ? "bg-primary text-white shadow-md"
                     : "bg-card text-muted-foreground hover:bg-muted border border-border"

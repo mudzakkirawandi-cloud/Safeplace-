@@ -42,7 +42,7 @@ export default function DemoAnimationSection() {
             {steps.map((step, index) => (
               <div 
                 key={index}
-                className={`flex items-center gap-4 p-4 rounded-xl transition-all duration-300 ${
+                className={`flex items-center gap-4 p-4 rounded-xl transition duration-300 ${
                   currentStep === index 
                     ? "bg-card shadow-md border-l-4 border-[#1B4F72] transform scale-105" 
                     : "opacity-50 grayscale hover:grayscale-0 hover:opacity-100 cursor-pointer"

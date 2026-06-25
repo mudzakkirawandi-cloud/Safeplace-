@@ -148,7 +148,7 @@ export default function JoinConsultantPage({ params }: { params: { token: string
                   required 
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:border-[#5B8A6F] focus:ring-1 focus:ring-[#5B8A6F] outline-none transition-all"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:border-[#5B8A6F] focus:ring-1 focus:ring-[#5B8A6F] outline-none transition"
                   placeholder="Minimal 8 karakter"
                 />
               </div>
@@ -160,7 +160,7 @@ export default function JoinConsultantPage({ params }: { params: { token: string
                   required 
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
-                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:border-[#5B8A6F] focus:ring-1 focus:ring-[#5B8A6F] outline-none transition-all"
+                  className="w-full border border-border rounded-xl px-4 py-3 text-sm focus:border-[#5B8A6F] focus:ring-1 focus:ring-[#5B8A6F] outline-none transition"
                   placeholder="Ketik ulang password"
                 />
               </div>
@@ -184,7 +184,7 @@ export default function JoinConsultantPage({ params }: { params: { token: string
               <button 
                 type="submit" 
                 disabled={submitting || !agreed}
-                className="w-full mt-4 py-3.5 bg-primary hover:bg-[#4a725b] text-white rounded-xl font-bold transition-all shadow-lg shadow-[#5B8A6F]/20 disabled:opacity-70 disabled:shadow-none flex items-center justify-center gap-2"
+                className="w-full mt-4 py-3.5 bg-primary hover:bg-[#4a725b] text-white rounded-xl font-bold transition shadow-lg shadow-[#5B8A6F]/20 disabled:opacity-70 disabled:shadow-none flex items-center justify-center gap-2"
               >
                 {submitting ? (
                   <>

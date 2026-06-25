@@ -276,7 +276,7 @@ export default function SatgasCasesPage() {
                 <button 
                   onClick={handleUpdateSubmit}
                   disabled={isSubmitting}
-                  className="px-4 py-2 bg-primary hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition-all"
+                  className="px-4 py-2 bg-primary hover:bg-[#154360] disabled:bg-gray-400 text-white text-sm font-semibold rounded-xl transition"
                 >
                   {isSubmitting ? "Menyimpan..." : "Simpan Update"}
                 </button>

@@ -43,9 +43,9 @@ export default function PsikologSection() {
           {psikolog.map((p) => (
             <div
               key={p.id}
-              className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all group text-center p-8"
+              className="bg-card border border-border rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition group text-center p-8"
             >
-              <div className="relative w-28 h-28 mx-auto mb-5 rounded-full overflow-hidden border-4 border-primary/10 group-hover:border-primary/30 transition-all">
+              <div className="relative w-28 h-28 mx-auto mb-5 rounded-full overflow-hidden border-4 border-primary/10 group-hover:border-primary/30 transition">
                 <Image
                   src={p.photo}
                   alt={p.name}

@@ -45,7 +45,7 @@ export default function MessagesPage() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Cari percakapan..."
-          className="w-full pl-9 pr-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+          className="w-full pl-9 pr-4 py-2.5 border border-border rounded-xl text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition"
         />
       </div>
 
@@ -58,7 +58,7 @@ export default function MessagesPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.06 }}
             onClick={() => router.push(`/consultant/cases/${chat.id}?tab=chat`)}
-            className="w-full bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition-all flex items-center gap-4"
+            className="w-full bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition flex items-center gap-4"
           >
             {/* Avatar */}
             <div className="w-11 h-11 rounded-full bg-[#EAF3EE] flex items-center justify-center flex-shrink-0">

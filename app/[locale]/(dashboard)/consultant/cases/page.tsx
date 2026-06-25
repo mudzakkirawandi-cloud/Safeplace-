@@ -135,7 +135,7 @@ export default function CasesPage() {
             <button
               key={tab.key}
               onClick={() => setActiveFilter(tab.key)}
-              className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
+              className={`px-4 py-1.5 rounded-full text-sm font-medium transition ${
                 activeFilter === tab.key
                   ? 'bg-primary text-white'
                   : 'bg-gray-100 text-muted-foreground hover:bg-gray-200'
@@ -171,7 +171,7 @@ export default function CasesPage() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: i * 0.05 }}
                 onClick={() => router.push(`/consultant/cases/${c.id}`)}
-                className="w-full bg-card border border-border rounded-2xl p-5 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition-all group"
+                className="w-full bg-card border border-border rounded-2xl p-5 text-left hover:shadow-sm hover:border-[#5B8A6F]/30 transition group"
               >
                 <div className="flex items-center justify-between gap-4">
                   <div className="flex-1 min-w-0">

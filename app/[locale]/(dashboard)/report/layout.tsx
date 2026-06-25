@@ -85,7 +85,7 @@ function SidebarContent({
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition-all ${
+              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm transition ${
                 isActive
                   ? "bg-primary/10 text-primary font-medium"
                   : "text-muted-foreground hover:bg-muted hover:text-foreground"
@@ -125,7 +125,7 @@ function SidebarContent({
         </div>
         <button
           onClick={() => router.push("/")}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-all"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition"
         >
           <Home size={18} />
           <span>Ke beranda</span>

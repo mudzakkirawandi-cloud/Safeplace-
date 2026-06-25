@@ -216,7 +216,7 @@ export default function CaseDetailPage() {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition-all ${
+              className={`flex-1 flex items-center justify-center gap-2 py-2.5 rounded-lg text-sm font-medium transition ${
                 isActive
                   ? "bg-card text-primary shadow-sm"
                   : "text-muted-foreground hover:text-muted-foreground"
@@ -312,13 +312,13 @@ export default function CaseDetailPage() {
                 onChange={(e) => setNewNote(e.target.value)}
                 rows={4}
                 placeholder={t("notes_placeholder")}
-                className="w-full border border-border rounded-xl px-4 py-3 text-sm text-card-foreground resize-none focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all placeholder:text-gray-300"
+                className="w-full border border-border rounded-xl px-4 py-3 text-sm text-card-foreground resize-none focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition placeholder:text-gray-300"
               />
               <div className="flex justify-end mt-3">
                 <button
                   onClick={handleSaveNote}
                   disabled={!newNote.trim() || savingNote}
-                  className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-[#3d6b52] disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition-all active:scale-95"
+                  className="flex items-center gap-2 px-4 py-2 bg-primary hover:bg-[#3d6b52] disabled:opacity-50 text-white text-sm font-semibold rounded-xl transition active:scale-95"
                 >
                   <Save size={14} />
                   {savingNote ? t("notes_saving") : t("notes_save")}

@@ -95,7 +95,7 @@ export default function SatgasLayout({
                 router.push(item.href);
                 setSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
                 isActive
                   ? "bg-[#D4AC0D] text-[#154360]"
                   : "text-gray-300 hover:bg-[#2471A3] hover:text-white"
@@ -112,7 +112,7 @@ export default function SatgasLayout({
       <div className="px-3 py-4 border-t border-[#2471A3]">
         <button
           onClick={() => router.push("/")}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition-all"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition"
         >
           <Home size={18} />
           Kembali ke Beranda

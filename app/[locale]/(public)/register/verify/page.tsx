@@ -34,7 +34,7 @@ export default function VerifyPage() {
             Silakan periksa kotak masuk (atau folder spam) dan klik tautan tersebut untuk mengaktifkan akun Anda.
           </p>
 
-          <Link href="/report/start" className="inline-flex items-center justify-center w-full py-3.5 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg group">
+          <Link href="/report/start" className="inline-flex items-center justify-center w-full py-3.5 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition hover:shadow-lg group">
             Lanjut ke Pelaporan
             <ArrowRight size={18} className="ml-2 group-hover:translate-x-1 transition-transform" />
           </Link>

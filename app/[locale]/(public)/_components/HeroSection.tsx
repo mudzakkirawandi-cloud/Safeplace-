@@ -71,7 +71,7 @@ export default function HeroSection() {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="/report/start"
-                  className="flex justify-center items-center gap-2 px-8 py-4 bg-[#E74C3C] text-white font-medium rounded-xl hover:bg-[#c0392b] hover:shadow-lg transition-all"
+                  className="flex justify-center items-center gap-2 px-8 py-4 bg-[#E74C3C] text-white font-medium rounded-xl hover:bg-[#c0392b] hover:shadow-lg transition"
                 >
                   {t("primary_cta")}
                   <ArrowRight size={20} />
@@ -80,7 +80,7 @@ export default function HeroSection() {
               <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.95 }}>
                 <Link
                   href="#how-it-works"
-                  className="flex justify-center items-center px-8 py-4 bg-card text-primary font-medium rounded-xl hover:bg-muted border border-border transition-all"
+                  className="flex justify-center items-center px-8 py-4 bg-card text-primary font-medium rounded-xl hover:bg-muted border border-border transition"
                 >
                   {t("secondary_cta")}
                 </Link>

@@ -432,7 +432,7 @@ export default function PeerConsultantDashboardPage() {
             <button
               key={s}
               onClick={() => toggleStatus(s)}
-              className={`px-4 py-1.5 text-sm font-semibold rounded-full transition-all ${statusText === s ? "bg-[#1B4F72] text-white shadow-md" : "text-gray-500 hover:text-gray-800"}`}
+              className={`px-4 py-1.5 text-sm font-semibold rounded-full transition ${statusText === s ? "bg-[#1B4F72] text-white shadow-md" : "text-gray-500 hover:text-gray-800"}`}
             >
               {s === "Tersedia" ? "● Tersedia" : s === "Sibuk" ? "◐ Sibuk" : "○ Istirahat"}
             </button>

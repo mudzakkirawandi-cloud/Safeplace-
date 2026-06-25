@@ -124,7 +124,7 @@ export default function ConsultationPage() {
           <div className="flex flex-wrap justify-center gap-3 mb-12">
             <button
               onClick={() => setActiveFilter("all")}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
                 activeFilter === "all"
                   ? "bg-primary text-white shadow-md"
                   : "bg-card text-muted-foreground hover:bg-muted border border-border"
@@ -134,7 +134,7 @@ export default function ConsultationPage() {
             </button>
             <button
               onClick={() => setActiveFilter("online")}
-              className={`px-5 py-2.5 rounded-full text-sm font-medium transition-all ${
+              className={`px-5 py-2.5 rounded-full text-sm font-medium transition ${
                 activeFilter === "online"
                   ? "bg-primary text-white shadow-md"
                   : "bg-card text-muted-foreground hover:bg-muted border border-border"
@@ -165,7 +165,7 @@ export default function ConsultationPage() {
           ) : filteredConsultants.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredConsultants.map((consultant) => (
-                <div key={consultant.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border flex flex-col p-6 group relative">
+                <div key={consultant.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition border border-border flex flex-col p-6 group relative">
                   
                   {/* Dropdown 3 dots */}
                   <div className="absolute top-4 right-4 z-20" onClick={e => e.stopPropagation()}>

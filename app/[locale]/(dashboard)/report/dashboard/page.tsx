@@ -290,7 +290,7 @@ export default function ReportDashboardPage() {
           <p className="text-muted-foreground mb-6">{fetchError}</p>
           <button 
             onClick={() => window.location.reload()}
-            className="w-full py-3 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition-all"
+            className="w-full py-3 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition"
           >
             Coba Lagi
           </button>
@@ -336,7 +336,7 @@ export default function ReportDashboardPage() {
         <div>
           <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Aksi cepat</p>
           <div className="grid grid-cols-2 gap-3">
-            <button onClick={() => router.push('/report/start')} className="bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-primary/20 transition-all group">
+            <button onClick={() => router.push('/report/start')} className="bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-primary/20 transition group">
               <div className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-100 transition">
                 <span className="text-blue-600 text-lg">📋</span>
               </div>
@@ -352,7 +352,7 @@ export default function ReportDashboardPage() {
                   router.push('/report/chat');
                 }
               }}
-              className="bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-primary/20 transition-all group relative"
+              className="bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-primary/20 transition group relative"
             >
               {activeReports.some(r => (r.unreadCount || 0) > 0) && (
                 <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full"/>

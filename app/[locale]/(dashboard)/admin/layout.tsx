@@ -70,7 +70,7 @@ export default function AdminLayout({
                 router.push(item.href);
                 setSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
                 isActive
                   ? "bg-[#4ECDC4] text-primary"
                   : "text-gray-300 hover:bg-[#3b5082] hover:text-white"
@@ -87,7 +87,7 @@ export default function AdminLayout({
       <div className="px-3 py-4 border-t border-[#3b5082]">
         <button
           onClick={() => router.push("/")}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition-all"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition"
         >
           <Home size={18} />
           Kembali ke Beranda

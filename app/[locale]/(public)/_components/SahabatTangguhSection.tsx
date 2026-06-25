@@ -65,7 +65,7 @@ export default function SahabatTangguhSection() {
             </div>
             <button
               onClick={() => router.push("/tentang#program")}
-              className="inline-flex items-center gap-2 text-sm font-medium text-primary border border-primary/20 px-5 py-2.5 rounded-xl hover:bg-primary/5 transition-all"
+              className="inline-flex items-center gap-2 text-sm font-medium text-primary border border-primary/20 px-5 py-2.5 rounded-xl hover:bg-primary/5 transition"
             >
               Pelajari lebih lanjut <span>→</span>
             </button>
@@ -109,7 +109,7 @@ export default function SahabatTangguhSection() {
                 <button
                   key={i}
                   onClick={() => setCurrent(i)}
-                  className={`rounded-full transition-all ${
+                  className={`rounded-full transition ${
                     i === current ? "w-5 h-2 bg-primary" : "w-2 h-2 bg-primary/20"
                   }`}
                   aria-label={`Foto ${i + 1}`}

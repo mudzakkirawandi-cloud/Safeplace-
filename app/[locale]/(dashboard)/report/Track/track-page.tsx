@@ -147,12 +147,12 @@ export default function TrackPage() {
                 onKeyDown={handleKeyDown}
                 placeholder={t("input_placeholder")}
                 maxLength={8}
-                className="flex-1 border border-border rounded-xl px-4 py-3 text-center font-mono text-lg tracking-widest focus:outline-none focus:border-[#4A90B8] focus:ring-2 focus:ring-[#4A90B8]/20 transition-all uppercase placeholder:normal-case placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-muted-foreground"
+                className="flex-1 border border-border rounded-xl px-4 py-3 text-center font-mono text-lg tracking-widest focus:outline-none focus:border-[#4A90B8] focus:ring-2 focus:ring-[#4A90B8]/20 transition uppercase placeholder:normal-case placeholder:tracking-normal placeholder:font-sans placeholder:text-sm placeholder:text-muted-foreground"
               />
               <button
                 onClick={handleSearch}
                 disabled={loading}
-                className="bg-primary hover:bg-[#3a7da8] disabled:opacity-60 text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold transition-all active:scale-95"
+                className="bg-primary hover:bg-[#3a7da8] disabled:opacity-60 text-white px-5 py-3 rounded-xl flex items-center gap-2 font-semibold transition active:scale-95"
               >
                 {loading ? (
                   <motion.div
@@ -240,7 +240,7 @@ export default function TrackPage() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.3 }}
                   onClick={() => router.push("/report/chat")}
-                  className="w-full bg-primary hover:bg-[#3a7da8] text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-between shadow-md hover:shadow-lg transition-all active:scale-[0.98] mb-4"
+                  className="w-full bg-primary hover:bg-[#3a7da8] text-white font-semibold py-4 px-6 rounded-2xl flex items-center justify-between shadow-md hover:shadow-lg transition active:scale-[0.98] mb-4"
                 >
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-full bg-card/20 flex items-center justify-center">

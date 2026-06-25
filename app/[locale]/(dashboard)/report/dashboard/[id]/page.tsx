@@ -137,7 +137,7 @@ export default function ReportDetailPage({ params }: { params: { id: string } })
           <ShieldAlert className="w-16 h-16 text-red-500 mx-auto mb-4" />
           <h2 className="text-xl font-bold text-[#1B4F72] mb-2">Akses Ditolak</h2>
           <p className="text-gray-500 mb-6">{error}</p>
-          <Link href="/report/dashboard" className="w-full block py-3 bg-[#1B4F72] hover:bg-[#123650] text-white font-bold rounded-xl transition-all">
+          <Link href="/report/dashboard" className="w-full block py-3 bg-[#1B4F72] hover:bg-[#123650] text-white font-bold rounded-xl transition">
             Kembali ke Dashboard
           </Link>
         </div>

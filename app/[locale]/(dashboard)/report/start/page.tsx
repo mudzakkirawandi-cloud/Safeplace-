@@ -164,7 +164,7 @@ export default function ReportStartPage() {
             {[...Array(totalDots)].map((_, idx) => (
               <div
                 key={idx}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-2 rounded-full transition duration-300 ${
                   idx === globalStep ? "w-8 bg-[#5B8A6F]" : idx < globalStep ? "w-2 bg-[#5B8A6F]" : "w-2 bg-[#D1E0D9]"
                 }`}
               />
@@ -189,7 +189,7 @@ export default function ReportStartPage() {
               <div className="flex flex-col gap-4 w-full">
                 <button
                   onClick={() => handleSelectIntent("document")}
-                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex items-start gap-5"
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition text-left group flex items-start gap-5"
                 >
                   <div className="bg-[#F0FAF6] w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <ClipboardList className="w-7 h-7 text-[#5B8A6F]" />
@@ -204,7 +204,7 @@ export default function ReportStartPage() {
 
                 <button
                   onClick={() => handleSelectIntent("consult")}
-                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex items-start gap-5"
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition text-left group flex items-start gap-5"
                 >
                   <div className="bg-[#F0F7FC] w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <MessageCircle className="w-7 h-7 text-[#4A90B8]" />
@@ -219,7 +219,7 @@ export default function ReportStartPage() {
 
                 <button
                   onClick={() => handleSelectIntent("satgas")}
-                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition-all text-left group flex items-start gap-5"
+                  className="bg-white p-6 rounded-2xl shadow-sm border border-[#E7E9EB] hover:shadow-md hover:border-[#1B4F72] transition text-left group flex items-start gap-5"
                 >
                   <div className="bg-[#FEF5F5] w-14 h-14 rounded-full flex items-center justify-center flex-shrink-0 group-hover:scale-110 transition-transform">
                     <Building2 className="w-7 h-7 text-[#C0392B]" />
@@ -252,7 +252,7 @@ export default function ReportStartPage() {
                   <button
                     key={opt.id}
                     onClick={() => handleSelectOption(opt.id)}
-                    className="w-full min-h-[72px] bg-white p-5 rounded-2xl shadow-sm border border-transparent hover:border-[#5B8A6F] hover:bg-[#F4F9F6] focus:border-[#5B8A6F] focus:bg-[#F4F9F6] transition-all text-left group"
+                    className="w-full min-h-[72px] bg-white p-5 rounded-2xl shadow-sm border border-transparent hover:border-[#5B8A6F] hover:bg-[#F4F9F6] focus:border-[#5B8A6F] focus:bg-[#F4F9F6] transition text-left group"
                   >
                     <span className="text-gray-800 font-medium group-hover:text-[#2C3E6B]">
                       {opt.text}

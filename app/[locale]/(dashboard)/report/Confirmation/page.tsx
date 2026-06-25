@@ -47,7 +47,7 @@ export default function ConfirmationPage() {
           </div>
 
           <div className="space-y-4">
-            <Link href="/report/dashboard" className="flex items-center justify-center gap-2 w-full py-4 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition-all hover:shadow-lg">
+            <Link href="/report/dashboard" className="flex items-center justify-center gap-2 w-full py-4 bg-primary hover:bg-[#1f2b4a] text-white font-bold rounded-xl shadow-md transition hover:shadow-lg">
               <FileText size={20} />
               Kembali ke Dashboard
             </Link>

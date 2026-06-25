@@ -423,7 +423,7 @@ export default function ReportFormPage() {
         <div className="w-full flex items-center justify-between mb-8 px-4">
           <div className="flex gap-2">
             {[...Array(totalSteps)].map((_, idx) => (
-              <div key={idx} className={`h-2 rounded-full transition-all duration-300 ${idx + 1 === currentStep ? "w-8 bg-[#1B4F72]" : idx + 1 < currentStep ? "w-2 bg-[#5B8A6F]" : "w-2 bg-[#D1E0D9]"}`} />
+              <div key={idx} className={`h-2 rounded-full transition duration-300 ${idx + 1 === currentStep ? "w-8 bg-[#1B4F72]" : idx + 1 < currentStep ? "w-2 bg-[#5B8A6F]" : "w-2 bg-[#D1E0D9]"}`} />
             ))}
           </div>
           <span className="text-sm font-semibold text-[#1B4F72]">Langkah {currentStep} dari {totalSteps}</span>
@@ -444,35 +444,35 @@ export default function ReportFormPage() {
                     <div className="grid grid-cols-2 gap-3">
                       <label className="relative cursor-pointer group">
                         <input type="radio" value="verbal" {...register("incidentType")} className="peer sr-only" />
-                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-center">
+                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-center">
                           <div className="text-2xl mb-2">🗣️</div>
                           <div className="text-sm font-medium text-gray-700 peer-checked:text-[#1B4F72]">Pelecehan Verbal</div>
                         </div>
                       </label>
                       <label className="relative cursor-pointer group">
                         <input type="radio" value="physical" {...register("incidentType")} className="peer sr-only" />
-                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-center">
+                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-center">
                           <div className="text-2xl mb-2">👋</div>
                           <div className="text-sm font-medium text-gray-700 peer-checked:text-[#1B4F72]">Pelecehan Fisik</div>
                         </div>
                       </label>
                       <label className="relative cursor-pointer group">
                         <input type="radio" value="digital" {...register("incidentType")} className="peer sr-only" />
-                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-center">
+                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-center">
                           <div className="text-2xl mb-2">💻</div>
                           <div className="text-sm font-medium text-gray-700 peer-checked:text-[#1B4F72]">Kekerasan Digital</div>
                         </div>
                       </label>
                       <label className="relative cursor-pointer group">
                         <input type="radio" value="sexual" {...register("incidentType")} className="peer sr-only" />
-                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-center">
+                        <div className="h-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-center">
                           <div className="text-2xl mb-2">❤️</div>
                           <div className="text-sm font-medium text-gray-700 peer-checked:text-[#1B4F72]">Kekerasan Seksual</div>
                         </div>
                       </label>
                       <label className="relative cursor-pointer group col-span-2">
                         <input type="radio" value="other" {...register("incidentType")} className="peer sr-only" />
-                        <div className="w-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-center flex items-center justify-center gap-2">
+                        <div className="w-full p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-center flex items-center justify-center gap-2">
                           <div className="text-xl">📝</div>
                           <div className="text-sm font-medium text-gray-700 peer-checked:text-[#1B4F72]">Lainnya</div>
                         </div>
@@ -481,14 +481,14 @@ export default function ReportFormPage() {
 
                     <div className="pt-4 border-t border-[#E7E9EB]">
                       <label className="block text-sm font-semibold text-gray-700 mb-2">Kapan ini terjadi?</label>
-                      <input type="date" {...register("incidentDate")} className="w-full p-4 border border-[#E7E9EB] rounded-2xl focus:ring-2 focus:ring-[#1B4F72]/20 focus:border-[#1B4F72] outline-none transition-all text-gray-700" />
+                      <input type="date" {...register("incidentDate")} className="w-full p-4 border border-[#E7E9EB] rounded-2xl focus:ring-2 focus:ring-[#1B4F72]/20 focus:border-[#1B4F72] outline-none transition text-gray-700" />
                     </div>
 
                     <div className="flex items-center justify-between p-4 bg-gray-50 rounded-2xl">
                       <span className="font-medium text-gray-700 text-sm">Apakah kejadian ini masih berlangsung?</span>
                       <label className="relative inline-flex items-center cursor-pointer">
                         <input type="checkbox" {...register("isOngoing")} className="sr-only peer" />
-                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-[#1B4F72]"></div>
+                        <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition peer-checked:bg-[#1B4F72]"></div>
                       </label>
                     </div>
                   </div>
@@ -505,7 +505,7 @@ export default function ReportFormPage() {
                     <div className="flex flex-col gap-3">
                       <label className="relative cursor-pointer group w-full">
                         <input type="radio" value="dalam_kampus" {...register("campus")} className="peer sr-only" />
-                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-left flex gap-4 items-center">
+                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-left flex gap-4 items-center">
                           <div className="text-2xl">🏫</div>
                           <div>
                             <div className="text-sm font-bold text-gray-800 peer-checked:text-[#1B4F72] mb-1">Di dalam kampus</div>
@@ -515,7 +515,7 @@ export default function ReportFormPage() {
                       </label>
                       <label className="relative cursor-pointer group w-full">
                         <input type="radio" value="luar_kampus" {...register("campus")} className="peer sr-only" />
-                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-left flex gap-4 items-center">
+                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-left flex gap-4 items-center">
                           <div className="text-2xl">🌆</div>
                           <div>
                             <div className="text-sm font-bold text-gray-800 peer-checked:text-[#1B4F72] mb-1">Di luar kampus</div>
@@ -525,7 +525,7 @@ export default function ReportFormPage() {
                       </label>
                       <label className="relative cursor-pointer group w-full">
                         <input type="radio" value="lainnya" {...register("campus")} className="peer sr-only" />
-                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition-all text-left flex gap-4 items-center">
+                        <div className="p-4 border border-[#E7E9EB] rounded-2xl peer-checked:border-[#1B4F72] peer-checked:bg-[#F0FAF6] hover:bg-gray-50 transition text-left flex gap-4 items-center">
                           <div className="text-2xl">📝</div>
                           <div>
                             <div className="text-sm font-bold text-gray-800 peer-checked:text-[#1B4F72] mb-1">Lainnya</div>
@@ -564,19 +564,19 @@ export default function ReportFormPage() {
                       <div className="grid grid-cols-3 gap-3">
                         <label className="cursor-pointer">
                           <input type="radio" value="yes" {...register("safety")} className="peer sr-only" />
-                          <div className="p-4 border border-[#E7E9EB] rounded-2xl text-center peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:text-green-700 font-medium text-gray-600 transition-all text-sm">
+                          <div className="p-4 border border-[#E7E9EB] rounded-2xl text-center peer-checked:border-green-500 peer-checked:bg-green-50 peer-checked:text-green-700 font-medium text-gray-600 transition text-sm">
                             Ya, aman
                           </div>
                         </label>
                         <label className="cursor-pointer">
                           <input type="radio" value="unknown" {...register("safety")} className="peer sr-only" />
-                          <div className="p-4 border border-[#E7E9EB] rounded-2xl text-center peer-checked:border-yellow-500 peer-checked:bg-yellow-50 peer-checked:text-yellow-700 font-medium text-gray-600 transition-all text-sm">
+                          <div className="p-4 border border-[#E7E9EB] rounded-2xl text-center peer-checked:border-yellow-500 peer-checked:bg-yellow-50 peer-checked:text-yellow-700 font-medium text-gray-600 transition text-sm">
                             Tidak Tahu
                           </div>
                         </label>
                         <label className="cursor-pointer">
                           <input type="radio" value="no" {...register("safety")} className="peer sr-only" />
-                          <div className="p-4 border border-[#E7E9EB] rounded-2xl text-center peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700 font-medium text-gray-600 transition-all text-sm">
+                          <div className="p-4 border border-[#E7E9EB] rounded-2xl text-center peer-checked:border-red-500 peer-checked:bg-red-50 peer-checked:text-red-700 font-medium text-gray-600 transition text-sm">
                             Tidak
                           </div>
                         </label>
@@ -761,7 +761,7 @@ export default function ReportFormPage() {
                     </p>
                   </div>
 
-                  <label className="flex items-start p-5 bg-white border border-[#E7E9EB] hover:border-[#1B4F72] rounded-2xl cursor-pointer transition-all shadow-sm">
+                  <label className="flex items-start p-5 bg-white border border-[#E7E9EB] hover:border-[#1B4F72] rounded-2xl cursor-pointer transition shadow-sm">
                     <input type="checkbox" {...register("consent")} className="w-6 h-6 text-[#1B4F72] rounded-md border-gray-300 focus:ring-[#1B4F72] mt-0.5" />
                     <span className="ml-4 text-gray-700 text-sm leading-relaxed">
                       Informasi ini sesuai dengan yang saya alami, dan saya setuju data ini digunakan untuk keperluan pendampingan oleh SafePlace.
@@ -776,7 +776,7 @@ export default function ReportFormPage() {
               <button
                 type="button"
                 onClick={prevStep}
-                className="flex items-center gap-2 px-5 py-3 text-gray-500 font-semibold hover:text-gray-800 hover:bg-gray-100 rounded-xl transition-all"
+                className="flex items-center gap-2 px-5 py-3 text-gray-500 font-semibold hover:text-gray-800 hover:bg-gray-100 rounded-xl transition"
               >
                 <ArrowLeft className="w-5 h-5" />
                 <span className="hidden sm:inline">Sebelumnya</span>
@@ -787,7 +787,7 @@ export default function ReportFormPage() {
                   <button
                     type="button"
                     onClick={handleSaveDraft}
-                    className="hidden sm:flex items-center gap-2 px-5 py-3 text-[#1B4F72] font-semibold hover:bg-gray-50 rounded-xl transition-all"
+                    className="hidden sm:flex items-center gap-2 px-5 py-3 text-[#1B4F72] font-semibold hover:bg-gray-50 rounded-xl transition"
                   >
                     Simpan dulu
                   </button>

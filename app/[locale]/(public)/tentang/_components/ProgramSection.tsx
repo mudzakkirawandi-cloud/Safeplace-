@@ -109,7 +109,7 @@ export default function ProgramSection() {
               <button
                 key={i}
                 onClick={() => setCurrent(i)}
-                className={`rounded-full transition-all ${
+                className={`rounded-full transition ${
                   i === current 
                     ? "w-6 h-2 bg-primary" 
                     : "w-2 h-2 bg-primary/20"

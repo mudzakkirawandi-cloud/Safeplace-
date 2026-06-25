@@ -267,7 +267,7 @@ export default function PostDetailPage({ params }: { params: { id: string } }) {
                     <button
                       key={type}
                       onClick={() => handleReaction(rType)}
-                      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all ${
+                      className={`flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition ${
                         isReacted 
                           ? "bg-primary text-white shadow-md shadow-[#1B4F72]/20" 
                           : "bg-muted text-card-foreground hover:bg-gray-100 border border-border"

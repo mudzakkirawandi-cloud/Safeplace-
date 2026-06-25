@@ -29,7 +29,7 @@ export default function CampusSection() {
           </p>
           <Link
             href="/register-campus"
-            className="inline-flex justify-center items-center px-8 py-3 bg-primary text-white font-medium rounded-xl hover:bg-[#154360] shadow-md hover:shadow-lg transition-all"
+            className="inline-flex justify-center items-center px-8 py-3 bg-primary text-white font-medium rounded-xl hover:bg-[#154360] shadow-md hover:shadow-lg transition"
           >
             {t("cta")}
           </Link>

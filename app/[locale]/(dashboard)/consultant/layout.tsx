@@ -191,7 +191,7 @@ export default function ConsultantLayout({
                 router.push(item.href);
                 setSidebarOpen(false);
               }}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition ${
                 isActive
                   ? "bg-[#EAF3EE] text-primary"
                   : "text-muted-foreground hover:bg-muted hover:text-card-foreground"
@@ -208,7 +208,7 @@ export default function ConsultantLayout({
       <div className="px-3 py-4 border-t border-border">
         <button
           onClick={() => router.push("/")}
-          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition-all"
+          className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-muted-foreground hover:bg-blue-50 hover:text-blue-600 transition"
         >
           <Home size={18} />
           Kembali ke Beranda

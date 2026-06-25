@@ -63,7 +63,7 @@ export default function ProfilePage() {
           <input
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition"
           />
         </div>
 
@@ -76,7 +76,7 @@ export default function ProfilePage() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition"
           />
         </div>
 
@@ -88,7 +88,7 @@ export default function ProfilePage() {
           <input
             value={phone}
             onChange={(e) => setPhone(e.target.value)}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition"
           />
         </div>
 
@@ -100,7 +100,7 @@ export default function ProfilePage() {
           <input
             value={specialization}
             onChange={(e) => setSpecialization(e.target.value)}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition"
           />
         </div>
 
@@ -113,7 +113,7 @@ export default function ProfilePage() {
             value={bio}
             onChange={(e) => setBio(e.target.value)}
             rows={3}
-            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition-all"
+            className="w-full border border-border rounded-xl px-4 py-2.5 text-sm resize-none focus:outline-none focus:border-[#5B8A6F] focus:ring-2 focus:ring-[#5B8A6F]/20 transition"
           />
         </div>
 
@@ -126,7 +126,7 @@ export default function ProfilePage() {
           <button
             onClick={handleSave}
             disabled={saving}
-            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#3d6b52] disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition-all active:scale-95"
+            className="flex items-center gap-2 px-5 py-2.5 bg-primary hover:bg-[#3d6b52] disabled:opacity-60 text-white text-sm font-semibold rounded-xl transition active:scale-95"
           >
             <Save size={14} />
             {saving ? "Menyimpan..." : "Simpan Perubahan"}

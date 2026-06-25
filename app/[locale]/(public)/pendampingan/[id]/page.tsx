@@ -170,7 +170,7 @@ export default function DetailPsikologPage() {
 
                   <button 
                     onClick={handleRequest}
-                    className="w-full sm:w-auto px-8 py-3.5 bg-primary text-white hover:bg-primary/90 rounded-xl font-semibold transition-all shadow-[0_4px_14px_0_rgba(27,79,114,0.39)] hover:shadow-[0_6px_20px_rgba(27,79,114,0.23)] hover:-translate-y-0.5 active:translate-y-0"
+                    className="w-full sm:w-auto px-8 py-3.5 bg-primary text-white hover:bg-primary/90 rounded-xl font-semibold transition shadow-[0_4px_14px_0_rgba(27,79,114,0.39)] hover:shadow-[0_6px_20px_rgba(27,79,114,0.23)] hover:-translate-y-0.5 active:translate-y-0"
                   >
                     Request Pendampingan
                   </button>

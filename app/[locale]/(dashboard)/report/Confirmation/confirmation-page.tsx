@@ -135,7 +135,7 @@ export default function ConfirmationPage() {
             {/* Tombol copy */}
             <button
               onClick={handleCopy}
-              className="w-14 h-14 rounded-xl bg-primary hover:bg-[#3a7da8] text-white flex items-center justify-center transition-all hover:scale-105 active:scale-95 flex-shrink-0 shadow-sm"
+              className="w-14 h-14 rounded-xl bg-primary hover:bg-[#3a7da8] text-white flex items-center justify-center transition hover:scale-105 active:scale-95 flex-shrink-0 shadow-sm"
               title={t("copy_button")}
             >
               <AnimatePresence mode="wait">
@@ -219,7 +219,7 @@ export default function ConfirmationPage() {
         >
           <button
             onClick={() => router.push("/report/dashboard")}
-            className="flex-1 bg-primary hover:bg-[#3a7da8] text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition-all hover:shadow-md active:scale-95"
+            className="flex-1 bg-primary hover:bg-[#3a7da8] text-white font-semibold py-3 px-5 rounded-xl flex items-center justify-center gap-2 transition hover:shadow-md active:scale-95"
           >
             {t("track_button")}
             <ArrowRight className="w-4 h-4" />
@@ -227,7 +227,7 @@ export default function ConfirmationPage() {
 
           <button
             onClick={() => router.push("/resources")}
-            className="flex-1 bg-card hover:bg-background text-primary font-semibold py-3 px-5 rounded-xl border border-[#4A90B8] flex items-center justify-center gap-2 transition-all active:scale-95"
+            className="flex-1 bg-card hover:bg-background text-primary font-semibold py-3 px-5 rounded-xl border border-[#4A90B8] flex items-center justify-center gap-2 transition active:scale-95"
           >
             <BookOpen className="w-4 h-4" />
             {t("resources_button")}

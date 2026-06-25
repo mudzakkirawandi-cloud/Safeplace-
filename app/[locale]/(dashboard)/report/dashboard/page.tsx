@@ -12,7 +12,6 @@ import {
   User as UserIcon
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import Link from "next/link";
 import LogoutConfirmModal from "../../../_components/LogoutConfirmModal";
 
 interface Report {
@@ -301,158 +300,178 @@ export default function ReportDashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#FDF6EC] font-sans pb-24">
-      {/* 1. SECTION AI REMINDER (paling atas) */}
-      <div className="container mx-auto px-6 max-w-2xl pt-8">
-        <div className="bg-gradient-to-br from-[#4A9B8E]/10 to-[#C9847A]/10 rounded-3xl p-6 mb-6 border border-[#4A9B8E]/20 relative shadow-sm">
+    <div className="min-h-full bg-[#F8FAFB] pb-10">
+      <div className="hidden md:flex items-center justify-between px-8 py-5 bg-card border-b border-border">
+        <div>
+          <h1 className="text-lg font-semibold text-foreground">Dashboard</h1>
+          <p className="text-sm text-muted-foreground">Kamu aman di sini 🌿</p>
+        </div>
+        <div className="flex items-center gap-3">
+          {reports[0]?.tracking_code && (
+            <div className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-xl border border-border">
+              <span className="text-xs text-muted-foreground">Kode laporan</span>
+              <span className="text-xs font-mono font-semibold text-primary">{reports[0].tracking_code}</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <div className="px-4 md:px-8 py-6 max-w-4xl mx-auto space-y-6">
+
+        <div className="bg-[#E1F5EE] border border-[#9FE1CB] rounded-2xl p-5">
           <div className="flex items-start gap-4">
-            <div className="w-12 h-12 bg-[#4A9B8E] rounded-2xl flex items-center justify-center flex-shrink-0 text-xl shadow-inner">
-              🌿
+            <div className="w-10 h-10 bg-[#0F6E56] rounded-xl flex items-center justify-center flex-shrink-0">
+              <span className="text-[#E1F5EE] text-lg">🌿</span>
             </div>
             <div className="flex-1">
-              <p className="text-xs text-[#4A9B8E] font-medium mb-1 tracking-wide uppercase">
-                Untukmu hari ini
-              </p>
+              <p className="text-xs text-[#0F6E56] font-semibold uppercase tracking-wider mb-1">Untukmu hari ini</p>
               {loadingReminder ? (
-                <div className="animate-pulse h-4 bg-[#C9847A]/20 rounded w-3/4 mb-2 mt-2"/>
+                <div className="animate-pulse h-4 bg-[#9FE1CB] rounded w-3/4"/>
               ) : (
-                <p className="text-[#2D3748] leading-relaxed italic font-serif">
+                <p className="text-sm text-[#085041] leading-relaxed italic font-serif">
                   &ldquo;{aiReminder || 'Kamu sudah sangat berani hari ini.'}&rdquo;
                 </p>
               )}
             </div>
-            <button 
-              onClick={() => fetchAiReminder()} 
-              className="text-[#4A9B8E] hover:opacity-70 transition p-2 bg-white/50 rounded-full"
-            >
-              <RefreshCw size={16} />
+            <button onClick={() => fetchAiReminder()} className="text-[#0F6E56] hover:opacity-70 transition p-1.5 rounded-full hover:bg-[#9FE1CB]/30">
+              <RefreshCw size={15} />
             </button>
           </div>
         </div>
 
-        {/* 2. SECTION PENDAMPINGAN */}
-        <div className="mb-8">
-          <h2 className="font-semibold text-[#2D3748] mb-3">💬 Pendampingan Aktif</h2>
+        <div>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Aksi cepat</p>
+          <div className="grid grid-cols-2 gap-3">
+            <button onClick={() => router.push('/report/start')} className="bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-primary/20 transition-all group">
+              <div className="w-9 h-9 bg-blue-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-blue-100 transition">
+                <span className="text-blue-600 text-lg">📋</span>
+              </div>
+              <p className="text-sm font-semibold text-foreground">Buat laporan baru</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Mulai konsultasi</p>
+            </button>
+            <button
+              onClick={() => {
+                const activeReport = activeReports[0];
+                if (activeReport) {
+                  router.push(`/report/chat/${activeReport.id}`);
+                } else {
+                  router.push('/report/chat');
+                }
+              }}
+              className="bg-card border border-border rounded-2xl p-4 text-left hover:shadow-sm hover:border-primary/20 transition-all group relative"
+            >
+              {activeReports.some(r => (r.unreadCount || 0) > 0) && (
+                <span className="absolute top-3 right-3 w-2 h-2 bg-red-500 rounded-full"/>
+              )}
+              <div className="w-9 h-9 bg-teal-50 rounded-xl flex items-center justify-center mb-3 group-hover:bg-teal-100 transition">
+                <span className="text-teal-600 text-lg">💬</span>
+              </div>
+              <p className="text-sm font-semibold text-foreground">Buka chat</p>
+              <p className="text-xs text-muted-foreground mt-0.5">Lanjut pendampingan</p>
+            </button>
+          </div>
+        </div>
+
+        <div>
+          <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-3">Pendampingan aktif</p>
           {activeReports.length > 0 ? (
-            <div className="grid gap-3">
+            <div className="space-y-3">
               {activeReports.map(report => (
-                <div key={report.id} className="bg-white rounded-2xl p-4 shadow-sm border border-[#4A9B8E]/10 hover:shadow-md transition">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-[#4A9B8E]/10 rounded-full flex items-center justify-center">
-                      💬
+                <div key={report.id} className="bg-card border border-border rounded-2xl p-4 hover:shadow-sm transition">
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <UserIcon size={18} className="text-primary" />
                     </div>
-                    <div className="flex-1">
-                      <p className="font-semibold text-[#2D3748] text-sm">
-                        Peer Consultant
-                      </p>
-                      <p className="text-xs text-gray-500 capitalize">
-                        {report.incident_type} • {report.unreadCount ? `${report.unreadCount} pesan baru` : 'Tidak ada pesan baru'}
+                    <div className="flex-1 min-w-0">
+                      <p className="text-sm font-semibold text-foreground">Sahabat Tangguh</p>
+                      <p className="text-xs text-muted-foreground capitalize truncate">
+                        {report.incident_type}{report.unreadCount ? ` · ${report.unreadCount} pesan baru` : ''}
                       </p>
                     </div>
-                    {report.unreadCount ? (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#E1F0FA] text-[#1B4F72] rounded-full text-xs font-semibold whitespace-nowrap">
-                        <UserIcon size={12} className="opacity-70" />
-                        Sahabat Tangguh
-                      </span>
-                    ) : null}
+                    <span className="text-xs px-2.5 py-1 rounded-full bg-green-50 text-green-700 font-medium flex-shrink-0">Aktif</span>
                   </div>
-                  <button 
-                    onClick={() => router.push(`/report/chat/${report.id}`)}
-                    className="mt-3 w-full bg-[#4A9B8E] text-white py-2 rounded-xl text-sm font-medium hover:bg-[#3D8A7D] transition shadow-sm"
-                  >
-                    Lanjut Chat →
+                  <div className="bg-muted rounded-xl px-3 py-2 flex items-center gap-2 mb-3">
+                    <span className="text-xs text-muted-foreground">Kode:</span>
+                    <span className="text-xs font-mono font-semibold text-primary">{report.tracking_code}</span>
+                  </div>
+                  <button onClick={() => router.push(`/report/chat/${report.id}`)} className="w-full bg-primary text-primary-foreground py-2.5 rounded-xl text-sm font-medium hover:bg-primary/90 transition">
+                    Lanjut chat →
                   </button>
                 </div>
               ))}
             </div>
           ) : (
-            <div className="bg-white rounded-2xl p-6 text-center shadow-sm border border-gray-100">
-              <p className="text-sm text-gray-500 mb-3">Belum ada laporan aktif.</p>
-              <Link href="/report/start" className="inline-block bg-[#4A9B8E] text-white py-2 px-6 rounded-xl text-sm font-medium hover:bg-[#3D8A7D] transition">
-                Mulai Konsultasi
-              </Link>
+            <div className="bg-card border border-border rounded-2xl p-6 text-center">
+              <p className="text-sm text-muted-foreground mb-3">Belum ada laporan aktif.</p>
+              <button onClick={() => router.push('/report/start')} className="inline-flex items-center gap-2 bg-primary text-primary-foreground py-2 px-5 rounded-xl text-sm font-medium hover:bg-primary/90 transition">
+                Mulai konsultasi
+              </button>
             </div>
           )}
         </div>
 
-        {/* 3. SECTION JURNAL */}
-        <div className="mb-8">
+        <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-[#2D3748]">📖 Jurnalku</h2>
-            <Link href="/report/jurnal" className="text-xs text-[#4A9B8E] hover:underline font-medium">
-              Lihat semua →
-            </Link>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Jurnalku</p>
+            <button onClick={() => router.push('/report/jurnal')} className="text-xs text-primary hover:underline font-medium">Lihat semua →</button>
           </div>
-          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
-            {/* Tombol tulis baru */}
-            <button 
-              onClick={() => router.push('/report/jurnal')}
-              className="flex-shrink-0 w-24 h-28 bg-[#4A9B8E]/5 border-2 border-dashed border-[#4A9B8E]/30 rounded-2xl flex flex-col items-center justify-center gap-1 hover:bg-[#4A9B8E]/10 transition"
-            >
-              <span className="text-2xl">✏️</span>
-              <span className="text-xs text-[#4A9B8E] font-medium mt-1">Tulis</span>
+          <div className="flex gap-3 overflow-x-auto pb-1 scrollbar-hide">
+            <button onClick={() => router.push('/report/jurnal')} className="flex-shrink-0 w-24 h-28 bg-card border-2 border-dashed border-border rounded-2xl flex flex-col items-center justify-center gap-1.5 hover:border-primary/30 hover:bg-primary/5 transition">
+              <span className="text-xl">✏️</span>
+              <span className="text-xs text-muted-foreground font-medium">Tulis</span>
             </button>
             {recentJournals.map(journal => (
-              <div 
-                key={journal.id} 
-                onClick={() => router.push('/report/jurnal')}
-                className="flex-shrink-0 w-24 h-28 bg-white border border-[#C9847A]/20 rounded-2xl p-3 cursor-pointer hover:shadow-md transition flex flex-col items-center justify-center gap-2"
-              >
-                <span className="text-3xl">{journal.mood || '📝'}</span>
-                <p className="text-[10px] text-gray-500 text-center line-clamp-2 leading-tight font-serif italic">
-                  {journal.content?.substring(0, 30)}...
+              <div key={journal.id} onClick={() => router.push('/report/jurnal')} className="flex-shrink-0 w-24 h-28 bg-card border border-border rounded-2xl p-3 cursor-pointer hover:shadow-sm transition flex flex-col items-center justify-center gap-2">
+                <span className="text-2xl">{journal.mood || '📝'}</span>
+                <p className="text-[10px] text-muted-foreground text-center line-clamp-2 leading-tight italic">
+                  {journal.content?.substring(0, 28)}...
                 </p>
               </div>
             ))}
           </div>
         </div>
 
-        {/* 4. SECTION EDUKASI */}
-        <div className="mb-8">
+        <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="font-semibold text-[#2D3748]">📚 Untukmu</h2>
-            <Link href="/edukasi" className="text-xs text-[#4A9B8E] hover:underline font-medium">
-              Lihat semua →
-            </Link>
+            <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Untukmu</p>
+            <button onClick={() => router.push('/edukasi')} className="text-xs text-primary hover:underline font-medium">Lihat semua →</button>
           </div>
-          <div className="grid grid-cols-1 gap-2">
+          <div className="space-y-2">
             {[
               { title: 'Kamu Tidak Sendiri', desc: 'Memahami bahwa pengalaman ini bukan salahmu', icon: '🤝' },
               { title: 'Langkah Kecil itu Penting', desc: 'Pemulihan tidak harus sempurna', icon: '🌱' },
               { title: 'Mengenal Traumamu', desc: 'Memahami respons tubuh dan pikiran', icon: '💙' }
             ].map((article, i) => (
-              <Link key={i} href="/edukasi" className="flex items-center gap-3 bg-white rounded-xl p-3 hover:shadow-sm transition border border-gray-100">
-                <div className="w-10 h-10 bg-[#FDF6EC] rounded-lg flex items-center justify-center text-xl shrink-0">
-                  {article.icon}
+              <button key={i} onClick={() => router.push('/edukasi')} className="w-full flex items-center gap-3 bg-card border border-border rounded-xl p-3.5 hover:shadow-sm transition text-left">
+                <div className="w-10 h-10 bg-muted rounded-xl flex items-center justify-center text-xl flex-shrink-0">{article.icon}</div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-sm font-semibold text-foreground">{article.title}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5 truncate">{article.desc}</p>
                 </div>
-                <div>
-                  <p className="text-sm font-semibold text-[#2D3748]">{article.title}</p>
-                  <p className="text-xs text-gray-500 mt-0.5">{article.desc}</p>
-                </div>
-              </Link>
+              </button>
             ))}
           </div>
         </div>
 
-        {/* 5. SECTION DARURAT */}
-        <div className="bg-[#C9847A]/10 rounded-2xl p-5 border border-[#C9847A]/20">
-          <p className="text-sm font-semibold text-[#C9847A] mb-3 flex items-center gap-2">
-            <span>🆘</span> Bantuan Darurat
+        <div className="bg-red-50 border border-red-100 rounded-2xl p-5">
+          <p className="text-xs font-semibold text-red-600 uppercase tracking-wider mb-3 flex items-center gap-2">
+            <AlertCircle size={14} /> Bantuan darurat
           </p>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {[
               { name: 'Polri', number: '110' },
               { name: 'KEMENPPPA', number: '119 ext 8' },
               { name: 'Komnas Perempuan', number: '021-7884-5555' },
               { name: 'SAPA 129', number: '1500-454' }
-            ].map((contact, i) => (
-              <a key={i} href={`tel:${contact.number.replace(/\D/g,'')}`} className="bg-white rounded-xl p-3 text-center hover:shadow-sm transition border border-[#C9847A]/10 flex flex-col justify-center">
-                <p className="text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-1">{contact.name}</p>
-                <p className="text-sm text-[#C9847A] font-bold">{contact.number}</p>
+            ].map((c, i) => (
+              <a key={i} href={`tel:${c.number.replace(/\D/g,'')}`} className="bg-white border border-red-100 rounded-xl p-3 text-center hover:shadow-sm transition block">
+                <p className="text-[10px] font-semibold text-red-400 uppercase tracking-wider mb-0.5">{c.name}</p>
+                <p className="text-sm font-bold text-red-600">{c.number}</p>
               </a>
             ))}
           </div>
         </div>
+
       </div>
 
       <LogoutConfirmModal
@@ -464,45 +483,33 @@ export default function ReportDashboardPage() {
 
       <AnimatePresence>
         {showMsgNotifPopup && newMsgNotif && (
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, y: 50, scale: 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.9 }}
-            className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-xl p-4 z-50 max-w-sm border border-teal-100"
+            className="fixed bottom-6 right-6 bg-card rounded-2xl shadow-xl p-4 z-50 max-w-sm border border-border"
           >
             <div className="flex items-start gap-3">
-              <div className="w-10 h-10 bg-[#4A9B8E] rounded-full flex items-center justify-center flex-shrink-0">
+              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center flex-shrink-0">
                 <MessageCircle className="w-5 h-5 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-[#1B4F72] mb-3 flex items-center gap-2 text-sm md:text-base">
-                  💬 Pesan dari Sahabat Tangguh
-                </h3>
-                <p className="text-xs text-gray-500 mt-0.5">
-                  Laporan #{newMsgNotif.trackingCode}
-                </p>
-                <p className="text-xs text-gray-600 mt-1 line-clamp-2">
-                  {newMsgNotif.content}
-                </p>
+                <p className="font-semibold text-foreground text-sm">💬 Pesan dari Sahabat Tangguh</p>
+                <p className="text-xs text-muted-foreground mt-0.5">#{newMsgNotif.trackingCode}</p>
+                <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{newMsgNotif.content}</p>
               </div>
-              <button onClick={() => setShowMsgNotifPopup(false)} className="text-gray-400 hover:text-gray-600 flex-shrink-0">
+              <button onClick={() => setShowMsgNotifPopup(false)} className="text-muted-foreground hover:text-foreground flex-shrink-0">
                 <X className="w-4 h-4" />
               </button>
             </div>
             <div className="flex gap-2 mt-3">
               <button
-                onClick={() => {
-                  router.push(`/report/chat/${newMsgNotif.reportId}`);
-                  setShowMsgNotifPopup(false);
-                }}
-                className="flex-1 bg-[#4A9B8E] text-white text-xs py-2 rounded-xl hover:bg-[#3D8A7D] transition font-medium"
+                onClick={() => { router.push(`/report/chat/${newMsgNotif.reportId}`); setShowMsgNotifPopup(false); }}
+                className="flex-1 bg-primary text-primary-foreground text-xs py-2 rounded-xl hover:bg-primary/90 transition font-medium"
               >
                 Buka Chat
               </button>
-              <button
-                onClick={() => setShowMsgNotifPopup(false)}
-                className="flex-1 border border-gray-200 text-gray-600 text-xs py-2 rounded-xl hover:bg-gray-50 transition"
-              >
+              <button onClick={() => setShowMsgNotifPopup(false)} className="flex-1 border border-border text-muted-foreground text-xs py-2 rounded-xl hover:bg-muted transition">
                 Tutup
               </button>
             </div>

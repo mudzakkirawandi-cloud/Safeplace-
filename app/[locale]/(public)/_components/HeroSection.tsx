@@ -24,7 +24,7 @@ export default function HeroSection() {
       y: 0,
       transition: { type: "spring", damping: 12, stiffness: 100 },
     },
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 1, y: 0 },
   };
 
   return (
@@ -39,10 +39,10 @@ export default function HeroSection() {
       <div className="container mx-auto px-6 max-w-6xl relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           <div className="max-w-2xl">
-            <motion.div
+            <motion.h1
               style={{ overflow: "hidden", display: "flex", flexWrap: "wrap", gap: "0.5rem" }}
               variants={container}
-              initial="hidden"
+              initial="visible"
               animate="visible"
               className="text-4xl md:text-5xl lg:text-6xl font-display font-bold text-primary mb-6 leading-tight"
             >
@@ -51,7 +51,7 @@ export default function HeroSection() {
                   {word}
                 </motion.span>
               ))}
-            </motion.div>
+            </motion.h1>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}

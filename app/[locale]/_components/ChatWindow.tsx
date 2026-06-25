@@ -102,7 +102,7 @@ export default function ChatWindow({
     fetchMessages();
 
     // Setup Supabase Realtime
-    const channel = supabase.channel(`chat:${reportId}`, {
+    const channel = supabase.channel(`chatwindow-${reportId}-${currentUserId}-${Date.now()}`, {
       config: { presence: { key: currentUserId || trackingCode || 'unknown' } }
     });
     

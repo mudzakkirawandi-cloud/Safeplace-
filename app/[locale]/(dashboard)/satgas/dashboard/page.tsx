@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 import { Activity, Bell, CheckCircle2, X } from "lucide-react";
@@ -18,6 +18,45 @@ export default function SatgasDashboardPage() {
   const [updateStatus, setUpdateStatus] = useState("Diterima");
   const [updateNotes, setUpdateNotes] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [currentUserId, setCurrentUserId] = useState<string | null>(null);
+  const [newEscalationNotif, setNewEscalationNotif] = useState<string | null>(null);
+  const [showEscalationPopup, setShowEscalationPopup] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        setCurrentUserId(data.user.id);
+      }
+    });
+  }, [supabase]);
+
+  useEffect(() => {
+    if (!currentUserId) return
+    
+    const channel = supabase
+      .channel(`escalation-satgas-${currentUserId}-${Date.now()}`)
+      .on('postgres_changes', {
+        event: 'INSERT',
+        schema: 'public',
+        table: 'escalation_notifications',
+        filter: `to_user_id=eq.${currentUserId}`
+      }, (payload) => {
+        const notif = payload.new as {
+          report_id: string
+          to_role: string
+          status: string
+        }
+        if (notif.status === 'waiting_reporter_approval') {
+          setNewEscalationNotif(notif.report_id)
+          setShowEscalationPopup(true)
+          setTimeout(() => setShowEscalationPopup(false), 8000)
+        }
+      })
+      .subscribe()
+    
+    return () => { supabase.removeChannel(channel) }
+  }, [currentUserId, supabase])
 
   const STATS = [
     { key: "pending", labelKey: "stat_pending_cases", value: 3, icon: Bell, color: "text-[#D4AC0D]", bg: "bg-[#D4AC0D]/20" },
@@ -210,6 +249,39 @@ export default function SatgasDashboardPage() {
           </>
         )}
       </AnimatePresence>
+
+      {showEscalationPopup && newEscalationNotif && (
+        <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-xl p-4 z-50 max-w-sm border border-blue-100">
+          <div className="flex items-start gap-3">
+            <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-lg">⚡</span>
+            </div>
+            <div className="flex-1">
+              <p className="font-semibold text-gray-800 text-sm">
+                Kasus Dieskalasi ke Anda
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Menunggu persetujuan pelapor
+              </p>
+            </div>
+          </div>
+          <div className="flex gap-2 mt-3">
+            <button
+              onClick={() => {
+                router.push(`/satgas/cases`)
+                setShowEscalationPopup(false)
+              }}
+              className="flex-1 bg-blue-600 text-white text-xs py-2 rounded-xl hover:bg-blue-700 transition font-medium">
+              Lihat Kasus
+            </button>
+            <button
+              onClick={() => setShowEscalationPopup(false)}
+              className="flex-1 border border-gray-200 text-gray-600 text-xs py-2 rounded-xl hover:bg-gray-50 transition">
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

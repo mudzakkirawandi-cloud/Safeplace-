@@ -7,7 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import { createClient } from "../../../../../lib/supabase/client";
 import Navbar from "../../_components/Navbar";
 import Footer from "../../_components/Footer";
-import { ArrowLeft, Briefcase, Calendar, Globe, MapPin, CheckCircle, Clock } from "lucide-react";
+import { ArrowLeft, Briefcase, Globe, MapPin, CheckCircle, Clock } from "lucide-react";
 
 export interface UserMetadata {
   avatar_url?: string;
@@ -41,7 +41,7 @@ export default function DetailPsikologPage() {
 
   const fetchConsultant = useCallback(async () => {
     if (!id) return;
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("users")
       .select("*")
       .eq("id", id)

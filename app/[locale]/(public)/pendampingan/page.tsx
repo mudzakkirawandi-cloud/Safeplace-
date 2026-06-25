@@ -6,7 +6,7 @@ import Image from "next/image";
 import { createClient } from "../../../../lib/supabase/client";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
-import { Users, Globe, MapPin, CheckCircle } from "lucide-react";
+import { Users, Globe, MapPin, CheckCircle, MoreVertical } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export interface UserMetadata {
@@ -34,6 +34,13 @@ export default function ConsultationPage() {
   const [consultants, setConsultants] = useState<Consultant[]>([]);
   const [loading, setLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState("all");
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
+
+  useEffect(() => {
+    const handleClickOutside = () => setOpenDropdown(null);
+    document.addEventListener("click", handleClickOutside);
+    return () => document.removeEventListener("click", handleClickOutside);
+  }, []);
 
   const fetchConsultants = useCallback(async () => {
     const { data, error } = await supabase
@@ -134,7 +141,40 @@ export default function ConsultationPage() {
           ) : filteredConsultants.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredConsultants.map((consultant) => (
-                <div key={consultant.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border flex flex-col p-6 group">
+                <div key={consultant.id} className="bg-card rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-all border border-border flex flex-col p-6 group relative">
+                  
+                  {/* Dropdown 3 dots */}
+                  <div className="absolute top-4 right-4 z-20" onClick={e => e.stopPropagation()}>
+                    <button 
+                      onClick={() => setOpenDropdown(openDropdown === consultant.id ? null : consultant.id)} 
+                      className="p-1.5 text-gray-400 hover:text-primary hover:bg-primary/10 rounded-full transition-colors"
+                    >
+                      <MoreVertical size={20} />
+                    </button>
+                    {openDropdown === consultant.id && (
+                      <div className="absolute right-0 mt-1 w-48 bg-white border border-border rounded-xl shadow-[0_4px_20px_rgba(0,0,0,0.08)] py-1.5 z-30">
+                        <button 
+                          onClick={() => {
+                            setOpenDropdown(null);
+                            router.push(`/pendampingan/${consultant.id}`);
+                          }} 
+                          className="w-full text-left px-4 py-2 hover:bg-muted text-sm font-medium transition-colors"
+                        >
+                          Lihat Profil
+                        </button>
+                        <button 
+                          onClick={() => {
+                            setOpenDropdown(null);
+                            handleRequest(consultant.id);
+                          }} 
+                          className="w-full text-left px-4 py-2 hover:bg-muted text-sm font-medium text-primary transition-colors"
+                        >
+                          Request Pendampingan
+                        </button>
+                      </div>
+                    )}
+                  </div>
+
                   <div className="flex items-start gap-4 mb-4">
                     {consultant.metadata?.avatar_url ? (
                       <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-border flex-shrink-0">
@@ -147,15 +187,15 @@ export default function ConsultationPage() {
                         />
                       </div>
                     ) : (
-                      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl border-2 border-border">
+                      <div className="w-16 h-16 rounded-full bg-primary flex items-center justify-center text-white font-bold text-xl border-2 border-border flex-shrink-0">
                         {getInitials(consultant.full_name)}
                       </div>
                     )}
                     
-                    <div className="flex-1">
+                    <div className="flex-1 pr-6">
                       <h3 className="text-lg font-bold text-primary flex items-center gap-1">
                         {consultant.full_name}
-                        <CheckCircle size={14} className="text-primary" />
+                        <CheckCircle size={14} className="text-primary flex-shrink-0" />
                       </h3>
                       <p className="text-muted-foreground text-sm font-medium mb-1">
                         {consultant.metadata?.specialization || "Konsultan Pendamping"}

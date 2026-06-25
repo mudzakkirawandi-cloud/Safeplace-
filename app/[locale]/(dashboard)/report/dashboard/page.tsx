@@ -307,12 +307,6 @@ export default function ReportDashboardPage() {
           <p className="text-sm text-muted-foreground">Kamu aman di sini 🌿</p>
         </div>
         <div className="flex items-center gap-3">
-          {reports[0]?.tracking_code && (
-            <div className="flex items-center gap-2 bg-muted px-3 py-1.5 rounded-xl border border-border">
-              <span className="text-xs text-muted-foreground">Kode laporan</span>
-              <span className="text-xs font-mono font-semibold text-primary">{reports[0].tracking_code}</span>
-            </div>
-          )}
         </div>
       </div>
 

@@ -64,7 +64,7 @@ function SidebarContent({
     },
     {
       label: "Lacak laporan",
-      href: "/report/track",
+      href: "/report/Track",
       icon: <Search size={18} />,
     },
   ];
@@ -112,7 +112,7 @@ function SidebarContent({
       <div className="px-3 pb-4 border-t border-border pt-3 space-y-1">
         {trackingCode && (
           <div className="px-3 py-2 mb-2 bg-muted rounded-xl">
-            <p className="text-xs text-muted-foreground mb-0.5">Kode laporan</p>
+            <p className="text-xs text-muted-foreground mb-0.5">ID Laporan</p>
             <p className="text-xs font-mono font-semibold text-primary">
               {trackingCode}
             </p>

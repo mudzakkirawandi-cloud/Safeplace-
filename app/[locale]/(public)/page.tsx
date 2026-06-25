@@ -6,6 +6,7 @@ import DemoAnimationSection from "./_components/DemoAnimationSection";
 import SecuritySection from "./_components/SecuritySection";
 import ImpactSection from "./_components/ImpactSection";
 import SahabatTangguhSection from "./_components/SahabatTangguhSection";
+import PsikologSection from "./_components/PsikologSection";
 import CollaborationSection from "./_components/CollaborationSection";
 import EmergencySection from "./_components/EmergencySection";
 import Footer from "./_components/Footer";
@@ -29,6 +30,7 @@ export default function HomePage() {
         <SecuritySection />
         <ImpactSection />
         <SahabatTangguhSection />
+        <PsikologSection />
         <CollaborationSection />
         <EmergencySection />
       </main>

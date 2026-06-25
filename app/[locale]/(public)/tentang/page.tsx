@@ -8,6 +8,7 @@ import ProgramSection from "./_components/ProgramSection";
 import StatsSection from "./_components/StatsSection";
 import TimelineSection from "./_components/TimelineSection";
 import AboutCollaborationSection from "./_components/AboutCollaborationSection";
+import PsikologSection from "../_components/PsikologSection";
 import AboutCTASection from "./_components/AboutCTASection";
 
 export async function generateMetadata({ params: { locale } }: { params: { locale: string } }) {
@@ -29,6 +30,7 @@ export default function TentangPage() {
         <FilosofiSection />
         <TimelineSection />
         <ProgramSection />
+        <PsikologSection />
         <AboutCollaborationSection />
         <AboutCTASection />
       </main>

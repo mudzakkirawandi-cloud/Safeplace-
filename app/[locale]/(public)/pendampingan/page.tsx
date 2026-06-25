@@ -40,12 +40,11 @@ export default function ConsultationPage() {
     const { data } = await supabase
       .from("users")
       .select("*")
-      .eq("role", "consultant")
-      .eq("is_active", true);
+      .eq("role", "consultant");
 
     if (data) {
       const typedData = data as Consultant[];
-      const publicConsultants = typedData.filter(c => c.show_public === true || c.metadata?.show_public === true);
+      const publicConsultants = typedData.filter(c => c.metadata?.show_public === true);
       setConsultants(publicConsultants);
     }
     setLoading(false);

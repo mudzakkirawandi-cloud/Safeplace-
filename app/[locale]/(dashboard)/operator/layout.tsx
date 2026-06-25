@@ -12,7 +12,6 @@ import {
   Menu,
   MessageSquare
 } from "lucide-react";
-import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
@@ -25,7 +24,6 @@ export default function OperatorLayout({
   const t = useTranslations("operator");
   const router = useRouter();
   const pathname = usePathname();
-  const supabase = createClient();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

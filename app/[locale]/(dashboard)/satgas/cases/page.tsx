@@ -33,19 +33,28 @@ export default function SatgasCasesPage() {
 
   const [cases, setCases] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchCases();
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+      setUserId(user.id);
+      fetchCases(user.id);
+    };
+    init();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const fetchCases = async () => {
+  const fetchCases = async (uid?: string) => {
+    const targetUid = uid || userId;
+    if (!targetUid) return;
+
     setLoading(true);
-    // RLS handles the filtering by assigned_satgas_campus_id
     const { data } = await supabase
       .from("reports")
       .select("*")
-      .not("assigned_satgas_campus_id", "is", null)
+      .eq("assigned_satgas_id", targetUid)
       .order("created_at", { ascending: false });
     
     if (data) setCases(data);

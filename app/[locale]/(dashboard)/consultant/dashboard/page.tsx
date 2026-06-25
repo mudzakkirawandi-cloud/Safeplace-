@@ -1,158 +1,150 @@
-"use client";
+'use client'
 
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
-import { motion } from "framer-motion";
-import {
-  FolderOpen,
-  FolderPlus,
-  Clock,
-  CheckCircle2,
-  ChevronRight,
-} from "lucide-react";
+import { useState, useEffect, useCallback } from 'react'
+import { createClient } from '@/lib/supabase/client'
+import { useRouter } from 'next/navigation'
+import { motion } from 'framer-motion'
+import { FolderOpen, FolderPlus, Clock, CheckCircle2, ChevronRight } from 'lucide-react'
 
-// Data dummy — di produksi fetch dari Supabase
-const STATS = [
-  {
-    key: "active",
-    labelKey: "stat_active",
-    value: 4,
-    icon: FolderOpen,
-    color: "text-primary",
-    bg: "bg-[#EAF3EE]",
-  },
-  {
-    key: "new_today",
-    labelKey: "stat_new_today",
-    value: 2,
-    icon: FolderPlus,
-    color: "text-[#E8A87C]",
-    bg: "bg-[#FDF3EB]",
-  },
-  {
-    key: "waiting",
-    labelKey: "stat_waiting",
-    value: 1,
-    icon: Clock,
-    color: "text-yellow-600",
-    bg: "bg-yellow-50",
-  },
-  {
-    key: "done_week",
-    labelKey: "stat_done_week",
-    value: 3,
-    icon: CheckCircle2,
-    color: "text-green-600",
-    bg: "bg-green-50",
-  },
-];
-
-type Priority = "urgent" | "normal" | "low";
-type Intent = "document" | "consult" | "satgas";
-
-interface CaseItem {
-  id: string;
-  code: string;
-  type: string;
-  intent: Intent;
-  priority: Priority;
-  status: string;
-  lastUpdate: string;
+interface Report {
+  id: string
+  tracking_code: string
+  incident_type: string
+  status: string
+  priority: string
+  emergency: boolean
+  created_at: string
+  updated_at: string
 }
 
-const CASES: CaseItem[] = [
-  {
-    id: "1",
-    code: "RPT-0047",
-    type: "Pelecehan Verbal",
-    intent: "consult",
-    priority: "urgent",
-    status: "Konsultasi Aktif",
-    lastUpdate: "10 menit lalu",
-  },
-  {
-    id: "2",
-    code: "RPT-0045",
-    type: "Kekerasan Digital",
-    intent: "document",
-    priority: "normal",
-    status: "Menunggu Respons",
-    lastUpdate: "2 jam lalu",
-  },
-  {
-    id: "3",
-    code: "RPT-0041",
-    type: "Pelecehan Fisik",
-    intent: "satgas",
-    priority: "normal",
-    status: "Ditinjau",
-    lastUpdate: "1 hari lalu",
-  },
-  {
-    id: "4",
-    code: "RPT-0038",
-    type: "Kekerasan Seksual",
-    intent: "consult",
-    priority: "low",
-    status: "Konsultasi Aktif",
-    lastUpdate: "2 hari lalu",
-  },
-];
-
-const INTENT_CONFIG: Record<Intent, { label: string; className: string }> = {
-  document: {
-    label: "Dokumentasi",
-    className: "bg-blue-100 text-blue-700",
-  },
-  consult: {
-    label: "Konsultasi",
-    className: "bg-[#EAF3EE] text-primary",
-  },
-  satgas: {
-    label: "Satgas",
-    className: "bg-purple-100 text-purple-700",
-  },
-};
-
-const PRIORITY_CONFIG: Record<Priority, { label: string; className: string; pulse: boolean }> = {
-  urgent: {
-    label: "Urgent",
-    className: "bg-red-100 text-red-700",
-    pulse: true,
-  },
-  normal: {
-    label: "Normal",
-    className: "bg-yellow-100 text-yellow-700",
-    pulse: false,
-  },
-  low: {
-    label: "Rendah",
-    className: "bg-green-100 text-green-700",
-    pulse: false,
-  },
-};
-
 export default function ConsultantDashboardPage() {
-  const t = useTranslations("consultant");
-  const router = useRouter();
+  const supabase = createClient()
+  const router = useRouter()
+  const [cases, setCases] = useState<Report[]>([])
+  const [loading, setLoading] = useState(true)
+  const [userId, setUserId] = useState<string | null>(null)
+
+  const fetchCases = useCallback(async (uid: string) => {
+    const { data } = await supabase
+      .from('reports')
+      .select('id, tracking_code, incident_type, status, priority, emergency, created_at, updated_at')
+      .eq('assigned_consultant_id', uid)
+      .order('updated_at', { ascending: false })
+    if (data) setCases(data)
+    setLoading(false)
+  }, [supabase])
+
+  useEffect(() => {
+    const init = async () => {
+      const { data: { user } } = await supabase.auth.getUser()
+      if (!user) return
+      setUserId(user.id)
+      await fetchCases(user.id)
+    }
+    init()
+  }, [supabase, fetchCases])
+
+  // Realtime
+  useEffect(() => {
+    if (!userId) return
+    const channel = supabase
+      .channel(`consultant-dashboard-${userId}-${Date.now()}`)
+      .on('postgres_changes', {
+        event: '*',
+        schema: 'public',
+        table: 'reports',
+        filter: `assigned_consultant_id=eq.${userId}`
+      }, () => fetchCases(userId))
+      .subscribe()
+    return () => { supabase.removeChannel(channel) }
+  }, [userId, supabase, fetchCases])
+
+  const stats = [
+    {
+      key: 'active',
+      label: 'Kasus Aktif',
+      value: cases.filter(c => !['resolved', 'closed'].includes(c.status)).length,
+      icon: FolderOpen,
+      color: 'text-primary',
+      bg: 'bg-[#EAF3EE]'
+    },
+    {
+      key: 'new_today',
+      label: 'Kasus Baru Hari Ini',
+      value: cases.filter(c => {
+        const today = new Date().toDateString()
+        return new Date(c.created_at).toDateString() === today
+      }).length,
+      icon: FolderPlus,
+      color: 'text-[#E8A87C]',
+      bg: 'bg-[#FDF3EB]'
+    },
+    {
+      key: 'waiting',
+      label: 'Menunggu Responsmu',
+      value: cases.filter(c => c.status === 'under_review').length,
+      icon: Clock,
+      color: 'text-yellow-600',
+      bg: 'bg-yellow-50'
+    },
+    {
+      key: 'done',
+      label: 'Selesai Minggu Ini',
+      value: cases.filter(c => {
+        if (c.status !== 'resolved') return false
+        const weekAgo = new Date()
+        weekAgo.setDate(weekAgo.getDate() - 7)
+        return new Date(c.updated_at) >= weekAgo
+      }).length,
+      icon: CheckCircle2,
+      color: 'text-green-600',
+      bg: 'bg-green-50'
+    }
+  ]
+
+  const getPriorityConfig = (report: Report) => {
+    if (report.emergency) return { label: 'Darurat', className: 'bg-red-100 text-red-700', pulse: true }
+    switch (report.priority) {
+      case 'urgent': return { label: 'Urgent', className: 'bg-red-100 text-red-700', pulse: true }
+      case 'high': return { label: 'Tinggi', className: 'bg-orange-100 text-orange-700', pulse: false }
+      default: return { label: 'Normal', className: 'bg-yellow-100 text-yellow-700', pulse: false }
+    }
+  }
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'received': return 'Diterima'
+      case 'under_review': return 'Ditinjau'
+      case 'in_consultation': return 'Konsultasi Aktif'
+      case 'escalated': return 'Diekskalasi'
+      case 'resolved': return 'Selesai'
+      default: return status
+    }
+  }
+
+  const getTimeAgo = (dateStr: string) => {
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 60) return `${mins} menit lalu`
+    const hours = Math.floor(mins / 60)
+    if (hours < 24) return `${hours} jam lalu`
+    return `${Math.floor(hours / 24)} hari lalu`
+  }
+
+  const recentCases = cases.slice(0, 5)
 
   return (
     <div className="p-6 space-y-6">
-      {/* Header */}
-      <motion.div
-        initial={{ opacity: 0, y: -12 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <h1 className="text-2xl font-bold text-primary">
-          {t("dashboard_title")} 👋
-        </h1>
-        <p className="text-muted-foreground text-sm mt-1">{t("dashboard_subtitle")}</p>
+      <motion.div initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }}>
+        <h1 className="text-2xl font-bold text-primary">Selamat Datang 👋</h1>
+        <p className="text-muted-foreground text-sm mt-1">
+          Berikut ringkasan aktivitas kasus kamu hari ini.
+        </p>
       </motion.div>
 
-      {/* Stat cards */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-        {STATS.map((stat, i) => {
-          const Icon = stat.icon;
+        {stats.map((stat, i) => {
+          const Icon = stat.icon
           return (
             <motion.div
               key={stat.key}
@@ -161,19 +153,16 @@ export default function ConsultantDashboardPage() {
               transition={{ delay: i * 0.08 }}
               className="bg-card rounded-2xl p-5 border border-border shadow-sm"
             >
-              <div
-                className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}
-              >
+              <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
                 <Icon className={`w-5 h-5 ${stat.color}`} />
               </div>
               <p className="text-3xl font-bold text-primary">{stat.value}</p>
-              <p className="text-xs text-muted-foreground mt-1">{t(stat.labelKey)}</p>
+              <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
             </motion.div>
-          );
+          )
         })}
       </div>
 
-      {/* Tabel kasus aktif */}
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -181,110 +170,73 @@ export default function ConsultantDashboardPage() {
         className="bg-card rounded-2xl border border-border shadow-sm overflow-hidden"
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-border">
-          <h2 className="font-semibold text-primary">{t("cases_title")}</h2>
+          <h2 className="font-semibold text-primary">Kasus Aktif</h2>
           <button
-            onClick={() => router.push("/consultant/cases")}
+            onClick={() => router.push('/consultant/cases')}
             className="text-sm text-primary hover:underline font-medium"
           >
-            {t("cases_view_all")} →
+            Lihat semua →
           </button>
         </div>
 
-        {/* Desktop table */}
-        <div className="hidden md:block overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="bg-muted text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
-                <th className="px-6 py-3">{t("table_code")}</th>
-                <th className="px-6 py-3">{t("table_type")}</th>
-                <th className="px-6 py-3">{t("table_intent")}</th>
-                <th className="px-6 py-3">{t("table_priority")}</th>
-                <th className="px-6 py-3">{t("table_status")}</th>
-                <th className="px-6 py-3">{t("table_last_update")}</th>
-                <th className="px-6 py-3"></th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-50">
-              {CASES.map((c) => (
-                <tr
-                  key={c.id}
-                  className="hover:bg-muted/50 transition-colors"
-                >
-                  <td className="px-6 py-4 font-mono font-semibold text-primary">
-                    #{c.code}
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">{c.type}</td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                        INTENT_CONFIG[c.intent].className
-                      }`}
-                    >
-                      {INTENT_CONFIG[c.intent].label}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span
-                      className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium ${
-                        PRIORITY_CONFIG[c.priority].className
-                      }`}
-                    >
-                      {PRIORITY_CONFIG[c.priority].pulse && (
-                        <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                      )}
-                      {PRIORITY_CONFIG[c.priority].label}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-muted-foreground">{c.status}</td>
-                  <td className="px-6 py-4 text-muted-foreground text-xs">
-                    {c.lastUpdate}
-                  </td>
-                  <td className="px-6 py-4">
-                    <button
-                      onClick={() =>
-                        router.push(`/consultant/cases/${c.id}`)
-                      }
-                      className="flex items-center gap-1 text-primary hover:text-[#3d6b52] font-medium text-xs transition-colors"
-                    >
-                      {t("table_open")}
-                      <ChevronRight size={14} />
-                    </button>
-                  </td>
+        {loading ? (
+          <div className="text-center py-10 text-muted-foreground text-sm">Memuat data...</div>
+        ) : recentCases.length === 0 ? (
+          <div className="text-center py-10 text-muted-foreground text-sm">
+            Belum ada kasus yang ditugaskan.
+          </div>
+        ) : (
+          <div className="hidden md:block overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead>
+                <tr className="bg-muted text-left text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                  <th className="px-6 py-3">Kode</th>
+                  <th className="px-6 py-3">Tipe</th>
+                  <th className="px-6 py-3">Prioritas</th>
+                  <th className="px-6 py-3">Status</th>
+                  <th className="px-6 py-3">Terakhir Update</th>
+                  <th className="px-6 py-3"></th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Mobile cards */}
-        <div className="md:hidden divide-y divide-gray-50">
-          {CASES.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => router.push(`/consultant/cases/${c.id}`)}
-              className="w-full px-4 py-4 text-left hover:bg-muted transition-colors"
-            >
-              <div className="flex items-center justify-between mb-2">
-                <span className="font-mono font-semibold text-primary text-sm">
-                  #{c.code}
-                </span>
-                <div className="flex items-center gap-2">
-                  <span
-                    className={`text-xs px-2 py-0.5 rounded-full font-medium ${
-                      PRIORITY_CONFIG[c.priority].className
-                    }`}
-                  >
-                    {PRIORITY_CONFIG[c.priority].label}
-                  </span>
-                  <ChevronRight size={14} className="text-muted-foreground" />
-                </div>
-              </div>
-              <p className="text-sm text-muted-foreground">{c.type}</p>
-              <p className="text-xs text-muted-foreground mt-1">{c.lastUpdate}</p>
-            </button>
-          ))}
-        </div>
+              </thead>
+              <tbody className="divide-y divide-gray-50">
+                {recentCases.map(c => {
+                  const priority = getPriorityConfig(c)
+                  return (
+                    <tr key={c.id} className="hover:bg-muted/50 transition-colors">
+                      <td className="px-6 py-4 font-mono font-semibold text-primary">
+                        #{c.tracking_code}
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">
+                        {c.incident_type?.replace(/_/g, ' ') || '-'}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span className={`inline-flex items-center gap-1.5 text-xs px-2.5 py-1 rounded-full font-medium ${priority.className}`}>
+                          {priority.pulse && <span className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />}
+                          {priority.label}
+                        </span>
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground">
+                        {getStatusLabel(c.status)}
+                      </td>
+                      <td className="px-6 py-4 text-muted-foreground text-xs">
+                        {getTimeAgo(c.updated_at)}
+                      </td>
+                      <td className="px-6 py-4">
+                        <button
+                          onClick={() => router.push(`/consultant/cases/${c.id}`)}
+                          className="flex items-center gap-1 text-primary hover:text-[#3d6b52] font-medium text-xs"
+                        >
+                          Buka <ChevronRight size={14} />
+                        </button>
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
       </motion.div>
     </div>
-  );
+  )
 }

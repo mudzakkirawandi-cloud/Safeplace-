@@ -11,7 +11,6 @@ import {
   Home,
   Menu,
 } from "lucide-react";
-import { createClient } from "../../../../lib/supabase/client";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
@@ -32,7 +31,6 @@ export default function ConsultantLayout({
   const t = useTranslations("consultant");
   const router = useRouter();
   const pathname = usePathname();
-  const supabase = createClient();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [status, setStatus] = useState<OnlineStatus>("online");

@@ -56,12 +56,35 @@ export default function ConsultationPage() {
       console.log("ALL DATA:", JSON.stringify(typedData));
       const publicConsultants = typedData.filter(c => c.metadata?.show_public);
       setConsultants(publicConsultants);
+
+      const channel = supabase
+        .channel('consultant-presence')
+        .on('postgres_changes', {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'users',
+          filter: 'role=eq.consultant'
+        }, (payload) => {
+          setConsultants(prev => prev.map(c => 
+            c.id === payload.new.id ? { ...c, ...payload.new } : c
+          ));
+        })
+        .subscribe();
+      
+      setLoading(false);
+      return () => { supabase.removeChannel(channel); };
     }
     setLoading(false);
   }, [supabase]);
 
   useEffect(() => {
-    fetchConsultants();
+    let cleanup: (() => void) | void;
+    fetchConsultants().then(fn => {
+      cleanup = fn;
+    });
+    return () => {
+      if (cleanup) cleanup();
+    };
   }, [fetchConsultants]);
 
   const filteredConsultants = activeFilter === "all" 
@@ -156,7 +179,8 @@ export default function ConsultationPage() {
                         <button 
                           onClick={() => {
                             setOpenDropdown(null);
-                            router.push(`/pendampingan/${consultant.id}`);
+                            const locale = window.location.pathname.split('/')[1];
+                            router.push(`/${locale}/pendampingan/${consultant.id}`);
                           }} 
                           className="w-full text-left px-4 py-2 hover:bg-muted text-sm font-medium transition-colors"
                         >
@@ -217,13 +241,6 @@ export default function ConsultationPage() {
                       {consultant.metadata?.bio || "Berpengalaman dalam memberikan pendampingan psikososial dan perlindungan hukum bagi korban kekerasan seksual."}
                     </p>
                   </div>
-                  
-                  <button 
-                    onClick={() => handleRequest(consultant.id)}
-                    className="w-full py-3 px-4 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group-hover:shadow-[0_0_15px_rgba(27,79,114,0.3)]"
-                  >
-                    Request Pendampingan
-                  </button>
                 </div>
               ))}
             </div>

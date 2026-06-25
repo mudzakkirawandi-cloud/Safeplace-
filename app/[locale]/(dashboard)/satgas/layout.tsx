@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
 import {
@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import NotificationBell from "../../_components/NotificationBell";
+import { createClient } from "../../../../lib/supabase/client";
 import SafePlaceLogo from "@/components/ui/SafePlaceLogo";
 
 export default function SatgasLayout({
@@ -23,9 +24,48 @@ export default function SatgasLayout({
   const t = useTranslations("satgas");
   const router = useRouter();
   const pathname = usePathname();
+  const supabase = createClient();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      if (data.user) {
+        supabase.from('users').update({ is_online: true }).eq('id', data.user.id);
+      }
+    });
+  }, [supabase]);
+
+  useEffect(() => {
+    const handleOffline = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (data.user) {
+        await supabase.from('users')
+          .update({ is_online: false })
+          .eq('id', data.user.id);
+      }
+    };
+
+    const handleVisibility = () => {
+      if (document.visibilityState === 'hidden') {
+        handleOffline();
+      } else {
+        supabase.auth.getUser().then(({ data }) => {
+          if (data.user) {
+            supabase.from('users').update({ is_online: true }).eq('id', data.user.id);
+          }
+        });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleOffline);
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleOffline);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [supabase]);
   const navItems = [
     { href: "/satgas/dashboard", icon: LayoutDashboard, labelKey: "nav_dashboard" },
     { href: "/satgas/cases", icon: ShieldAlert, labelKey: "nav_cases" },

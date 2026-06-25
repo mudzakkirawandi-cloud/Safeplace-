@@ -1,8 +1,8 @@
 "use client";
+// Cek apakah ada NextIntlClientProvider yang membungkus halaman ini.
 
 import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import { createClient } from "../../../../lib/supabase/client";
 import Navbar from "../_components/Navbar";
 import Footer from "../_components/Footer";
@@ -28,7 +28,6 @@ export interface Consultant {
 }
 
 export default function ConsultationPage() {
-  const t = useTranslations("consultation");
   const router = useRouter();
   const supabase = createClient();
   
@@ -44,7 +43,8 @@ export default function ConsultationPage() {
 
     if (data) {
       const typedData = data as Consultant[];
-      const publicConsultants = typedData.filter(c => c.metadata?.show_public === true);
+      console.log("ALL DATA:", JSON.stringify(typedData));
+      const publicConsultants = typedData.filter(c => c.metadata?.show_public);
       setConsultants(publicConsultants);
     }
     setLoading(false);
@@ -79,10 +79,10 @@ export default function ConsultationPage() {
         <div className="container mx-auto px-6 max-w-6xl">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-display font-bold text-primary mb-4">
-              {t("title")}
+              Konsultan & Pendamping
             </h1>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              {t("subtitle")}
+              Temukan pendamping profesional untuk mendampingi proses Anda.
             </p>
           </div>
 
@@ -96,7 +96,7 @@ export default function ConsultationPage() {
                   : "bg-card text-muted-foreground hover:bg-muted border border-border"
               }`}
             >
-              {t("filter_all")}
+              Semua
             </button>
             <button
               onClick={() => setActiveFilter("online")}
@@ -106,7 +106,7 @@ export default function ConsultationPage() {
                   : "bg-card text-muted-foreground hover:bg-muted border border-border"
               }`}
             >
-              {t("filter_online")}
+              Hanya Online
             </button>
           </div>
 
@@ -179,7 +179,7 @@ export default function ConsultationPage() {
                     onClick={() => handleRequest(consultant.id)}
                     className="w-full py-3 px-4 bg-primary text-white hover:bg-primary/90 rounded-xl text-sm font-semibold transition-colors flex items-center justify-center gap-2 group-hover:shadow-[0_0_15px_rgba(27,79,114,0.3)]"
                   >
-                    {t("request_btn")}
+                    Request Pendampingan
                   </button>
                 </div>
               ))}
@@ -187,8 +187,8 @@ export default function ConsultationPage() {
           ) : (
             <div className="text-center py-20 bg-card rounded-3xl border border-border shadow-sm">
               <Users size={64} className="mx-auto text-gray-300 mb-6" />
-              <h3 className="text-xl font-bold text-card-foreground mb-2">{t("empty_state")}</h3>
-              <p className="text-muted-foreground">{t("empty_state")}</p>
+              <h3 className="text-xl font-bold text-card-foreground mb-2">Belum ada konsultan yang tersedia.</h3>
+              <p className="text-muted-foreground">Belum ada konsultan yang tersedia.</p>
             </div>
           )}
         </div>

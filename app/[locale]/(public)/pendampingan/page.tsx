@@ -89,7 +89,7 @@ export default function ConsultationPage() {
 
   const filteredConsultants = activeFilter === "all" 
     ? consultants 
-    : consultants.filter(c => c.metadata?.is_online === true);
+    : consultants.filter(c => (c as any).is_online === true);
 
   const getInitials = (name: string) => {
     if (!name) return "CS";
@@ -224,7 +224,7 @@ export default function ConsultationPage() {
                       <p className="text-muted-foreground text-sm font-medium mb-1">
                         {consultant.metadata?.specialization || "Konsultan Pendamping"}
                       </p>
-                      {consultant.metadata?.is_online ? (
+                      {(consultant as any).is_online ? (
                         <span className="inline-flex items-center gap-1 text-xs text-green-600 bg-green-50 px-2 py-1 rounded-md font-medium">
                           <Globe size={12} /> Tersedia Online
                         </span>

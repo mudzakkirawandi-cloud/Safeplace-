@@ -41,8 +41,13 @@ export default function ConsultantLayout({
   const handleStatusChange = async (newStatus: OnlineStatus) => {
     setStatus(newStatus);
     setStatusDropdown(false);
-    // Di produksi: update ke Supabase
-    // await supabase.from("users").update({ online_status: newStatus }).eq("id", userId);
+    const { data } = await supabase.auth.getUser();
+    if (data.user) {
+      await supabase
+        .from("users")
+        .update({ is_online: newStatus === "online" })
+        .eq("id", data.user.id);
+    }
   };
 
   useEffect(() => {

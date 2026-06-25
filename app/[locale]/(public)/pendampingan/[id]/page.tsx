@@ -117,7 +117,7 @@ export default function DetailPsikologPage() {
                   )}
                   
                   <div className="mt-6 flex justify-center md:justify-start">
-                    {consultant.metadata?.is_online ? (
+                    {(consultant as any).is_online ? (
                       <span className="inline-flex items-center gap-1.5 text-sm text-green-600 bg-green-50 px-3 py-1.5 rounded-full font-medium border border-green-100">
                         <Globe size={14} /> Tersedia Online
                       </span>

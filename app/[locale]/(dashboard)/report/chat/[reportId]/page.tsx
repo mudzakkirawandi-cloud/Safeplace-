@@ -42,7 +42,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
   const [isSending, setIsSending] = useState(false);
   const [isAITyping, setIsAITyping] = useState(false);
   
-  const [peerConsultant, setPeerConsultant] = useState<{ full_name: string; is_online: boolean } | null>(null);
+  const [peerConsultant, setPeerConsultant] = useState<{ full_name: string; is_online: boolean; role?: string } | null>(null);
   const [isPeerTyping, setIsPeerTyping] = useState(false);
   const [presenceChannel, setPresenceChannel] = useState<ReturnType<typeof supabase.channel> | null>(null);
   const typingTimeoutRef = useRef<NodeJS.Timeout>();
@@ -83,7 +83,7 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
 
         const { data: repDetail } = await supabase
           .from("reports")
-          .select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online)")
+          .select("*, assigned_consultant:users!reports_assigned_consultant_id_fkey(full_name, is_online, role)")
           .eq("id", reportId)
           .maybeSingle();
         
@@ -584,7 +584,12 @@ export default function ReporterChatPage({ params }: { params: { reportId: strin
             <div>
               <h2 className="font-bold text-[#1B4F72] leading-tight">
                 {peerConsultant?.full_name 
-                  ? `Sahabat Tangguh - ${peerConsultant.full_name}`
+                  ? (() => {
+                      const role = (peerConsultant as { full_name: string; is_online: boolean; role?: string }).role;
+                      if (role === 'consultant') return `Konselor - ${peerConsultant.full_name}`;
+                      if (role === 'satgas') return `Satgas - ${peerConsultant.full_name}`;
+                      return `Sahabat Tangguh - ${peerConsultant.full_name}`;
+                    })()
                   : "Mencari Sahabat Tangguh..."}
               </h2>
               {isPeerTyping ? (
